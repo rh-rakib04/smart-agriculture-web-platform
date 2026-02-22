@@ -22,3 +22,4 @@
  * @property {Object} [details] - Additional error details
  */
 
+

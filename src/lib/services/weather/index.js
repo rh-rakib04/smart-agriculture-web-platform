@@ -79,3 +79,4 @@ export async function getWeatherForecast(lat, lon, days = 5) {
   }
 }
 
+

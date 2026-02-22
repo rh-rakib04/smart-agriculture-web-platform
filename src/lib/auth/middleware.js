@@ -83,3 +83,4 @@ export function hasRole(user, requiredRole) {
   return user.role === requiredRole;
 }
 
+

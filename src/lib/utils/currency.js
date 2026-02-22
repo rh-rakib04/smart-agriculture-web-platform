@@ -62,3 +62,4 @@ export function calculateProfitMargin(revenue, cost) {
   return ((revenue - cost) / revenue) * 100;
 }
 
+

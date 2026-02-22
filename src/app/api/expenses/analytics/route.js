@@ -60,3 +60,4 @@ async function handler(request) {
 
 export const GET = withAuth(handler);
 
+

@@ -21,3 +21,4 @@
  * @property {number} inputs.weatherFactor - Weather factor
  */
 
+
