@@ -1,10 +1,7 @@
 import { getDatabase } from './mongodb.js';
 import { COLLECTIONS } from './collections.js';
 
-/**
- * Create database indexes for optimal query performance
- * Call this function during application startup or migration
- */
+
 export async function createIndexes() {
   const db = await getDatabase();
 
