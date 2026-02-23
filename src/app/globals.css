@@ -1,26 +1,162 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.625rem;
+
+  /* 🌱 Smart Agriculture Brand Colors */
+  --background: #F1F8E9;
+  --foreground: #1B5E20;
+
+  --primary: #2E7D32;
+  --primary-foreground: #ffffff;
+
+  --secondary: #66BB6A;
+  --secondary-foreground: #ffffff;
+
+  --accent: #8D6E63;
+  --accent-foreground: #ffffff;
+
+  --highlight: #FBC02D;
+
+  --muted: #E8F5E9;
+  --muted-foreground: #424242;
+
+  --card: #ffffff;
+  --card-foreground: #1B5E20;
+
+  --popover: #ffffff;
+  --popover-foreground: #1B5E20;
+
+  --border: #C8E6C9;
+  --input: #C8E6C9;
+  --ring: #66BB6A;
+
+  --destructive: #D32F2F;
+
+  /* Charts */
+  --chart-1: #2E7D32;
+  --chart-2: #66BB6A;
+  --chart-3: #FBC02D;
+  --chart-4: #8D6E63;
+  --chart-5: #1B5E20;
+
+  /* Sidebar */
+  --sidebar: #2E7D32;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #66BB6A;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1B5E20;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #C8E6C9;
+  --sidebar-ring: #66BB6A;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-highlight: var(--highlight);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-destructive: var(--destructive);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 🌙 Dark Mode (Smart Agriculture) */
+.dark {
+  --background: #0B3D0B;
+  --foreground: #E8F5E9;
+
+  --primary: #66BB6A;
+  --primary-foreground: #0B3D0B;
+
+  --secondary: #2E7D32;
+  --secondary-foreground: #ffffff;
+
+  --accent: #8D6E63;
+  --accent-foreground: #ffffff;
+
+  --highlight: #FBC02D;
+
+  --muted: #1B5E20;
+  --muted-foreground: #C8E6C9;
+
+  --card: #145214;
+  --card-foreground: #E8F5E9;
+
+  --popover: #145214;
+  --popover-foreground: #E8F5E9;
+
+  --border: #1B5E20;
+  --input: #1B5E20;
+  --ring: #66BB6A;
+
+  --sidebar: #145214;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #66BB6A;
+  --sidebar-primary-foreground: #0B3D0B;
+  --sidebar-accent: #1B5E20;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1B5E20;
+  --sidebar-ring: #66BB6A;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
 }
