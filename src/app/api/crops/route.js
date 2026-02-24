@@ -57,5 +57,77 @@ export async function POST(req) {
     );
   }
 }
+//  GET /api/crops
+// search + filter + pagination + sort
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
 
+    const search = searchParams.get("search");
+    const category = searchParams.get("category");
+    const location = searchParams.get("location");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortOrder = searchParams.get("sortOrder") === "asc" ? 1 : -1;
+
+    const crops = await getCollection(COLLECTIONS.CROPS);
+
+    // filter
+
+    let filter = {};
+
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { cropType: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (location) {
+      filter.location = location;
+    }
+
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    const total = await crops.countDocuments(filter);
+
+    const data = await crops
+      .find(filter)
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    return Response.json({
+      success: true,
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    return Response.json(
+      { success: false, message: error.message },
+      { status: 500 },
+    );
+  }
+}
 
