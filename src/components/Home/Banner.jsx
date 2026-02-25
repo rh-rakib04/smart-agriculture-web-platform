@@ -73,6 +73,7 @@
 
 
 import React from "react";
+import Button from "../ui/Button";
 
 const Banner = () => {
   return (
@@ -96,9 +97,9 @@ const Banner = () => {
               <p className="mt-3 text-sm sm:text-base md:text-lg">
                 Modern technology for better farming and higher yield.
               </p>
-              <button className="btn btn-primary mt-5">
+              <Button variant="primary " className=" mt-5">
                 Learn More
-              </button>
+              </Button>
             </div>
           </div>
 
