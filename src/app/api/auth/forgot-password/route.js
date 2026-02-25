@@ -56,7 +56,9 @@ export async function POST(req) {
     $set: {
       resetOtp: hashedOtp,
       resetOtpExpires: Date.now() + 5 * 60 * 1000,
-      otpAttempts: 0
+      otpAttempts: 0,
+      otpRequestCount,
+      otpRequestWindow
     }
   }
 );
