@@ -4,10 +4,13 @@ import React, { useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import Button from "./ui/Button";
 
-const UploadImg = () => {
+const UploadImg = ({onUpload}) => {
     const [publicId, setPublicId] = useState("");
   return (
-    <CldUploadWidget uploadPreset="smartAgri" >
+    <CldUploadWidget uploadPreset="smartAgri"  onSuccess={(result) => {
+        const imageUrl = result.info.secure_url;
+        onUpload(imageUrl);
+      }}>
         {/* onSuccess={({event, info})=>{
         if(event === "success"){
             setPublicId(info?.public_id);

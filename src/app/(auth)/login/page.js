@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       console.log("Logged in user:", user);
       toast.update(loadingToast, {
-      render: "Login successful 🎉",
+      render: "Login successful",
       type: "success",
       isLoading: false,
       autoClose: 2000,

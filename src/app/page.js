@@ -1,9 +1,10 @@
+import UserInfo from '@/components/dashboard/UserInfo';
 import React from 'react';
 
 const page = () => {
   return (
     <div>
-      Home
+      <UserInfo />
     </div>
   );
 };

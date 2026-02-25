@@ -1,3 +1,4 @@
+
 import React from "react";
 import StatCard from "@/components/ui/StarCard";
 import WeatherCard from "@/components/dashboard/WeatherCard";
@@ -5,9 +6,11 @@ import TasksCard from "@/components/dashboard/TasksCard";
 import MarketOverview from "@/components/dashboard/MarketOverview";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 
+
 const page = () => {
   return (
     <div className="p-4 md:p-6 space-y-6 bg-gray-50 min-h-screen">
+     
       {/* Title */}
       <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
 

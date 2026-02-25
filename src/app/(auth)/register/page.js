@@ -39,6 +39,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data) => {
     const loadingToast = toast.loading("Creating your account...");
+    
     try {
       const response = await axios.post("/api/auth/register", {
         name: data.name,
@@ -189,6 +190,33 @@ export default function RegisterPage() {
               {...register("role", { required: "Role is required" })}
             />
           </div>
+          {/* Image Upload */}
+          <div>
+            <label className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <ImageIcon size={16} /> Profile Image
+            </label>
+
+            <UploadImg
+              onUpload={(url) => {
+                setPreview(url);
+                setValue("image", url, { shouldValidate: true });
+              }}
+            />
+
+            {preview && (
+              <div className="mt-3 flex justify-center">
+                <Image
+                  src={preview}
+                  alt="Preview"
+                  width={80}
+                  height={80}
+                  className="rounded-full object-cover border"
+                />
+              </div>
+            )}
+
+            <input type="hidden" {...register("image")} />
+          </div>
           {/* Password */}
           <div>
             <div className="relative">
@@ -250,33 +278,7 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <ImageIcon size={16} /> Profile Image
-            </label>
 
-            <UploadImg
-              onUpload={(url) => {
-                setPreview(url);
-                setValue("image", url, { shouldValidate: true });
-              }}
-            />
-
-            {preview && (
-              <div className="mt-3 flex justify-center">
-                <Image
-                  src={preview}
-                  alt="Preview"
-                  width={80}
-                  height={80}
-                  className="rounded-full object-cover border"
-                />
-              </div>
-            )}
-
-            <input type="hidden" {...register("image")} />
-          </div>
 
           <Button
             type="submit"
