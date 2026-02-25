@@ -17,32 +17,44 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
+import UploadImg from "@/components/UploadImg";
+import axios from "axios";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [preview, setPreview] = useState(null);
-
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
 
   const password = watch("password");
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // api call to register user
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("/api/auth/register", {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        image: data.image,
+      });
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      console.log("User Registered:", user);
+
+      // Redirect to dashboard
+      router.push("/");
+    } catch (error) {
+      console.error(error.response?.data?.error || "Registration failed");
+    }
   };
 
-  const handleImagePreview = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
+
 
   return (
     <div
@@ -70,7 +82,7 @@ export default function RegisterPage() {
         </h2>
 
         <p className="text-sm text-gray-500 text-center mt-1 mb-6">
-          Join SmartAgri and manage your agriculture dashboard
+          Join SmartAgri and enjoy all features
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -123,27 +135,47 @@ export default function RegisterPage() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
 
-              <select
-                {...register("role", { required: "Role is required" })}
-                className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 
-                 focus:ring-2 focus:ring-black text-sm appearance-none bg-transparent"
-              >
-                <option value="">Select Role</option>
-                <option value="farmer">Farmer</option>
-                <option value="buyer">Buyer</option>
-                <option value="student">Student</option>
-              </select>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOpen(!open)}
+                  className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200
+                  focus:ring-2 focus:ring-black text-sm text-left"
+                >
+                  {watch("role") || "Select Role"}
+                </button>
 
-              {/* Custom dropdown arrow */}
-              <ChevronDown
-                size={18}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              />
+                <ChevronDown
+                  size={18}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                />
+
+                {open && (
+                  <div className="absolute mt-1 w-full bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+                    {["farmer", "buyer", "student"].map((role) => (
+                      <div
+                        key={role}
+                        onClick={() => {
+                          setValue("role", role, { shouldValidate: true });
+                          setOpen(false);
+                        }}
+                        className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                      >
+                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {errors.role && (
               <p className="text-xs text-red-500 mt-1">{errors.role.message}</p>
             )}
+            <input
+              type="hidden"
+              {...register("role", { required: "Role is required" })}
+            />
           </div>
           {/* Password */}
           <div>
@@ -212,16 +244,11 @@ export default function RegisterPage() {
               <ImageIcon size={16} /> Profile Image
             </label>
 
-            <input
-              type="file"
-              accept="image/*"
-              {...register("image")}
-              onChange={(e) => {
-                if (e.target.files?.[0]) {
-                  handleImagePreview(e.target.files[0]);
-                }
+            <UploadImg
+              onUpload={(url) => {
+                setPreview(url);
+                setValue("image", url, { shouldValidate: true });
               }}
-              className="text-sm"
             />
 
             {preview && (
@@ -235,6 +262,8 @@ export default function RegisterPage() {
                 />
               </div>
             )}
+
+            <input type="hidden" {...register("image")} />
           </div>
 
           <Button
