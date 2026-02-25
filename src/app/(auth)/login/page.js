@@ -163,9 +163,9 @@ const onSubmit = async (data) => {
           </div>
 
           <div className="flex justify-end text-xs text-gray-500">
-            <button type="button" className="hover:underline">
+            <Link href="/forgot-password" className="hover:underline">
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           <Button
