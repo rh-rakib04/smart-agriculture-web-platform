@@ -20,7 +20,7 @@ export async function authenticateRequest(request, allowedRoles = []) {
     
     // Verify token
     const decoded = verifyToken(token);
-    
+    console.log(decoded)
     // Get session from database
     const session = await getSession(token);
     if (!session) {

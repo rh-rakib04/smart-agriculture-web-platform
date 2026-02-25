@@ -3,10 +3,10 @@ import { getDatabase } from '@/lib/db/mongodb';
 import { COLLECTIONS, getCollection } from '@/lib/db/collections';
 import { createSession } from '@/lib/auth/session';
 import { USER_ROLES } from '@/lib/constants/roles';
-
+import bcrypt from "bcryptjs";
 export async function POST(request) {
   try {
-    const { email, password, name, role } = await request.json();
+    const { email, password, name , role , image } = await request.json();
 
     if (!email || !password || !name || !role) {
       return NextResponse.json(
@@ -36,14 +36,15 @@ export async function POST(request) {
     }
 
     // TODO: Hash password with bcrypt
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
     const newUser = {
       email,
-      password, // Replace with hashedPassword
+      password: hashedPassword,
       name,
       role,
+      image: image || null,
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -65,6 +66,7 @@ export async function POST(request) {
         email,
         role,
         name,
+        image: image || null,
       },
     }, { status: 201 });
   } catch (error) {
