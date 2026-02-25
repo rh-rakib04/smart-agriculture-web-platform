@@ -1,12 +1,14 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { set } from 'react-hook-form';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   // Load user on mount
   useEffect(() => {
@@ -17,6 +19,7 @@ export function AuthProvider({ children }) {
 
       if (!token) {
         setLoading(false);
+        setInitialized(true);
         return;
       }
 
@@ -41,6 +44,7 @@ export function AuthProvider({ children }) {
       }
 
       setLoading(false);
+      setInitialized(true);
     };
 
     verifyUser();
@@ -88,7 +92,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{ user, loading, login, logout }}
     >
-      {children}
+       {initialized ? children : null}
     </AuthContext.Provider>
   );
 }
