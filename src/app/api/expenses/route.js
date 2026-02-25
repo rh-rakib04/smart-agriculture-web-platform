@@ -44,3 +44,40 @@ export async function POST(req) {
   }
 }
 
+
+//  GET /api/expenses?farmerId=...
+
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const farmerId = searchParams.get("farmerId");
+
+    if (!farmerId) {
+      return Response.json(
+        { success: false, message: "farmerId required" },
+        { status: 400 }
+      );
+    }
+
+    const expenses = await getCollection(COLLECTIONS.EXPENSES);
+
+    const data = await expenses
+      .find({ farmerId })
+      .sort({ date: -1 })
+      .toArray();
+
+    const total = data.reduce((sum, item) => sum + item.amount, 0);
+
+    return Response.json({
+      success: true,
+      data,
+      totalExpense: total,
+    });
+
+  } catch (error) {
+    return Response.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
+  }
+}
