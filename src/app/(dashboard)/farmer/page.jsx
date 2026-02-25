@@ -1,8 +1,6 @@
-<<<<<<< HEAD:src/app/(dashboard)/farmer/page.jsx
 import WeatherCard from "@/components/farmer/Weather/WeatherCard";
 
-=======
-<<<<<<< HEAD
+
 'use client';
 
 /**
@@ -230,8 +228,7 @@ export default function FarmerDashboard() {
     </div>
   );
 }
-=======
->>>>>>> 44214acc307546f65134057b7ea18431fdf1bddc:src/app/(dashboard)/farmer/page.js
+
 export default function FarmerDashboard() {
   return (
     <div className="p-6">
@@ -241,5 +238,3 @@ export default function FarmerDashboard() {
     </div>
   );
 }
-
->>>>>>> 7ae9a1fc21a5bd9cc9b2e2e16646b08077e009e8
