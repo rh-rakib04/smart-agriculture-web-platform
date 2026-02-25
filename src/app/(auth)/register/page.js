@@ -1,7 +1,16 @@
 "use client";
 
 import { motion as MOTION } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, User, Image as ImageIcon } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  User,
+  Image as ImageIcon,
+  UserCog,
+  ChevronDown,
+} from "lucide-react";
 import Image from "next/image";
 import logoImg from "../../../../public/logo.png";
 import Link from "next/link";
@@ -24,6 +33,7 @@ export default function RegisterPage() {
 
   const onSubmit = (data) => {
     console.log(data);
+    // api call to register user
   };
 
   const handleImagePreview = (file) => {
@@ -42,10 +52,7 @@ export default function RegisterPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4),transparent_70%)]" />
 
       {/* Logo */}
-      <Link
-        href="/"
-        className="absolute top-6 left-6 flex items-center gap-2"
-      >
+      <Link href="/" className="absolute top-6 left-6 flex items-center gap-2">
         <Image src={logoImg} alt="SmartAgri Logo" width={30} height={30} />
         <span className="text-xl font-bold text-gray-700">SmartAgri</span>
       </Link>
@@ -55,7 +62,7 @@ export default function RegisterPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative bg-white/80 backdrop-blur-xl shadow-2xl 
+        className="relative bg-white/50 backdrop-blur-xl shadow-2xl 
         rounded-2xl p-8 w-full max-w-md"
       >
         <h2 className="text-xl font-semibold text-center text-gray-800">
@@ -83,9 +90,7 @@ export default function RegisterPage() {
               />
             </div>
             {errors.name && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.name.message}
-              </p>
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
             )}
           </div>
 
@@ -110,7 +115,36 @@ export default function RegisterPage() {
               </p>
             )}
           </div>
+          {/* Role */}
+          <div>
+            <div className="relative">
+              <UserCog
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
 
+              <select
+                {...register("role", { required: "Role is required" })}
+                className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 
+                 focus:ring-2 focus:ring-black text-sm appearance-none bg-transparent"
+              >
+                <option value="">Select Role</option>
+                <option value="farmer">Farmer</option>
+                <option value="buyer">Buyer</option>
+                <option value="student">Student</option>
+              </select>
+
+              {/* Custom dropdown arrow */}
+              <ChevronDown
+                size={18}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+              />
+            </div>
+
+            {errors.role && (
+              <p className="text-xs text-red-500 mt-1">{errors.role.message}</p>
+            )}
+          </div>
           {/* Password */}
           <div>
             <div className="relative">

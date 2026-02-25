@@ -6,7 +6,7 @@ import { USER_ROLES } from '@/lib/constants/roles';
 
 export async function POST(request) {
   try {
-    const { email, password, name, role } = await request.json();
+    const { email, password, name , role } = await request.json();
 
     if (!email || !password || !name || !role) {
       return NextResponse.json(
