@@ -313,7 +313,263 @@ const HeroSection = () => (
     </section>
   );
 
+  // Section 6: Weather & Planning
+  const WeatherPlanningSection = () => (
+    <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-blue-50">
+      <div className="max-w-7xl mx-auto w-full">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+          🌤️ Weather Prediction & Smart Planning
+        </h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="text-4xl mb-4">🌞</div>
+            <h3 className="text-xl font-bold mb-4 text-gray-900">Weather Forecasts</h3>
+            <p className="text-gray-700 mb-4">
+              Get accurate 10-day weather predictions with:
+            </p>
+            <ul className="space-y-2 text-gray-700">
+              <li>• Real-time temperature and humidity</li>
+              <li>• Wind speed and rainfall predictions</li>
+              <li>• Agricultural alerts and warnings</li>
+              <li>• Farming recommendations based on weather</li>
+            </ul>
+            <Link href="/weather" className="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
+              Check Weather →
+            </Link>
+          </div>
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="text-4xl mb-4">📅</div>
+            <h3 className="text-xl font-bold mb-4 text-gray-900">Smart Planner Calendar</h3>
+            <p className="text-gray-700 mb-4">
+              Organize your farming activities with:
+            </p>
+            <ul className="space-y-2 text-gray-700">
+              <li>• Schedule planting dates</li>
+              <li>• Track harvesting timelines</li>
+              <li>• Plan maintenance activities</li>
+              <li>• Set important farming reminders</li>
+            </ul>
+            <Link href="/farmer" className="mt-6 inline-block bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 transition">
+              Access Planner →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 
+  // Section 7: Harvest Calculator
+  const HarvestCalculatorSection = () => (
+    <section className="w-full py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto w-full">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+          📊 Harvest Prediction & Revenue Calculator
+        </h2>
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg p-12">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-5xl mb-4">🌾</div>
+              <h3 className="text-2xl font-bold mb-2">Yield Estimation</h3>
+              <p>Calculate expected crop yield based on inputs and conditions</p>
+            </div>
+            <div>
+              <div className="text-5xl mb-4">💵</div>
+              <h3 className="text-2xl font-bold mb-2">Revenue Projection</h3>
+              <p>Estimate potential income and ROI for your crops</p>
+            </div>
+            <div>
+              <div className="text-5xl mb-4">📈</div>
+              <h3 className="text-2xl font-bold mb-2">Market Analysis</h3>
+              <p>Compare prices and market trends for better decisions</p>
+            </div>
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/harvest-calculator" className="bg-white text-green-700 px-8 py-3 rounded-lg font-bold hover:bg-green-50 transition inline-block">
+              Use Harvest Calculator →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Section 8: News & Updates
+  const NewsSection = () => (
+    <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto w-full">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+          📰 Latest Agricultural News
+        </h2>
+        <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-600">
+            <div className="text-3xl mb-3">📋</div>
+            <h3 className="font-bold text-lg mb-2">Policy Updates</h3>
+            <p className="text-gray-700 text-sm">Stay informed about government policies and agricultural reforms</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-purple-600">
+            <div className="text-3xl mb-3">🚀</div>
+            <h3 className="font-bold text-lg mb-2">Technology News</h3>
+            <p className="text-gray-700 text-sm">Discover emerging technologies transforming agriculture</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-green-600">
+            <div className="text-3xl mb-3">🔬</div>
+            <h3 className="font-bold text-lg mb-2">Research Updates</h3>
+            <p className="text-gray-700 text-sm">Learn about latest agricultural research and innovations</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-orange-600">
+            <div className="text-3xl mb-3">💰</div>
+            <h3 className="font-bold text-lg mb-2">Market Reports</h3>
+            <p className="text-gray-700 text-sm">Track market trends and price movements</p>
+          </div>
+        </div>
+        <div className="text-center">
+          <Link href="/news" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition inline-block">
+            Read All News →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Section 9: Platform Capabilities
+  const CapabilitiesSection = () => (
+    <section className="w-full py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto w-full">
+        <motion.h2
+          className="text-4xl font-bold text-center mb-12 text-gray-900"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          ⚡ Why Choose SmartAgri?
+        </motion.h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: '🤖', title: 'AI-Powered', desc: 'Intelligent recommendations' },
+            { icon: '📊', title: 'Data Driven', desc: 'Real-time analytics' },
+            { icon: '🔗', title: 'Connected', desc: 'Farmers & buyers together' },
+            { icon: '📱', title: 'User Friendly', desc: 'Easy to navigate' },
+            { icon: '🎓', title: 'Educational', desc: 'Learn & grow' },
+            { icon: '💰', title: 'Cost Effective', desc: 'Maximize profits' },
+            { icon: '🌍', title: 'Sustainable', desc: 'Eco-friendly farming' },
+            { icon: '🔒', title: 'Secure', desc: 'Safe transactions' },
+          ].map((item, idx) => (
+            <motion.div
+              key={idx}
+              className="text-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: (idx % 4) * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.08, rotate: 2 }}
+            >
+              <motion.div
+                className="text-4xl mb-3"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, delay: idx * 0.2 }}
+              >
+                {item.icon}
+              </motion.div>
+              <h4 className="font-bold text-gray-900 mb-1">{item.title}</h4>
+              <p className="text-sm text-gray-600">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  // Section 10: Call to Action
+  const CTASection = () => (
+    <section className="w-full bg-gradient-to-r from-green-700 to-emerald-600 text-white py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated background elements */}
+      <motion.div
+        className="absolute top-0 left-0 text-9xl opacity-10"
+        animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
+        transition={{ duration: 15,   }}
+      >
+        🌾
+      </motion.div>
+      <motion.div
+        className="absolute bottom-0 right-0 text-9xl opacity-10"
+        animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
+        transition={{ duration: 12, repeat: Infinity, delay: 3 }}
+      >
+        🚜
+      </motion.div>
+
+      <div className="max-w-4xl mx-auto text-center w-full relative z-10">
+        <motion.h2
+          className="text-4xl sm:text-5xl font-bold mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          Ready to Transform Your Agriculture?
+        </motion.h2>
+        <motion.p
+          className="text-xl text-green-100 mb-12 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          Join thousands of farmers and buyers using SmartAgri to grow their business and make data-driven decisions.
+        </motion.p>
+        <motion.div
+          className="flex flex-wrap justify-center gap-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/farmer" className="inline-block bg-white text-green-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg">
+              👨‍🌾 Start as Farmer
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/buyer" className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-800 transition border-2 border-white shadow-lg">
+              👨‍💼 Start as Buyer
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/student" className="inline-block bg-transparent text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-green-700 transition border-2 border-white shadow-lg">
+              👨‍🎓 Student Access
+            </Link>
+          </motion.div>
+        </motion.div>
+        <motion.p
+          className="text-green-100 mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          💡 Questions? Visit our news section or contact support for more information.
+        </motion.p>
+      </div>
+    </section>
+  );
+
+  // Footer
+  const Footer = () => (
+    <footer className="w-full bg-gray-900 text-gray-300 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto text-center w-full">
+        <p className="mb-4">
+          © 2024 SmartAgri - Modern Agriculture Platform | Empowering Farmers, Connecting Communities
+        </p>
+        <div className="flex justify-center gap-6 flex-wrap">
+          <Link href="/news" className="hover:text-white transition">News</Link>
+          <Link href="/weather" className="hover:text-white transition">Weather</Link>
+          <Link href="/messages" className="hover:text-white transition">Messages</Link>
+          <Link href="/payment" className="hover:text-white transition">Payment</Link>
+        </div>
+      </div>
+    </footer>
+  );
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -322,7 +578,12 @@ const HeroSection = () => (
       <BuyerFeaturesSection />
       <StudentModuleSection />
       <DiseaseDetectionSection />
-
+      <WeatherPlanningSection />
+      <HarvestCalculatorSection />
+      <NewsSection />
+      <CapabilitiesSection />
+      <CTASection />
+      <Footer />
     </div>
   );
 }
