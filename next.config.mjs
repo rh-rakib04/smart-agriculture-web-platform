@@ -7,6 +7,7 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
+    domains: ["lh3.googleusercontent.com"]
   },
 };
 
