@@ -1,61 +1,46 @@
-import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/db/mongodb';
-import { COLLECTIONS, getCollection } from '@/lib/db/collections';
-import { withAuth } from '@/lib/auth/middleware';
+import { getCollection } from "@/lib/db/mongodb";
+import { COLLECTIONS } from "@/lib/db/collections";
 
-async function handler(request) {
+
+//  POST /api/expenses
+
+export async function POST(req) {
   try {
-    const db = await getDatabase();
-    const expensesCollection = getCollection(db, COLLECTIONS.EXPENSES);
+    const body = await req.json();
+    const { title, amount, category, farmerId, cropId } = body;
 
-    if (request.method === 'GET') {
-      const url = new URL(request.url);
-      const farmerId = url.searchParams.get('farmerId');
-      const limit = parseInt(url.searchParams.get('limit') || '20');
-      const skip = parseInt(url.searchParams.get('skip') || '0');
-
-      const query = {};
-      if (farmerId) {
-        query.farmerId = farmerId;
-      }
-
-      const expenses = await expensesCollection
-        .find(query)
-        .limit(limit)
-        .skip(skip)
-        .sort({ date: -1 })
-        .toArray();
-
-      return NextResponse.json({ expenses, count: expenses.length });
-    }
-
-    if (request.method === 'POST') {
-      const data = await request.json();
-      const result = await expensesCollection.insertOne({
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-
-      return NextResponse.json(
-        { success: true, id: result.insertedId },
-        { status: 201 }
+    if (!title || !amount || !farmerId) {
+      return Response.json(
+        { success: false, message: "title, amount, farmerId required" },
+        { status: 400 }
       );
     }
 
-    return NextResponse.json(
-      { error: 'Method not allowed' },
-      { status: 405 }
-    );
+    const expenses = await getCollection(COLLECTIONS.EXPENSES);
+
+    const newExpense = {
+      title,
+      amount: Number(amount),
+      category: category || "General",
+      farmerId,
+      cropId: cropId || null,
+      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await expenses.insertOne(newExpense);
+
+    return Response.json({
+      success: true,
+      data: { _id: result.insertedId, ...newExpense },
+    });
+
   } catch (error) {
-    console.error('Expenses API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
+    return Response.json(
+      { success: false, message: error.message },
       { status: 500 }
     );
   }
 }
-
-export const GET = withAuth(handler);
-export const POST = withAuth(handler);
 
