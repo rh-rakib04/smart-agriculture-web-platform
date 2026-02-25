@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { motion as MOTION } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -8,10 +10,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -19,8 +22,34 @@ export default function LoginPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Login Data:", data);
-// api call
+     const loadingToast = toast.loading("Signing in...");
+    try {
+      const res = await axios.post("/api/auth/login", data);
+      if (!res.data.success) {
+        throw new Error("Login failed");
+      }
+
+      const { token, user } = res.data;
+
+      localStorage.setItem("token", token);
+
+      console.log("Logged in user:", user);
+      toast.update(loadingToast, {
+      render: "Login successful 🎉",
+      type: "success",
+      isLoading: false,
+      autoClose: 2000,
+    });
+
+      router.replace("/");
+    } catch (error) {
+      toast.update(loadingToast, {
+      render: error.response?.data?.error || "Login failed",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+    }
   };
 
   return (
@@ -66,12 +95,12 @@ export default function LoginPage() {
         </h2>
 
         <p className="text-xs sm:text-sm text-gray-500 text-center mt-1 mb-6">
-          Get access to your dashboard and manage your smart agriculture solutions
+          Get access to your dashboard and manage your smart agriculture
+          solutions
         </p>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
           {/* Email */}
           <div>
             <div className="relative">
@@ -95,7 +124,7 @@ export default function LoginPage() {
               </p>
             )}
           </div>
-            
+
           {/* Password */}
           <div>
             <div className="relative">

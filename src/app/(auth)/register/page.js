@@ -19,11 +19,14 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
 import UploadImg from "@/components/UploadImg";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [preview, setPreview] = useState(null);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -35,6 +38,7 @@ export default function RegisterPage() {
   const password = watch("password");
 
   const onSubmit = async (data) => {
+    const loadingToast = toast.loading("Creating your account...");
     try {
       const response = await axios.post("/api/auth/register", {
         name: data.name,
@@ -46,15 +50,23 @@ export default function RegisterPage() {
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       console.log("User Registered:", user);
-
-      // Redirect to dashboard
-      router.push("/");
+      toast.update(loadingToast, {
+        render: "Account created successfully",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      router.replace("/");
     } catch (error) {
-      console.error(error.response?.data?.error || "Registration failed");
+      console.error(error || "Registration failed");
+      toast.update(loadingToast, {
+        render: error.response?.data?.error || "Registration failed",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
-
-
 
   return (
     <div
