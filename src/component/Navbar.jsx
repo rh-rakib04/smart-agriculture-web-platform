@@ -144,7 +144,7 @@ const Navbar = ({ isLoggedIn }) => {
             )}
           </div>
 
-          {/* RIGHT - Login / Logout */}
+          {/* RIGHT - Login  */}
           <div className="hidden md:flex items-center">
             {isLoggedIn ? (
               <button
@@ -153,16 +153,36 @@ const Navbar = ({ isLoggedIn }) => {
                   window.dispatchEvent(new Event("auth-change"));
                   window.location.href = "/api/auth/logout";
                 }}
-                className="bg-[#2E7D32]
-                 hover:bg-white hover:text-[#2E7D32]  
-                  text-white px-4 py-2 rounded-full text-sm"
+               className="
+  bg-[#2E7D32]
+  hover:bg-white
+  text-white
+  hover:text-[#2E7D32]
+  px-4 py-2
+  rounded-full
+  text-sm
+  border-2 border-transparent
+  hover:border-[#2E7D32]
+  transition-all duration-300
+"
               >
                 Logout
               </button>
             ) : (
               <Link
                 href="/login"
-                className="bg-[#2E7D32] hover:bg-white text-white px-4 py-2 hover:text-[#2E7D32] rounded-full text-sm"
+               className="
+  bg-[#2E7D32]
+  hover:bg-white
+  text-white
+  hover:text-[#2E7D32]
+  px-4 py-2
+  rounded-full
+  text-sm
+  border-2 border-transparent
+  hover:border-[#2E7D32]
+  transition-all duration-300
+"
               >
                 Login
               </Link>
