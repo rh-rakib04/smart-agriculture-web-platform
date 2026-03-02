@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 'use client';
 
 /**
@@ -91,18 +91,18 @@ const HeroSection = ({ currentCrop }) => (
 // Section 2: Farmer Dashboard Features
 const FarmerFeaturesSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
-=======
+
 import AboutUs from "@/components/Home/AboutUs";
 import Banner from "@/components/Home/Banner";
 import HowItWork from "@/components/Home/HowItWork";
 import MissionVision from "@/components/Home/MissionVision";
 import OurService from "@/components/Home/OurService";
 import Image from "next/image";
->>>>>>> ab00e79a68fdb5e698ce2d4daf41fa60254d298c
+
 
 export default function Home() {
   return (
-<<<<<<< HEAD
+
     <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto w-full">
         <motion.h2
@@ -581,7 +581,7 @@ export default function HomePage() {
     </div>
   );
 }
-=======
+
     <div className="min-h-screen bg-gray-50">
       {/* banner */}
 
@@ -604,4 +604,4 @@ export default function HomePage() {
     </div>
   );
 }
->>>>>>> ab00e79a68fdb5e698ce2d4daf41fa60254d298c
+
