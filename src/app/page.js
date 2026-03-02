@@ -179,45 +179,9 @@ const BuyerFeaturesSection = () => {
               viewport={{ once: true }}
               whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(59, 130, 246, 0.2)' }}
             >
-              <motion.div className="text-4xl mb-4">
-                {item.icon}
-              </motion.div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">{item.title}</h3>
-              <p className="text-gray-600">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/buyer" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
-              Explore Buyer Dashboard →
-            </Link>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-// Section 4: Student & Learning Module
-const StudentModuleSection = () => (
-  <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-yellow-50">
-    <div className="max-w-7xl mx-auto w-full">
-      <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
-        📚 Educational Resources for Students
-      </h2>
-      <div className="grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <div className="text-5xl mb-6">👨‍🎓</div>
-          <h3 className="text-2xl font-bold mb-4 text-gray-900">Learn Modern Agriculture</h3>
-          <p className="text-gray-700 mb-6">
-            Access comprehensive educational content including:
+              Learning
+            </a>{" "}
+            center.....
           </p>
           <ul className="space-y-3 text-gray-700">
             <li>✓ Real-time market data and crop prices</li>
