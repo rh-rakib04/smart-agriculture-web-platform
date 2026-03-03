@@ -9,15 +9,15 @@ export default function AdminLayout({ children }) {
 
   // const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
+  // useEffect(() => {
+  //   const role = localStorage.getItem("role");
 
-    if (role !== "admin") {
-      router.replace("/login"); // or "/" if you want
-      return;
-    }
-    setChecking(false);
-  }, [router, pathname]);
+  //   if (role !== "farmer") {
+  //     router.replace("/login"); // or "/" if you want
+  //     return;
+  //   }
+  //   setChecking(false);
+  // }, [router, pathname]);
 
   // if (checking) {
   //   return <div className="p-6">Checking admin access...</div>;
