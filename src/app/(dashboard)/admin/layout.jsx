@@ -12,8 +12,8 @@ export default function AdminLayout({ children }) {
   useEffect(() => {
     const role = localStorage.getItem("role");
 
-    if (role !== "farmer") {
-      router.replace("/admin"); // or "/" if you want
+    if (role !== "admin") {
+      router.replace("/login"); // or "/" if you want
       return;
     }
     setChecking(false);
