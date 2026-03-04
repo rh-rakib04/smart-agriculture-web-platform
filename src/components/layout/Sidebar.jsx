@@ -14,6 +14,7 @@ import {
   MessageSquare,
   ShoppingCart,
 } from "lucide-react";
+import { FaCropSimple } from "react-icons/fa6";
 
 export default function Sidebar({ userRole = "admin" }) {
   const pathname = usePathname();
@@ -36,7 +37,7 @@ export default function Sidebar({ userRole = "admin" }) {
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { name: "Users", href: "/admin/users", icon: Users },
-      { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+      { name: "Crops", href: "/admin/crops", icon: FaCropSimple },
     ],
   };
 
