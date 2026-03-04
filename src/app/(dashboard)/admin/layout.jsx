@@ -26,10 +26,6 @@ export default function AdminLayout({ children }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Simple top bar */}
-      <div className="bg-green-900 text-white px-4 py-3 flex justify-between items-center">
-        <div className="font-bold text-lg">Admin Dashboard</div>
-      </div>
-
       <div className="max-w-7xl mx-auto p-4 md:p-8">{children}</div>
     </div>
   );

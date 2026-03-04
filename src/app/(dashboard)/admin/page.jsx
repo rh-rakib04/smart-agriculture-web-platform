@@ -37,7 +37,7 @@ export default function AdminOverviewPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight" style={{ color: "var(--primary)" }}>
-            FARM COMMAND
+            Overview
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>Real-time platform performance & logistics</p>
         </div>

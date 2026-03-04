@@ -43,8 +43,9 @@ export default function Sidebar({ userRole = "admin" }) {
   const navItems = menuConfig[userRole] || [];
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-100 shadow-sm">
-      {/* Sidebar Label - Matching your screenshot's "Platform/Dashboard" style */}
+    /* Added 'sticky top-0 h-screen' to keep it fixed during scroll */
+    <div className="flex flex-col h-screen sticky top-0 bg-white border-r border-gray-100 shadow-sm">
+      {/* Sidebar Label */}
       <div className="p-6 border-b border-gray-50">
         <p
           className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40"
@@ -54,7 +55,7 @@ export default function Sidebar({ userRole = "admin" }) {
         </p>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
