@@ -17,7 +17,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Sprout, Brain, ShoppingBasket, ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  Sprout,
+  Brain,
+  ShoppingBasket,
+  ArrowRight,
+  ArrowUpRight,
+} from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -90,21 +96,26 @@ function StepCard({ step, index, inView }) {
       className="relative flex-1 group"
     >
       {/* Card */}
-      <div className="relative h-full bg-white/[0.04] hover:bg-white/[0.08]
+      <div
+        className="relative h-full bg-white/[0.04] hover:bg-white/[0.08]
         border border-white/10 hover:border-white/20
-        rounded-3xl p-8 transition-all duration-400 overflow-hidden">
-
+        rounded-3xl p-8 transition-all duration-400 overflow-hidden"
+      >
         {/* Giant ghost number */}
-        <div className={`absolute -top-4 -right-2 text-[110px] font-extrabold
+        <div
+          className={`absolute -top-4 -right-2 text-[110px] font-extrabold
           leading-none select-none pointer-events-none
-          ${step.numColor}`}>
+          ${step.numColor}`}
+        >
           {step.num}
         </div>
 
         {/* Icon */}
-        <div className={`relative z-10 w-14 h-14 rounded-2xl ${step.iconBg}
+        <div
+          className={`relative z-10 w-14 h-14 rounded-2xl ${step.iconBg}
           flex items-center justify-center mb-6
-          group-hover:scale-110 transition-transform duration-300`}>
+          group-hover:scale-110 transition-transform duration-300`}
+        >
           <Icon size={26} className={step.iconColor} />
         </div>
 
@@ -119,14 +130,14 @@ function StepCard({ step, index, inView }) {
         </h3>
 
         {/* Description */}
-        <p className="text-white/50 text-sm leading-relaxed">
-          {step.desc}
-        </p>
+        <p className="text-white/50 text-sm leading-relaxed">{step.desc}</p>
 
         {/* Bottom gradient accent line */}
-        <div className={`absolute bottom-0 left-0 right-0 h-[3px]
+        <div
+          className={`absolute bottom-0 left-0 right-0 h-[3px]
           bg-gradient-to-r ${step.color}
-          opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+          opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        />
       </div>
     </motion.div>
   );
@@ -139,8 +150,10 @@ export default function HowItWorks() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="relative bg-foreground overflow-hidden py-24 lg:py-32">
-
+    <section
+      ref={ref}
+      className="relative bg-foreground overflow-hidden py-24 lg:py-32"
+    >
       {/* ── Subtle background image texture ── */}
       <div className="absolute inset-0">
         <Image
@@ -150,17 +163,21 @@ export default function HowItWorks() {
           className="object-cover object-center opacity-[0.06]"
           sizes="100vw"
           aria-hidden
+          quality={90}
         />
       </div>
 
       {/* Ambient glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2
-        w-[600px] h-40 bg-primary/20 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4
-        w-80 h-32 bg-highlight/10 blur-3xl pointer-events-none" />
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2
+        w-[600px] h-40 bg-primary/20 blur-3xl pointer-events-none"
+      />
+      <div
+        className="absolute bottom-0 right-1/4
+        w-80 h-32 bg-highlight/10 blur-3xl pointer-events-none"
+      />
 
       <div className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <motion.div
@@ -181,8 +198,7 @@ export default function HowItWorks() {
             className="text-4xl lg:text-5xl xl:text-6xl font-extrabold
               text-white leading-tight tracking-tight mb-5"
           >
-            Simple. Direct.{" "}
-            <span className="text-highlight">Transparent.</span>
+            Simple. Direct. <span className="text-highlight">Transparent.</span>
           </motion.h2>
 
           <motion.p
@@ -191,8 +207,8 @@ export default function HowItWorks() {
             transition={{ delay: 0.2, duration: 0.7 }}
             className="text-white/50 text-lg max-w-xl mx-auto leading-relaxed"
           >
-            Three steps connect a farmer&apos;s harvest directly to a buyer&apos;s
-            table — with AI making sure every deal is fair.
+            Three steps connect a farmer&apos;s harvest directly to a
+            buyer&apos;s table — with AI making sure every deal is fair.
           </motion.p>
         </div>
 
@@ -202,7 +218,11 @@ export default function HowItWorks() {
             <>
               <StepCard key={step.num} step={step} index={i} inView={inView} />
               {i < STEPS.length - 1 && (
-                <Connector key={`connector-${i}`} inView={inView} delay={0.4 + i * 0.18} />
+                <Connector
+                  key={`connector-${i}`}
+                  inView={inView}
+                  delay={0.4 + i * 0.18}
+                />
               )}
             </>
           ))}
@@ -230,7 +250,6 @@ export default function HowItWorks() {
             />
           </Link>
         </motion.div>
-
       </div>
     </section>
   );

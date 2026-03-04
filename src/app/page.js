@@ -16,6 +16,8 @@ import HeroSection from "@/components/Home/HeroSection";
 import StatsBar from "@/components/Home/StatsBar";
 import FarmerFeatures from "@/components/Home/Farmerfeatures";
 import BuyerFeatures from "@/components/Home/BuyerFeatures";
+import AIChatbotHighlight from "@/components/Home/Aichatbothighlight";
+import PlannerHighlight from "@/components/Home/Plannerhighlight";
 
 
 
@@ -547,31 +549,7 @@ const CTASection = () => (
   </section>
 );
 
-// Footer
-const Footer = () => (
-  <footer className="w-full bg-gray-900 text-gray-300 py-8 px-4 sm:px-6 lg:px-8">
-    <div className="max-w-7xl mx-auto text-center w-full">
-      <p className="mb-4">
-        © 2024 SmartAgri - Modern Agriculture Platform | Empowering Farmers,
-        Connecting Communities
-      </p>
-      <div className="flex justify-center gap-6 flex-wrap">
-        <Link href="/news" className="hover:text-white transition">
-          News
-        </Link>
-        <Link href="/weather" className="hover:text-white transition">
-          Weather
-        </Link>
-        <Link href="/messages" className="hover:text-white transition">
-          Messages
-        </Link>
-        <Link href="/payment" className="hover:text-white transition">
-          Payment
-        </Link>
-      </div>
-    </div>
-  </footer>
-);
+
 
 export default function HomePage() {
   const [currentCrop, setCurrentCrop] = useState(0);
@@ -585,16 +563,8 @@ export default function HomePage() {
       <FarmerFeatures/>
       <BuyerFeatures></BuyerFeatures>
       <HowItWork></HowItWork>
-      <StudentModuleSection />
-      <DiseaseDetectionSection />
-      <WeatherPlanningSection />
-      <HarvestCalculatorSection />
-      <NewsSection />
-      <CapabilitiesSection />
-      <CTASection />
-      <OurService></OurService>
-      
-      <AboutUs></AboutUs>
+      <AIChatbotHighlight></AIChatbotHighlight>
+      <PlannerHighlight></PlannerHighlight>
     </div>
   );
 }
