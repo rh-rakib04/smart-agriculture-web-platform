@@ -6,6 +6,7 @@ import { FaRobot } from "react-icons/fa";
 import { useAuthContext } from "@/contexts/AuthProvider";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,22 +19,41 @@ export default function Header() {
     return null;
   }
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
+  const loadingToast = toast.loading("Signing out...");
+
+  try {
     await logout();
+
+    toast.update(loadingToast, {
+      render: "Logged out successfully",
+      type: "success",
+      isLoading: false,
+      autoClose: 2000,
+    });
+
     setIsDropdownOpen(false);
-  };
+  } catch (error) {
+    toast.update(loadingToast, {
+      render: error?.message || "Logout failed",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+  }
+};
 
   return (
     <header className="bg-gradient-to-r from-green-800 to-green-700 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Brand Logo */}
-          <a href="/">
+          <Link href="/">
             <div className="flex items-center space-x-2 cursor-pointer hover:opacity-90 transition">
               <Image src="/logo.png" alt="Logo" width={80} height={40} />
               <h1 className="text-xl font-bold">SmartAgri</h1>
             </div>
-          </a>
+          </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">

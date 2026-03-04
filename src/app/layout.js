@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Header from "@/components/shared/Header";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
+        <Providers>
           <Header />
           {children}
 
@@ -38,7 +39,7 @@ export default function RootLayout({ children }) {
             theme="colored"
           />
           <Footer></Footer>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
