@@ -16,6 +16,7 @@
     "cookie": "^1.1.1",
     "framer-motion": "^12.34.3",
     "jsonwebtoken": "^9.0.3",
+    "jspdf": "^4.2.0",
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.574.0",
