@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, ChevronRight, ChevronLeft, Navigation } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const LOCATIONS = {
   'Dhaka': {
@@ -127,108 +128,178 @@ export default function StepTwo({ data, onChange, onNext, onBack }) {
   const handleNext = () => { if (validate()) onNext(); };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-foreground">Your Location</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Select your division, district and upazila for a location-specific plan.
-        </p>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-6"
+    >
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+          <MapPin className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground">Your Location</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Select your division, district and upazila for a location-specific plan.</p>
+        </div>
       </div>
 
-      {/* ── Division ─────────────────────────────────────────────────────── */}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
+      {/* Division */}
+      <div className="space-y-2.5">
+        <label className="block text-sm font-semibold text-foreground">
           Division <span className="text-destructive">*</span>
         </label>
-        <div className="grid grid-cols-2 gap-2">
-          {divisions.map(div => {
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {divisions.map((div, i) => {
             const isSelected = data.division === div;
             return (
-              <button
+              <motion.button
                 key={div}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={() => handleDivisionChange(div)}
                 className={`
-                  py-2.5 px-4 rounded-lg border-2 text-sm font-medium text-left transition-all
+                  py-2.5 px-3 rounded-xl border-2 text-sm font-medium text-center transition-all duration-200
                   ${isSelected
-                    ? 'border-primary bg-muted text-primary'
-                    : 'border-border bg-card text-card-foreground hover:border-ring'}
+                    ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/20'
+                    : 'border-border bg-card text-card-foreground hover:border-primary/40 hover:bg-muted/40'}
                 `}
               >
                 {div}
-              </button>
+              </motion.button>
             );
           })}
         </div>
-        {errors.division && <p className="text-destructive text-xs mt-1">{errors.division}</p>}
+        <AnimatePresence>
+          {errors.division && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-xs text-destructive flex items-center gap-1"
+            >
+              <span>⚠</span> {errors.division}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── District ─────────────────────────────────────────────────────── */}
-      {districts.length > 0 && (
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            District <span className="text-destructive">*</span>
-          </label>
-          <select
-            value={data.district}
-            onChange={e => handleDistrictChange(e.target.value)}
-            className="w-full border border-input bg-card text-card-foreground
-                       rounded-lg px-4 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-ring"
+      {/* District */}
+      <AnimatePresence>
+        {districts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-2"
           >
-            <option value="">— Select District —</option>
-            {districts.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
-          {errors.district && <p className="text-destructive text-xs mt-1">{errors.district}</p>}
-        </div>
-      )}
+            <label className="block text-sm font-semibold text-foreground">
+              District <span className="text-destructive">*</span>
+            </label>
+            <select
+              value={data.district}
+              onChange={e => handleDistrictChange(e.target.value)}
+              className="w-full border border-input bg-card text-card-foreground
+                         rounded-xl px-4 py-2.5 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary
+                         transition-all duration-200 appearance-none cursor-pointer"
+            >
+              <option value="">— Select District —</option>
+              {districts.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <AnimatePresence>
+              {errors.district && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-xs text-destructive flex items-center gap-1"
+                >
+                  <span>⚠</span> {errors.district}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* ── Upazila ──────────────────────────────────────────────────────── */}
-      {upazilas.length > 0 && (
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Upazila <span className="text-muted-foreground font-normal">(optional)</span>
-          </label>
-          <select
-            value={data.upazila}
-            onChange={e => onChange({ ...data, upazila: e.target.value })}
-            className="w-full border border-input bg-card text-card-foreground
-                       rounded-lg px-4 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-ring"
+      {/* Upazila */}
+      <AnimatePresence>
+        {upazilas.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-2"
           >
-            <option value="">— Select Upazila —</option>
-            {upazilas.map(u => <option key={u} value={u}>{u}</option>)}
-          </select>
-        </div>
-      )}
+            <label className="block text-sm font-semibold text-foreground">
+              Upazila <span className="text-muted-foreground font-normal">(optional)</span>
+            </label>
+            <select
+              value={data.upazila}
+              onChange={e => onChange({ ...data, upazila: e.target.value })}
+              className="w-full border border-input bg-card text-card-foreground
+                         rounded-xl px-4 py-2.5 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary
+                         transition-all duration-200 appearance-none cursor-pointer"
+            >
+              <option value="">— Select Upazila —</option>
+              {upazilas.map(u => <option key={u} value={u}>{u}</option>)}
+            </select>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* ── Location summary ─────────────────────────────────────────────── */}
-      {data.district && (
-        <div className="bg-muted border border-border rounded-lg p-3 flex items-center gap-2 text-sm text-foreground">
-          <MapPin className="w-4 h-4 text-primary shrink-0" />
-          {[data.upazila, data.district, data.division].filter(Boolean).join(', ')}
-        </div>
-      )}
+      {/* Location summary */}
+      <AnimatePresence>
+        {data.district && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            className="flex items-center gap-2.5 px-4 py-3 rounded-xl border border-primary/30 bg-primary/5"
+          >
+            <Navigation className="w-4 h-4 text-primary shrink-0" />
+            <p className="text-sm font-medium text-foreground">
+              {[data.upazila, data.district, data.division].filter(Boolean).join(', ')}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* ── Navigation ───────────────────────────────────────────────────── */}
+      {/* Navigation */}
       <div className="flex gap-3">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           type="button"
           onClick={onBack}
-          className="flex-1 border-2 border-border text-foreground font-semibold
-                     py-3 rounded-lg hover:bg-muted transition-colors"
+          className="flex items-center justify-center gap-2 border-2 border-border bg-card text-card-foreground
+                     font-semibold py-3 px-5 rounded-xl hover:border-primary/40 hover:bg-muted/40
+                     transition-all duration-200 text-sm"
         >
-          ← Back
-        </button>
-        <button
+          <ChevronLeft className="w-4 h-4" />
+          Back
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           type="button"
           onClick={handleNext}
-          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground
-                     font-semibold py-3 rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground
+                     font-semibold py-3 px-6 rounded-xl shadow-sm shadow-primary/30
+                     hover:bg-primary/90 transition-all duration-200 text-sm sm:text-base"
         >
           Next → Land Details
-        </button>
+          <ChevronRight className="w-4 h-4" />
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Sprout, Leaf, Mountain, Droplets, Waves, Wind, Layers } from 'lucide-react';
+import { Sprout, Leaf, Mountain, Droplets, Waves, Wind, Layers, ChevronLeft, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UNITS, UNIT_LABELS, toBigha } from '@/lib/data/units';
 import { LAND_CONDITIONS, SOIL_TYPES } from '@/lib/data/crops';
 
@@ -22,9 +23,9 @@ const CONDITION_META = {
 
 const SOIL_META = {
   loamy:  { icon: <Layers className="w-5 h-5" />,   description: 'Best for most crops — retains moisture and nutrients well.' },
-  clay:   { icon: <Droplets className="w-5 h-5" />,  description: 'Heavy soil, retains water — good for rice, needs drainage management.' },
-  sandy:  { icon: <Wind className="w-5 h-5" />,      description: 'Drains quickly — needs more irrigation and organic matter.' },
-  silt:   { icon: <Waves className="w-5 h-5" />,     description: 'Fine particles, fertile and moisture-retentive — excellent for most crops.' },
+  clay:   { icon: <Droplets className="w-5 h-5" />, description: 'Heavy soil, retains water — good for rice, needs drainage management.' },
+  sandy:  { icon: <Wind className="w-5 h-5" />,     description: 'Drains quickly — needs more irrigation and organic matter.' },
+  silt:   { icon: <Waves className="w-5 h-5" />,    description: 'Fine particles, fertile and moisture-retentive — excellent for most crops.' },
 };
 
 export default function StepThree({ data, onChange, onSubmit, onBack, loading }) {
@@ -48,20 +49,30 @@ export default function StepThree({ data, onChange, onSubmit, onBack, loading })
     : null;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-foreground">Land Details</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Tell us about your land so we can calculate the right amounts for you.
-        </p>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-6"
+    >
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+          <Layers className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground">Land Details</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Tell us about your land so we can calculate the right amounts for you.</p>
+        </div>
       </div>
 
-      {/* ── Land size + unit ─────────────────────────────────────────────── */}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
+      {/* Land size + unit */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-foreground">
           Land Size <span className="text-destructive">*</span>
         </label>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <input
             type="number"
             min="0"
@@ -70,15 +81,17 @@ export default function StepThree({ data, onChange, onSubmit, onBack, loading })
             value={data.landSize}
             onChange={e => onChange({ ...data, landSize: e.target.value })}
             className="flex-1 border border-input bg-card text-card-foreground
-                       rounded-lg px-4 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-ring"
+                       rounded-xl px-4 py-2.5 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary
+                       transition-all duration-200"
           />
           <select
             value={data.landUnit}
             onChange={e => onChange({ ...data, landUnit: e.target.value })}
-            className="w-36 border border-input bg-card text-card-foreground
-                       rounded-lg px-3 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-32 sm:w-36 border border-input bg-card text-card-foreground
+                       rounded-xl px-3 py-2.5 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary
+                       transition-all duration-200 appearance-none cursor-pointer"
           >
             <option value="">Unit</option>
             {Object.values(UNITS).map(unit => (
@@ -86,120 +99,202 @@ export default function StepThree({ data, onChange, onSubmit, onBack, loading })
             ))}
           </select>
         </div>
-        {bighaEquivalent && data.landUnit !== UNITS.BIGHA && (
-          <p className="text-xs text-primary mt-1">≈ {bighaEquivalent} বিঘা (Bigha)</p>
-        )}
-        {errors.landSize && <p className="text-destructive text-xs mt-1">{errors.landSize}</p>}
-        {errors.landUnit && <p className="text-destructive text-xs mt-1">{errors.landUnit}</p>}
+        <AnimatePresence>
+          {bighaEquivalent && data.landUnit !== UNITS.BIGHA && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-xs text-primary font-medium px-1"
+            >
+              ≈ {bighaEquivalent} বিঘা (Bigha)
+            </motion.p>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {(errors.landSize || errors.landUnit) && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-xs text-destructive flex items-center gap-1"
+            >
+              <span>⚠</span> {errors.landSize || errors.landUnit}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── Land condition ────────────────────────────────────────────────── */}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
+      {/* Land condition */}
+      <div className="space-y-2.5">
+        <label className="block text-sm font-semibold text-foreground">
           Land Condition <span className="text-destructive">*</span>
         </label>
-        <div className="grid grid-cols-3 gap-3">
-          {Object.values(LAND_CONDITIONS).map(condition => {
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {Object.values(LAND_CONDITIONS).map((condition, i) => {
             const meta      = CONDITION_META[condition.id];
             const isSelected = data.landCondition === condition.id;
             return (
-              <button
+              <motion.button
                 key={condition.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={() => onChange({ ...data, landCondition: condition.id })}
                 className={`
-                  p-3 rounded-lg border-2 text-left transition-all
+                  p-3 sm:p-4 rounded-xl border-2 text-left transition-all duration-200
                   ${isSelected
-                    ? 'border-primary bg-muted text-primary'
-                    : 'border-border bg-card text-card-foreground hover:border-ring'}
+                    ? 'border-primary bg-primary/10 shadow-sm shadow-primary/20'
+                    : 'border-border bg-card text-card-foreground hover:border-primary/40 hover:bg-muted/40'}
                 `}
               >
-                <div className={`${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`mb-2 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
                   {meta.icon}
                 </div>
-                <div className={`text-sm font-semibold mt-1 ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                <p className={`text-xs sm:text-sm font-semibold ${isSelected ? 'text-primary' : 'text-foreground'}`}>
                   {condition.label.split(' ')[0]}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
+                </p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 hidden sm:block">
                   {condition.label.match(/\(([^)]+)\)/)?.[1] || ''}
-                </div>
-              </button>
+                </p>
+              </motion.button>
             );
           })}
         </div>
-        {data.landCondition && (
-          <p className="text-xs text-muted-foreground mt-2 bg-muted rounded-lg p-2">
-            {CONDITION_META[data.landCondition].description}
-          </p>
-        )}
-        {errors.landCondition && <p className="text-destructive text-xs mt-1">{errors.landCondition}</p>}
+        <AnimatePresence>
+          {data.landCondition && (
+            <motion.p
+              key={data.landCondition}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-xs text-muted-foreground bg-muted/60 rounded-lg px-3 py-2 border border-border"
+            >
+              {CONDITION_META[data.landCondition].description}
+            </motion.p>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {errors.landCondition && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-xs text-destructive flex items-center gap-1"
+            >
+              <span>⚠</span> {errors.landCondition}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── Soil type ─────────────────────────────────────────────────────── */}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
+      {/* Soil type */}
+      <div className="space-y-2.5">
+        <label className="block text-sm font-semibold text-foreground">
           Soil Type <span className="text-destructive">*</span>
         </label>
-        <div className="grid grid-cols-2 gap-3">
-          {Object.values(SOIL_TYPES).map(soil => {
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {Object.values(SOIL_TYPES).map((soil, i) => {
             const meta       = SOIL_META[soil.id];
             const isSelected = data.soilType === soil.id;
             return (
-              <button
+              <motion.button
                 key={soil.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={() => onChange({ ...data, soilType: soil.id })}
                 className={`
-                  p-3 rounded-lg border-2 text-left transition-all
+                  p-3 sm:p-4 rounded-xl border-2 text-left transition-all duration-200
                   ${isSelected
-                    ? 'border-primary bg-muted text-primary'
-                    : 'border-border bg-card text-card-foreground hover:border-ring'}
+                    ? 'border-primary bg-primary/10 shadow-sm shadow-primary/20'
+                    : 'border-border bg-card text-card-foreground hover:border-primary/40 hover:bg-muted/40'}
                 `}
               >
-                <div className={`${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`mb-2 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
                   {meta.icon}
                 </div>
-                <div className={`text-sm font-semibold mt-1 ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                <p className={`text-xs sm:text-sm font-semibold ${isSelected ? 'text-primary' : 'text-foreground'}`}>
                   {soil.label.split(' ')[0]}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
+                </p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 hidden sm:block">
                   {soil.label.match(/\(([^)]+)\)/)?.[1] || ''}
-                </div>
-              </button>
+                </p>
+              </motion.button>
             );
           })}
         </div>
-        {data.soilType && (
-          <p className="text-xs text-muted-foreground mt-2 bg-muted rounded-lg p-2">
-            {SOIL_META[data.soilType].description}
-          </p>
-        )}
-        {errors.soilType && <p className="text-destructive text-xs mt-1">{errors.soilType}</p>}
+        <AnimatePresence>
+          {data.soilType && (
+            <motion.p
+              key={data.soilType}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-xs text-muted-foreground bg-muted/60 rounded-lg px-3 py-2 border border-border"
+            >
+              {SOIL_META[data.soilType].description}
+            </motion.p>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {errors.soilType && (
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-xs text-destructive flex items-center gap-1"
+            >
+              <span>⚠</span> {errors.soilType}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── Navigation ───────────────────────────────────────────────────── */}
+      {/* Navigation */}
       <div className="flex gap-3">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           type="button"
           onClick={onBack}
           disabled={loading}
-          className="flex-1 border-2 border-border text-foreground font-semibold
-                     py-3 rounded-lg hover:bg-muted transition-colors
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center gap-2 border-2 border-border bg-card text-card-foreground
+                     font-semibold py-3 px-5 rounded-xl hover:border-primary/40 hover:bg-muted/40
+                     transition-all duration-200 text-sm disabled:opacity-50"
         >
-          ← Back
-        </button>
-        <button
+          <ChevronLeft className="w-4 h-4" />
+          Back
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: loading ? 1 : 1.01 }}
+          whileTap={{ scale: loading ? 1 : 0.98 }}
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground
-                     font-semibold py-3 rounded-lg transition-colors
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground
+                     font-semibold py-3 px-6 rounded-xl shadow-sm shadow-primary/30
+                     hover:bg-primary/90 transition-all duration-200 text-sm sm:text-base
+                     disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {loading ? 'Generating...' : 'Generate Plan 🌾'}
-        </button>
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Generating Plan...
+            </>
+          ) : (
+            <>
+              Generate Plan 🌾
+            </>
+          )}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }
