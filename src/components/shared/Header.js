@@ -9,9 +9,9 @@ import Image from 'next/image';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, logout } = useAuthContext();
+  const { user, logout ,role} = useAuthContext();
   const pathname = usePathname();
-
+  console.log(role);
   // Hide header on login & register
   const hiddenRoutes = ['/login', '/register'];
   if (hiddenRoutes.includes(pathname)) {

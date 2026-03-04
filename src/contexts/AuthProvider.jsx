@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { set } from 'react-hook-form';
 
 const AuthContext = createContext(null);
 
@@ -10,7 +9,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
 
-  // Load user on mount
+  // Check user when app loads
   useEffect(() => {
     const verifyUser = async () => {
       const token =
@@ -33,12 +32,14 @@ export function AuthProvider({ children }) {
         const data = await res.json();
 
         if (data.success) {
-          setUser(data.user);
+          setUser(data.user); // user contains role also
         } else {
           localStorage.removeItem('authToken');
           sessionStorage.removeItem('authToken');
         }
-      } catch {
+      } catch (error) {
+        console.error('Verification error:', error);
+
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');
       }
@@ -50,36 +51,59 @@ export function AuthProvider({ children }) {
     verifyUser();
   }, []);
 
+  // LOGIN FUNCTION
   const login = async (email, password) => {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      localStorage.setItem('authToken', data.token);
-      setUser(data.user);
-      return { success: true };
+      if (data.success) {
+        localStorage.setItem('authToken', data.token);
+
+        setUser(data.user); // includes role
+
+        return {
+          success: true,
+          user: data.user,
+        };
+      }
+
+      return {
+        success: false,
+        error: data.error,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Login failed',
+      };
     }
-
-    return { success: false, error: data.error };
   };
 
+  // LOGOUT FUNCTION
   const logout = async () => {
     const token =
       localStorage.getItem('authToken') ||
       sessionStorage.getItem('authToken');
 
-    if (token) {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    try {
+      if (token) {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
     }
 
     localStorage.removeItem('authToken');
@@ -90,13 +114,21 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout }}
+      value={{
+        user,
+        role: user?.role,
+        loading,
+        login,
+        logout,
+        isAuthenticated: !!user,
+      }}
     >
-       {initialized ? children : null}
+      {initialized ? children : null}
     </AuthContext.Provider>
   );
 }
 
+// Custom hook
 export function useAuthContext() {
   return useContext(AuthContext);
 }
