@@ -1,32 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/useRole";
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const { role, loading, isAdmin } = useRole();
 
-  // const [checking, setChecking] = useState(true);
+  useEffect(() => {
+    if (loading) return;
 
-  // useEffect(() => {
-  //   const role = localStorage.getItem("role");
+    // logged-in but not admin
+    if (role && !isAdmin) {
+      router.replace("/403");
+    }
+  }, [role, loading, isAdmin, router]);
 
-  //   if (role !== "farmer") {
-  //     router.replace("/login"); // or "/" if you want
-  //     return;
-  //   }
-  //   setChecking(false);
-  // }, [router, pathname]);
+  if (loading) return <div className="p-6">Checking admin access...</div>;
 
-  // if (checking) {
-  //   return <div className="p-6">Checking admin access...</div>;
-  // }
+  // if role exists but not admin, show nothing (redirect will happen)
+  if (role && !isAdmin) return null;
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Simple top bar */}
-      <div className="max-w-7xl mx-auto p-4 md:p-8">{children}</div>
-    </div>
-  );
+  return <div className="min-h-screen bg-gray-50">{children}</div>;
 }
