@@ -176,7 +176,6 @@ const FarmerFeaturesSection = () => {
     </section>
   );
 };
-
 // Section 3: Buyer Dashboard Features
 const BuyerFeaturesSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -254,6 +253,7 @@ const BuyerFeaturesSection = () => {
   );
 };
 
+
 // Section 4: Student & Learning Module
 const StudentModuleSection = () => (
   <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-yellow-50">
@@ -299,6 +299,7 @@ const StudentModuleSection = () => (
     </div>
   </section>
 );
+
 
 // Section 5: Disease Detection & AI
 const DiseaseDetectionSection = () => (

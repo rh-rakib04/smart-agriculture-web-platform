@@ -12,6 +12,9 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import { useAuthContext } from "@/contexts/AuthProvider";
+import GoogleButton from "@/components/auth/GoogleLogin";
+import GithubButton from "@/components/auth/GithubLogin";
+import FacebookButton from "@/components/auth/FacebookLogin";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -202,6 +205,11 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
+        <div className="flex justify-center gap-4 mt-4">
+          <GoogleButton></GoogleButton>
+          <GithubButton></GithubButton>
+          <FacebookButton></FacebookButton>
+        </div>
       </MOTION.div>
     </div>
   );
