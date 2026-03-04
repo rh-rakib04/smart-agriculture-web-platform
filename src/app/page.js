@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * HomePage - Comprehensive landing page showcasing the Smart Agriculture Platform
@@ -7,19 +7,34 @@
  */
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import Link from "next/link";
+import { useState, useEffect } from "react";
 import OurService from "@/components/Home/OurService";
 import HowItWork from "@/components/Home/HowItWork";
 import AboutUs from "@/components/Home/AboutUs";
 
 // Crop carousel data
 const CROPS_DATA = [
-  { name: "Wheat", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef" },
-  { name: "Corn", image: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716" },
-  { name: "Carrot", image: "https://images.unsplash.com/photo-1447175008436-170170d0e979" },
-  { name: "Lettuce", image: "https://images.unsplash.com/photo-1582515073490-dc5b3a3d1f6d" },
-  { name: "Tomato", image: "https://images.unsplash.com/photo-1592928302636-c83cf1cda3a0" },
+  {
+    name: "Wheat",
+    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef",
+  },
+  {
+    name: "Corn",
+    image: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716",
+  },
+  {
+    name: "Carrot",
+    image: "https://images.unsplash.com/photo-1447175008436-170170d0e979",
+  },
+  {
+    name: "Lettuce",
+    image: "https://images.unsplash.com/photo-1582515073490-dc5b3a3d1f6d",
+  },
+  {
+    name: "Tomato",
+    image: "https://images.unsplash.com/photo-1592928302636-c83cf1cda3a0",
+  },
 ];
 
 // Section 1: Hero Section with Carousel
@@ -65,7 +80,8 @@ const HeroSection = ({ currentCrop }) => (
         transition={{ delay: 0.3 }}
         className="text-lg sm:text-xl text-gray-200 mb-10 max-w-2xl mx-auto"
       >
-        Empowering farmers and buyers with modern AI-driven agriculture solutions.
+        Empowering farmers and buyers with modern AI-driven agriculture
+        solutions.
       </motion.p>
 
       {/* Only Two Buttons */}
@@ -105,9 +121,21 @@ const FarmerFeaturesSection = () => {
         </motion.h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { icon: '📊', title: 'Crop Management', desc: 'Track crops from planting to harvest with real-time health monitoring' },
-            { icon: '💰', title: 'Expense & Profit Tracker', desc: 'Monitor all farm expenses and calculate profitability instantly' },
-            { icon: '🤖', title: 'AI Recommendations', desc: 'Get intelligent farming suggestions and alerts based on data' },
+            {
+              icon: "📊",
+              title: "Crop Management",
+              desc: "Track crops from planting to harvest with real-time health monitoring",
+            },
+            {
+              icon: "💰",
+              title: "Expense & Profit Tracker",
+              desc: "Monitor all farm expenses and calculate profitability instantly",
+            },
+            {
+              icon: "🤖",
+              title: "AI Recommendations",
+              desc: "Get intelligent farming suggestions and alerts based on data",
+            },
           ].map((item, idx) => (
             <motion.div
               key={idx}
@@ -118,12 +146,12 @@ const FarmerFeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: idx * 0.2 }}
               viewport={{ once: true }}
-              whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+              whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
             >
-              <motion.div className="text-4xl mb-4">
-                {item.icon}
-              </motion.div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">{item.title}</h3>
+              <motion.div className="text-4xl mb-4">{item.icon}</motion.div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">
+                {item.title}
+              </h3>
               <p className="text-gray-600">{item.desc}</p>
             </motion.div>
           ))}
@@ -136,7 +164,10 @@ const FarmerFeaturesSection = () => {
           viewport={{ once: true }}
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/farmer" className="inline-block bg-green-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-800 transition">
+            <Link
+              href="/farmer"
+              className="inline-block bg-green-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-800 transition"
+            >
               Explore Farmer Dashboard →
             </Link>
           </motion.div>
@@ -145,7 +176,6 @@ const FarmerFeaturesSection = () => {
     </section>
   );
 };
-
 // Section 3: Buyer Dashboard Features
 const BuyerFeaturesSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -164,9 +194,21 @@ const BuyerFeaturesSection = () => {
         </motion.h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { icon: '🌾', title: 'Fresh Crop Catalog', desc: 'Browse available crops directly from farmers with quality details' },
-            { icon: '📈', title: 'Harvest Estimation', desc: 'View estimated yields and quality predictions for informed decisions' },
-            { icon: '💬', title: 'Direct Messaging', desc: 'Communicate directly with farmers to negotiate and arrange purchases' },
+            {
+              icon: "🌾",
+              title: "Fresh Crop Catalog",
+              desc: "Browse available crops directly from farmers with quality details",
+            },
+            {
+              icon: "📈",
+              title: "Harvest Estimation",
+              desc: "View estimated yields and quality predictions for informed decisions",
+            },
+            {
+              icon: "💬",
+              title: "Direct Messaging",
+              desc: "Communicate directly with farmers to negotiate and arrange purchases",
+            },
           ].map((item, idx) => (
             <motion.div
               key={idx}
@@ -177,11 +219,56 @@ const BuyerFeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: idx * 0.2 }}
               viewport={{ once: true }}
-              whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(59, 130, 246, 0.2)' }}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.2)",
+              }}
             >
-              Learning
-            </a>{" "}
-            center.....
+              <motion.div className="text-4xl mb-4">{item.icon}</motion.div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">
+                {item.title}
+              </h3>
+              <p className="text-gray-600">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+        <motion.div
+          className="text-center mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/buyer"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition"
+            >
+              Explore Buyer Dashboard →
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+
+// Section 4: Student & Learning Module
+const StudentModuleSection = () => (
+  <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-yellow-50">
+    <div className="max-w-7xl mx-auto w-full">
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+        📚 Educational Resources for Students
+      </h2>
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div className="text-5xl mb-6">👨‍🎓</div>
+          <h3 className="text-2xl font-bold mb-4 text-gray-900">
+            Learn Modern Agriculture
+          </h3>
+          <p className="text-gray-700 mb-6">
+            Access comprehensive educational content including:
           </p>
           <ul className="space-y-3 text-gray-700">
             <li>✓ Real-time market data and crop prices</li>
@@ -197,9 +284,13 @@ const BuyerFeaturesSection = () => {
               📊 Stay Updated with Market Insights
             </p>
             <p>
-              Track crop prices, understand market demand, and make data-driven decisions for your agricultural career.
+              Track crop prices, understand market demand, and make data-driven
+              decisions for your agricultural career.
             </p>
-            <Link href="/student" className="mt-4 inline-block bg-white text-yellow-600 px-4 py-2 rounded font-bold hover:bg-yellow-50 transition">
+            <Link
+              href="/student"
+              className="mt-4 inline-block bg-white text-yellow-600 px-4 py-2 rounded font-bold hover:bg-yellow-50 transition"
+            >
               Access Student Module →
             </Link>
           </div>
@@ -208,6 +299,7 @@ const BuyerFeaturesSection = () => {
     </div>
   </section>
 );
+
 
 // Section 5: Disease Detection & AI
 const DiseaseDetectionSection = () => (
@@ -219,26 +311,38 @@ const DiseaseDetectionSection = () => (
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="bg-gradient-to-br from-red-500 to-pink-500 rounded-lg p-12 text-white">
           <div className="text-6xl mb-6">🦠</div>
-          <h3 className="text-2xl font-bold mb-4">Detect Crop Diseases Early</h3>
+          <h3 className="text-2xl font-bold mb-4">
+            Detect Crop Diseases Early
+          </h3>
           <p className="mb-4">
-            Use advanced AI technology to identify plant diseases from images and get immediate treatment recommendations.
+            Use advanced AI technology to identify plant diseases from images
+            and get immediate treatment recommendations.
           </p>
-          <Link href="/disease-detection" className="bg-white text-red-600 px-6 py-2 rounded font-bold hover:bg-red-50 transition inline-block">
+          <Link
+            href="/disease-detection"
+            className="bg-white text-red-600 px-6 py-2 rounded font-bold hover:bg-red-50 transition inline-block"
+          >
             Try Disease Detection →
           </Link>
         </div>
         <div className="space-y-6">
           <div className="bg-red-50 p-6 rounded-lg">
             <h4 className="font-bold text-lg mb-2">📸 Image Upload</h4>
-            <p className="text-gray-700">Simply upload a photo of affected crop for instant analysis</p>
+            <p className="text-gray-700">
+              Simply upload a photo of affected crop for instant analysis
+            </p>
           </div>
           <div className="bg-pink-50 p-6 rounded-lg">
             <h4 className="font-bold text-lg mb-2">⚡ Quick Results</h4>
-            <p className="text-gray-700">Get disease identification and confidence levels instantly</p>
+            <p className="text-gray-700">
+              Get disease identification and confidence levels instantly
+            </p>
           </div>
           <div className="bg-red-50 p-6 rounded-lg">
             <h4 className="font-bold text-lg mb-2">💊 Treatment Guide</h4>
-            <p className="text-gray-700">Receive AI-powered treatment recommendations to save your crops</p>
+            <p className="text-gray-700">
+              Receive AI-powered treatment recommendations to save your crops
+            </p>
           </div>
         </div>
       </div>
@@ -256,7 +360,9 @@ const WeatherPlanningSection = () => (
       <div className="grid md:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <div className="text-4xl mb-4">🌞</div>
-          <h3 className="text-xl font-bold mb-4 text-gray-900">Weather Forecasts</h3>
+          <h3 className="text-xl font-bold mb-4 text-gray-900">
+            Weather Forecasts
+          </h3>
           <p className="text-gray-700 mb-4">
             Get accurate 10-day weather predictions with:
           </p>
@@ -266,13 +372,18 @@ const WeatherPlanningSection = () => (
             <li>• Agricultural alerts and warnings</li>
             <li>• Farming recommendations based on weather</li>
           </ul>
-          <Link href="/weather" className="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
+          <Link
+            href="/weather"
+            className="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition"
+          >
             Check Weather →
           </Link>
         </div>
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <div className="text-4xl mb-4">📅</div>
-          <h3 className="text-xl font-bold mb-4 text-gray-900">Smart Planner Calendar</h3>
+          <h3 className="text-xl font-bold mb-4 text-gray-900">
+            Smart Planner Calendar
+          </h3>
           <p className="text-gray-700 mb-4">
             Organize your farming activities with:
           </p>
@@ -282,7 +393,10 @@ const WeatherPlanningSection = () => (
             <li>• Plan maintenance activities</li>
             <li>• Set important farming reminders</li>
           </ul>
-          <Link href="/farmer" className="mt-6 inline-block bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 transition">
+          <Link
+            href="/farmer"
+            className="mt-6 inline-block bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 transition"
+          >
             Access Planner →
           </Link>
         </div>
@@ -317,7 +431,10 @@ const HarvestCalculatorSection = () => (
           </div>
         </div>
         <div className="text-center mt-10">
-          <Link href="/harvest-calculator" className="bg-white text-green-700 px-8 py-3 rounded-lg font-bold hover:bg-green-50 transition inline-block">
+          <Link
+            href="/harvest-calculator"
+            className="bg-white text-green-700 px-8 py-3 rounded-lg font-bold hover:bg-green-50 transition inline-block"
+          >
             Use Harvest Calculator →
           </Link>
         </div>
@@ -337,26 +454,37 @@ const NewsSection = () => (
         <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-600">
           <div className="text-3xl mb-3">📋</div>
           <h3 className="font-bold text-lg mb-2">Policy Updates</h3>
-          <p className="text-gray-700 text-sm">Stay informed about government policies and agricultural reforms</p>
+          <p className="text-gray-700 text-sm">
+            Stay informed about government policies and agricultural reforms
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-purple-600">
           <div className="text-3xl mb-3">🚀</div>
           <h3 className="font-bold text-lg mb-2">Technology News</h3>
-          <p className="text-gray-700 text-sm">Discover emerging technologies transforming agriculture</p>
+          <p className="text-gray-700 text-sm">
+            Discover emerging technologies transforming agriculture
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-green-600">
           <div className="text-3xl mb-3">🔬</div>
           <h3 className="font-bold text-lg mb-2">Research Updates</h3>
-          <p className="text-gray-700 text-sm">Learn about latest agricultural research and innovations</p>
+          <p className="text-gray-700 text-sm">
+            Learn about latest agricultural research and innovations
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-orange-600">
           <div className="text-3xl mb-3">💰</div>
           <h3 className="font-bold text-lg mb-2">Market Reports</h3>
-          <p className="text-gray-700 text-sm">Track market trends and price movements</p>
+          <p className="text-gray-700 text-sm">
+            Track market trends and price movements
+          </p>
         </div>
       </div>
       <div className="text-center">
-        <Link href="/news" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition inline-block">
+        <Link
+          href="/news"
+          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition inline-block"
+        >
           Read All News →
         </Link>
       </div>
@@ -379,14 +507,18 @@ const CapabilitiesSection = () => (
       </motion.h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
         {[
-          { icon: '🤖', title: 'AI-Powered', desc: 'Intelligent recommendations' },
-          { icon: '📊', title: 'Data Driven', desc: 'Real-time analytics' },
-          { icon: '🔗', title: 'Connected', desc: 'Farmers & buyers together' },
-          { icon: '📱', title: 'User Friendly', desc: 'Easy to navigate' },
-          { icon: '🎓', title: 'Educational', desc: 'Learn & grow' },
-          { icon: '💰', title: 'Cost Effective', desc: 'Maximize profits' },
-          { icon: '🌍', title: 'Sustainable', desc: 'Eco-friendly farming' },
-          { icon: '🔒', title: 'Secure', desc: 'Safe transactions' },
+          {
+            icon: "🤖",
+            title: "AI-Powered",
+            desc: "Intelligent recommendations",
+          },
+          { icon: "📊", title: "Data Driven", desc: "Real-time analytics" },
+          { icon: "🔗", title: "Connected", desc: "Farmers & buyers together" },
+          { icon: "📱", title: "User Friendly", desc: "Easy to navigate" },
+          { icon: "🎓", title: "Educational", desc: "Learn & grow" },
+          { icon: "💰", title: "Cost Effective", desc: "Maximize profits" },
+          { icon: "🌍", title: "Sustainable", desc: "Eco-friendly farming" },
+          { icon: "🔒", title: "Secure", desc: "Safe transactions" },
         ].map((item, idx) => (
           <motion.div
             key={idx}
@@ -449,7 +581,8 @@ const CTASection = () => (
         transition={{ duration: 0.8, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        Join thousands of farmers and buyers using SmartAgri to grow their business and make data-driven decisions.
+        Join thousands of farmers and buyers using SmartAgri to grow their
+        business and make data-driven decisions.
       </motion.p>
       <motion.div
         className="flex flex-wrap justify-center gap-4"
@@ -459,17 +592,26 @@ const CTASection = () => (
         viewport={{ once: true }}
       >
         <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-          <Link href="/farmer" className="inline-block bg-white text-green-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg">
+          <Link
+            href="/farmer"
+            className="inline-block bg-white text-green-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg"
+          >
             👨‍🌾 Start as Farmer
           </Link>
         </motion.div>
         <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-          <Link href="/buyer" className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-800 transition border-2 border-white shadow-lg">
+          <Link
+            href="/buyer"
+            className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-800 transition border-2 border-white shadow-lg"
+          >
             👨‍💼 Start as Buyer
           </Link>
         </motion.div>
         <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-          <Link href="/student" className="inline-block bg-transparent text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-green-700 transition border-2 border-white shadow-lg">
+          <Link
+            href="/student"
+            className="inline-block bg-transparent text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-green-700 transition border-2 border-white shadow-lg"
+          >
             👨‍🎓 Student Access
           </Link>
         </motion.div>
@@ -481,7 +623,8 @@ const CTASection = () => (
         transition={{ duration: 0.8, delay: 0.6 }}
         viewport={{ once: true }}
       >
-        💡 Questions? Visit our news section or contact support for more information.
+        💡 Questions? Visit our news section or contact support for more
+        information.
       </motion.p>
     </div>
   </section>
@@ -492,13 +635,22 @@ const Footer = () => (
   <footer className="w-full bg-gray-900 text-gray-300 py-8 px-4 sm:px-6 lg:px-8">
     <div className="max-w-7xl mx-auto text-center w-full">
       <p className="mb-4">
-        © 2024 SmartAgri - Modern Agriculture Platform | Empowering Farmers, Connecting Communities
+        © 2024 SmartAgri - Modern Agriculture Platform | Empowering Farmers,
+        Connecting Communities
       </p>
       <div className="flex justify-center gap-6 flex-wrap">
-        <Link href="/news" className="hover:text-white transition">News</Link>
-        <Link href="/weather" className="hover:text-white transition">Weather</Link>
-        <Link href="/messages" className="hover:text-white transition">Messages</Link>
-        <Link href="/payment" className="hover:text-white transition">Payment</Link>
+        <Link href="/news" className="hover:text-white transition">
+          News
+        </Link>
+        <Link href="/weather" className="hover:text-white transition">
+          Weather
+        </Link>
+        <Link href="/messages" className="hover:text-white transition">
+          Messages
+        </Link>
+        <Link href="/payment" className="hover:text-white transition">
+          Payment
+        </Link>
       </div>
     </div>
   </footer>
@@ -528,9 +680,8 @@ export default function HomePage() {
       <CapabilitiesSection />
       <CTASection />
       <OurService></OurService>
-       <HowItWork></HowItWork>
-       <AboutUs></AboutUs>
-      
+      <HowItWork></HowItWork>
+      <AboutUs></AboutUs>
     </div>
   );
 }

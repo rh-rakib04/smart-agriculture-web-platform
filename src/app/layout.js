@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Header from "@/components/shared/Header";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,12 +26,19 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>
           <Header />
           {children}
-          <ToastContainer position="top-right" autoClose={3000} theme="colored" />
-          <Footer />
+
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            theme="colored"
+          />
+          <Footer></Footer>
         </Providers>
       </body>
     </html>
