@@ -100,10 +100,10 @@ export default function StatsBar() {
 
   return (
     <section
-      className="relative bg-foreground overflow-hidden"
+      className="relative bg-foreground overflow-hidden "
       style={{
         // Diagonal clip — top edge angles downward to "catch" the hero
-        clipPath: "polygon(0 0, 100% 0, 100% 85%, 0 100%)",
+        clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
         paddingBottom: "5rem",
       }}
     >

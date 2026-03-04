@@ -14,6 +14,7 @@ import HowItWork from "@/components/Home/HowItWork";
 import AboutUs from "@/components/Home/AboutUs";
 import HeroSection from "@/components/Home/HeroSection";
 import StatsBar from "@/components/Home/StatsBar";
+import FarmerFeatures from "@/components/Home/Farmerfeatures";
 
 
 
@@ -580,7 +581,7 @@ export default function HomePage() {
     <div className="w-full min-h-screen bg-white">
       <HeroSection />
       <StatsBar></StatsBar>
-      <FarmerFeaturesSection />
+      <FarmerFeatures/>
       <BuyerFeaturesSection />
       <StudentModuleSection />
       <DiseaseDetectionSection />
