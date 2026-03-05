@@ -51,7 +51,8 @@ export default function FarmerSidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href;
+
+          const isActive = pathname.startsWith(item.href);
 
           return (
             <Link
@@ -69,8 +70,6 @@ export default function FarmerSidebar() {
           );
         })}
       </nav>
-
-     
 
     </aside>
   );
