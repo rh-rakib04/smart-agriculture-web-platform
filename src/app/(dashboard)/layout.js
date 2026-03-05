@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }) {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="flex min-h-screen max-w-7xl mx-auto">
+    <div className="flex min-h-screen max-w-7xl mx-auto mt-15">
 
       {/* Desktop Sidebar */}
       <aside
