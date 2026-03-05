@@ -43,6 +43,38 @@ export default function Sidebar({ userRole = "admin" }) {
   const navItems = menuConfig[userRole] || [];
 
   return (
+
+    <div className="min-h-screen bg-base-200 max-w-7xl mx-auto">
+    <aside >
+      <nav className="space-y-2">
+        {/* Navigation items based on user role */}
+        {userRole === 'farmer' && (
+          <>
+            <a href="/farmer/dashboard" className="block p-2 hover:bg-gray-100 rounded">Dashboard</a>
+            <a href="/farmer/crops" className="block p-2 hover:bg-gray-100 rounded">My Crops</a>
+            <a href="/farmer/expenses" className="block p-2 hover:bg-gray-100 rounded">Expenses</a>
+            <a href="/farmer/planner" className="block p-2 hover:bg-gray-100 rounded">Farm Planner</a>
+             <a href="/farmer/calculator" className="block p-2 hover:bg-gray-100 rounded">Calculator</a>
+            <a href="/farmer/weather" className="block p-2 hover:bg-gray-100 rounded">Weather</a>
+            <a href="/farmer/ai-chat" className="block p-2 hover:bg-gray-100 rounded">Smart Ai  Chatbot</a>
+          </>
+        )}
+        {userRole === 'buyer' && (
+          <>
+            <a href="/buyer/dashboard" className="block p-2 hover:bg-gray-100 rounded">Dashboard</a>
+            <a href="/buyer/crops" className="block p-2 hover:bg-gray-100 rounded">Browse Crops</a>
+            <a href="/buyer/purchases" className="block p-2 hover:bg-gray-100 rounded">My Purchases</a>
+          </>
+        )}
+        {userRole === 'admin' && (
+          <>
+            <a href="/admin/dashboard" className="block p-2 hover:bg-gray-100 rounded">Dashboard</a>
+            <a href="/admin/users" className="block p-2 hover:bg-gray-100 rounded">Users</a>
+            <a href="/admin/analytics" className="block p-2 hover:bg-gray-100 rounded">Analytics</a>
+          </>
+        )}
+      </nav>
+    </aside>
     /* Added 'sticky top-0 h-screen' to keep it fixed during scroll */
     <div className="flex flex-col h-screen sticky top-0 bg-white border-r border-gray-100 shadow-sm">
       {/* Sidebar Label */}
@@ -101,3 +133,4 @@ export default function Sidebar({ userRole = "admin" }) {
     </div>
   );
 }
+

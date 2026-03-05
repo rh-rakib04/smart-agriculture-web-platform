@@ -11,6 +11,15 @@ export default function DashboardLayout({ children }) {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
+
+    <div className="flex  min-h-screen max-w-7xl mx-auto ">
+
+      {/* Desktop Sidebar Only */}
+      {/* <aside className="hidden md:block w-72 border-r border-border bg-card">
+      </aside> */}
+        <Sidebar />
+       
+
     <div className="flex h-screen overflow-hidden mt-10" style={{ backgroundColor: "var(--bg)" }}>
 
       <aside className="hidden md:block w-72 border-r shadow-sm bg-white shrink-0 h-full"
