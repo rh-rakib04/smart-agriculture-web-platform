@@ -2,8 +2,8 @@
 
 const statusColors = {
   pending: "bg-[#FBC02D] ",
-  approved: "bg-blue-200 text-blue-800",
-  completed: "bg-[#145214] text-white",
+  approved: "bg-[#145214] text-white",
+  completed: "bg-purple-300 text-white",
 };
 
 const OrderStatusBadge = ({ status }) => {
