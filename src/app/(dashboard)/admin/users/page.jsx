@@ -132,10 +132,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div
-      className="min-h-screen p-4 md:p-8"
-      style={{ backgroundColor: "var(--bg)" }}
-    >
+    <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
