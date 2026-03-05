@@ -39,7 +39,7 @@ export default function Sidebar({ userRole = "admin" }) {
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Crops", href: "/admin/crops", icon: Sprout },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  // { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
 ]
   };
 
