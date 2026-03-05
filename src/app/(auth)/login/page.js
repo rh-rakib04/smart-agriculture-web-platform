@@ -1,7 +1,6 @@
 "use client";
 
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion as MOTION } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -19,6 +18,7 @@ import FacebookButton from "@/components/auth/FacebookLogin";
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuthContext();
   const {
     register,
@@ -26,7 +26,9 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
     watch,
   } = useForm();
+
   const email = watch("email");
+
   const onSubmit = async (data) => {
     const loadingToast = toast.loading("Signing in...");
 
@@ -44,7 +46,14 @@ export default function LoginPage() {
         autoClose: 2000,
       });
 
-      router.replace("/");
+      // Wait for cookie to be ready before navigating
+      await new Promise(r => setTimeout(r, 100));
+
+      // If they were trying to visit a protected route → go there
+      // Otherwise → go to their role dashboard
+      const callbackUrl = searchParams.get("callbackUrl") || `/${res.role}/dashboard`;
+      router.replace(callbackUrl);
+
     } catch (error) {
       toast.update(loadingToast, {
         render: error.message,
@@ -135,7 +144,6 @@ export default function LoginPage() {
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
-
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -149,7 +157,6 @@ export default function LoginPage() {
                 className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 
                 focus:outline-none focus:ring-2 focus:ring-black text-sm"
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -158,7 +165,6 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.password.message}
@@ -206,9 +212,9 @@ export default function LoginPage() {
           </Link>
         </p>
         <div className="flex justify-center gap-4 mt-4">
-          <GoogleButton></GoogleButton>
-          <GithubButton></GithubButton>
-          <FacebookButton></FacebookButton>
+          <GoogleButton />
+          <GithubButton />
+          <FacebookButton />
         </div>
       </MOTION.div>
     </div>
