@@ -78,7 +78,7 @@ export default function Sidebar({ userRole = "admin" }) {
         )}
       </nav>
     </aside>
-    /* Added 'sticky top-0 h-screen' to keep it fixed during scroll */
+   
     <div className="flex flex-col h-screen sticky top-0 bg-white border-r border-gray-100 shadow-sm">
       {/* Sidebar Label */}
       <div className="p-6 border-b border-gray-50">
@@ -134,6 +134,8 @@ export default function Sidebar({ userRole = "admin" }) {
         </button>
       </div>
     </div>
+    </div>
+
   );
 }
 
