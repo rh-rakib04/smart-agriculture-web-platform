@@ -33,6 +33,7 @@ import StepTwo       from '@/components/farmer/planner/StepTwo';
 import StepThree     from '@/components/farmer/planner/StepThree';
 import PlanResult    from '@/components/farmer/planner/PlanResult';
 import { useAuth }   from '@/hooks/useAuth';
+import Header from '@/components/shared/Header';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -86,7 +87,7 @@ function FloatingLeaves() {
 
 function PageBanner({ userName }) {
   return (
-    <div className="relative h-56 sm:h-64 w-full overflow-hidden ">
+    <div className="relative h-56 sm:h-64 w-full  ">
       <Image
         src="/images/planner-bg.jpg"
         alt="Smart Farm Planner"
@@ -257,7 +258,12 @@ export default function PlannerPage() {
   const handleReset = () => { setForm(INITIAL_FORM); setPlan(null); setCurrentStep(1); };
 
   return (
-    <PrivateRoute>
+    <PrivateRoute fallback={
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <span className="loading loading-spinner loading-lg text-primary" />
+        </div>
+      }>
+      <Header></Header>
       <div className="min-h-screen bg-background ">
 
         {/* ── Full-bleed banner ── */}

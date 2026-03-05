@@ -139,13 +139,12 @@ export default function Header() {
           <div className="flex items-center justify-between gap-6">
 
             {/* ── LEFT: Logo ── */}
-            <Link href="/" onClick={closeAll} className="flex items-center gap-2.5 shrink-0">
-              <Image src="/logo.png" alt="SmartAgri" width={72} height={36} />
-              <span className={`text-xl font-extrabold tracking-tight transition-colors duration-300
-                ${scrolled ? "text-primary" : "text-white"}`}>
-                SmartAgri
-              </span>
-            </Link>
+            <Link href="/" className="flex items-center  ">
+      <Image src="/logo.png" alt="SmartStudy Logo" width={60} height={10} />
+      <span className="text-xl font-bold text-highlight tracking-tight">
+        Smart<span className="text-secondary">Agriculture</span>
+      </span>
+    </Link>
 
             {/* ── CENTER: Desktop Nav (xl+) ── */}
             <nav className="hidden xl:flex items-center gap-8 flex-1 justify-center">

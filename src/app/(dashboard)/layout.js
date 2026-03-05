@@ -4,6 +4,7 @@ import { useState } from "react";
 import Sidebar from '@/components/layout/Sidebar';
 import { useAuthContext } from '@/contexts/AuthProvider';
 import { Menu, X, Bell } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function DashboardLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,7 +13,7 @@ export default function DashboardLayout({ children }) {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="flex min-h-screen max-w-7xl mx-auto mt-15">
+    <div className="flex min-h-screen  mx-auto ">
 
       {/* Desktop Sidebar */}
       <aside
@@ -39,7 +40,7 @@ export default function DashboardLayout({ children }) {
               className="font-black text-[10px] tracking-widest uppercase opacity-40"
               style={{ color: "var(--primary)" }}
             >
-              Navigation
+              <Logo></Logo>
             </span>
 
             <button onClick={closeMobileMenu} className="p-2 rounded-xl bg-gray-50">

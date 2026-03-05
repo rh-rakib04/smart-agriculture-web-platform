@@ -22,10 +22,12 @@ import WeatherHighlight from "@/components/Home/Weatherhighlight";
 import StudentSection from "@/components/Home/Studentsection";
 import NewsTeaser from "@/components/Home/Newsteaser";
 import CTASection from "@/components/Home/CTASection";
+import Header from "@/components/shared/Header";
 
 export default function HomePage() {
   return (
     <div className="w-full min-h-screen bg-white">
+      <Header />
       <HeroSection />
       <StatsBar></StatsBar>
       <FarmerFeatures />
