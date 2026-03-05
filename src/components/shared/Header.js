@@ -295,7 +295,7 @@ export default function Header() {
                     /* ── Logged Out ── */
                     <div className="hidden sm:flex items-center gap-3">
                       <Link
-                        href="/login"
+                        href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
                         className={`text-sm font-bold transition-colors duration-200
                           ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-highlight"}`}
                       >
@@ -378,7 +378,7 @@ export default function Header() {
             {!loading && !user && (
               <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
                 <Link
-                  href="/login"
+                  href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
                   onClick={closeAll}
                   className={`w-full text-center px-4 py-2.5 rounded-xl text-sm font-bold transition
                     ${scrolled ? "text-foreground hover:bg-muted" : "text-white hover:bg-white/10"}`}

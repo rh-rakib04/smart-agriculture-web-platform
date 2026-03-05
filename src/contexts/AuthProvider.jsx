@@ -79,24 +79,31 @@ export function AuthProvider({ children }) {
     verify();
   }, [token, sessionStatus]);
 
-  // ─── Credentials login ────────────────────────────────────────────────────────
-  const login = async (email, password) => {
-    const res  = await fetch('/api/auth/login', {
+const login = async (email, password) => {
+  const res  = await fetch('/api/auth/login', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ email, password }),
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem('authToken', data.token);
+    
+    // ← Explicitly sync cookie (don't rely on login API response alone)
+    await fetch('/api/auth/set-cookie', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email, password }),
+      body:    JSON.stringify({ token: data.token }),
     });
-    const data = await res.json();
 
-    if (data.success) {
-      localStorage.setItem('authToken', data.token);
-      setToken(data.token);
-      setUser(data.user);
-      return { success: true, role: data.user.role };
-    }
+    setToken(data.token);
+    setUser(data.user);
+    return { success: true, role: data.user.role };
+  }
 
-    return { success: false, error: data.error };
-  };
+  return { success: false, error: data.error };
+};
 
   // ─── Unified logout (credentials + OAuth) ────────────────────────────────────
   const logout = async () => {
@@ -120,7 +127,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {initialized ? children : null}
+      {children }
     </AuthContext.Provider>
   );
 }
