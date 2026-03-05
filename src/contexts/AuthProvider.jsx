@@ -15,10 +15,27 @@ export function AuthProvider({ children }) {
 
   // Check user when app loads
   useEffect(() => {
-    if (sessionStatus === "loading") return;
+    // OAuth flow: wait until NextAuth session is ready, then grab customToken
+    if (sessionStatus === "loading") {
+      // Don't return — check localStorage right now so credentials users
+      // don't get blocked waiting for NextAuth to resolve.
+      const stored =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken") ||
+        null;
 
-    // OAuth flow: NextAuth passes our custom JWT through the session.
-    // Also sync it to an httpOnly cookie so middleware can read it.
+      // If there's a stored token, resolve immediately without waiting for NextAuth
+      if (stored) {
+        setToken(stored);
+        setTokenResolved(true);
+        return;
+      }
+
+      // No stored token and NextAuth still loading — wait for it
+      return;
+    }
+
+    // NextAuth session resolved — check for OAuth token first
     if (session?.customToken) {
       localStorage.setItem("authToken", session.customToken);
       setToken(session.customToken);
@@ -31,7 +48,7 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    // Credentials flow: token already sitting in storage
+    // No OAuth token — fall back to localStorage/sessionStorage
     const stored =
       localStorage.getItem("authToken") ||
       sessionStorage.getItem("authToken") ||
@@ -42,10 +59,9 @@ export function AuthProvider({ children }) {
   }, [session?.customToken, sessionStatus]);
 
   // ─── Effect 2: Verify token whenever it changes ──────────────────────────────
-  // Calls the server to validate the token and hydrate the user object.
   useEffect(() => {
-    if (sessionStatus === "loading") return;
     if (!tokenResolved) return;
+
     if (!token) {
       setUser(null);
       setLoading(false);
@@ -77,7 +93,9 @@ export function AuthProvider({ children }) {
     };
 
     verify();
-  }, [token, sessionStatus]);
+  }, [token, tokenResolved]);
+  // KEY FIX: Removed `sessionStatus` from Effect 2 deps — it was causing
+  // Effect 2 to re-run and re-block itself when sessionStatus changed.
 
   const login = async (email, password) => {
     const res = await fetch("/api/auth/login", {
@@ -90,7 +108,6 @@ export function AuthProvider({ children }) {
     if (data.success) {
       localStorage.setItem("authToken", data.token);
 
-      // ← Explicitly sync cookie (don't rely on login API response alone)
       await fetch("/api/auth/set-cookie", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +136,6 @@ export function AuthProvider({ children }) {
     setToken(null);
     setUser(null);
 
-    // Sign out of NextAuth only if the user came via OAuth
     if (session) {
       await nextAuthSignOut({ redirect: false });
     }
