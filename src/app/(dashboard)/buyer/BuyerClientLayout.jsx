@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/buyer/Sidebar";
+
 
 export default function BuyerClientLayout({ children }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100 flex max-w-7xl mx-auto">
-      {/* Sidebar */}
-      <Sidebar open={open} setOpen={setOpen} />
-
+  
       {/* Main Content */}
       <div className="flex-1">
         {/* Mobile top bar */}

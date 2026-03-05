@@ -19,7 +19,7 @@ export default function Sidebar({ userRole = "admin" }) {
 
   const menuConfig = {
     farmer: [
-      { name: "Dashboard", href: "/farmer/dashboard", icon: LayoutDashboard },
+      { name: "Dashboard", href: "/farmer", icon: LayoutDashboard },
       { name: "My Crops", href: "/farmer/crops", icon: Sprout },
       { name: "Expenses", href: "/farmer/expenses", icon: Wallet },
       { name: "Farm Planner", href: "/farmer/planner", icon: Calendar },
@@ -28,9 +28,9 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
     ],
     buyer: [
-      { name: "Dashboard", href: "/buyer/dashboard", icon: LayoutDashboard },
+      { name: "Dashboard", href: "/buyer", icon: LayoutDashboard },
       { name: "Browse Crops", href: "/buyer/crops", icon: Sprout },
-      { name: "My Purchases", href: "/buyer/purchases", icon: ShoppingCart },
+      { name: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
     ],
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
