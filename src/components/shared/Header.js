@@ -223,12 +223,23 @@ export default function Header() {
               </Link>
 
               {/* ── Auth ──
-                  KEY FIX: Don't gate login/register on `loading`.
-                  - If user exists (and loading is done) → show avatar dropdown
-                  - If no user → show Login/Register immediately (no loading check)
-                  - While loading + no user yet → Login/Register still visible since user is null
+                  loading=true        → skeleton pulses (no flicker)
+                  loading=false, user → avatar + dropdown
+                  loading=false, !user → Login + Register
               ── */}
-              {!loading && user ? (
+              {loading ? (
+                /* Skeleton while auth resolves */
+                <div className="hidden sm:flex items-center gap-2">
+                  <div
+                    className={`w-16 h-8 rounded-full animate-pulse
+                      ${scrolled ? "bg-muted" : "bg-white/10"}`}
+                  />
+                  <div
+                    className={`w-20 h-9 rounded-full animate-pulse
+                      ${scrolled ? "bg-muted" : "bg-white/10"}`}
+                  />
+                </div>
+              ) : user ? (
                 /* ── Logged In: Avatar + Dropdown ── */
                 <div className="relative">
                   <button
@@ -326,25 +337,23 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                /* ── Logged Out: always visible, no loading gate ── */
-                !user && (
-                  <div className="hidden sm:flex items-center gap-3">
-                    <Link
-                      href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
-                      className={`text-sm font-bold transition-colors duration-200
-                        ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-highlight"}`}
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="px-5 py-2.5 rounded-full bg-highlight text-foreground text-sm font-bold
-                        hover:brightness-105 transition-all duration-200 shadow-sm"
-                    >
-                      Register
-                    </Link>
-                  </div>
-                )
+                /* ── Logged Out: Login + Register ── */
+                <div className="hidden sm:flex items-center gap-3">
+                  <Link
+                    href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
+                    className={`text-sm font-bold transition-colors duration-200
+                      ${scrolled ? "text-foreground hover:text-primary" : "text-white/90 hover:text-highlight"}`}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-5 py-2.5 rounded-full bg-highlight text-foreground text-sm font-bold
+                      hover:brightness-105 transition-all duration-200 shadow-sm"
+                  >
+                    Register
+                  </Link>
+                </div>
               )}
 
               {/* Hamburger — below xl */}
@@ -416,8 +425,23 @@ export default function Header() {
               <ArrowUpRight size={15} className="ml-auto" />
             </Link>
 
-            {/* KEY FIX: Login/Register in mobile — no loading gate */}
-            {!user && (
+            {/* ── Mobile Auth ──
+                loading=true        → skeleton
+                loading=false, !user → Login / Register
+                loading=false, user  → nothing (dashboard link above handles it)
+            ── */}
+            {loading ? (
+              <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
+                <div
+                  className={`w-full h-10 rounded-xl animate-pulse
+                    ${scrolled ? "bg-muted" : "bg-white/10"}`}
+                />
+                <div
+                  className={`w-full h-10 rounded-xl animate-pulse
+                    ${scrolled ? "bg-muted" : "bg-white/10"}`}
+                />
+              </div>
+            ) : !user ? (
               <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
                 <Link
                   href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
@@ -435,7 +459,7 @@ export default function Header() {
                   Register
                 </Link>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </header>
