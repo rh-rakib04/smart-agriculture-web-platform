@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌾 Smart Agriculture Platform
+## A Digital Solution for Modern Farming
 
-## Getting Started
+[**📄 Read Professional SRS Documentation**](SRS.md)
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The **Smart Agriculture Platform** is a comprehensive web-based system designed to digitally transform traditional farming. By integrating real-time weather data, AI-driven recommendations, financial tracking, and direct farmer-buyer communication, it empowers farmers to make data-driven decisions and improve productivity.
+
+---
+
+## ✨ Key Features
+
+### 🚜 For Farmers
+- **AI Crop Recommendation:** Intelligent suggestions based on soil type and weather.
+- **Disease Detection:** Upload leaf images for instant AI-based diagnosis.
+- **Smart Planner:** Automated scheduling for planting, irrigation, and harvesting.
+- **Finance Tracker:** Manage seeds, labor, and transport costs with profit estimation.
+
+### 🤝 For Buyers
+- **Direct Marketplace:** Browse available crops and harvest estimates.
+- **Secure Messaging:** Direct communication channel with farmers.
+- **Online Payments:** Secure transaction processing.
+
+### 📊 For Admin & Students
+- **Real-time Analytics:** Monitor platform activities and crop trends.
+- **Educational Module:** Access to anonymized farm data for agriculture students.
+
+---
+
+## 🚀 Technology Stack
+
+- **Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **AI/ML:** Machine Learning models for disease detection & crop prediction
+- **APIs:** Weather API, Payment Gateway Integration
+
+---
+
+## 🛠 Getting Started
+
+### Prerequisites
+- Node.js (Latest LTS)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/sohaibislam45/smart-agriculture-web-platform.git
+   cd smart-agriculture-web-platform
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 📂 Project Structure
+
+```text
+├── public/          # Static assets (images, icons)
+├── src/
+│   ├── app/         # Next.js App Router (pages & layouts)
+│   ├── components/  # Reusable UI components
+│   └── lib/         # Utility functions & API helpers
+├── next.config.mjs  # Next.js configuration
+└── tailwind.config.js # Tailwind CSS configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📄 Professional SRS Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is backed by a comprehensive, industry-standard **Software Requirement Specification (SRS)**.
 
-## Learn More
+> [!TIP]
+> [Click here to view the full SRS.md document](https://github.com/sohaibislam45/smart-agriculture-web-platform/blob/main/SRS.md)
 
-To learn more about Next.js, take a look at the following resources:
+### Document Highlights:
+- **Project Goal:** Digitizing the agricultural value chain for zero-waste farming.
+- **Problem Solved:** Bridges the gap between traditional farming and modern data-driven insights.
+- **USP:** Integrated AI diagnosis with a direct-to-consumer marketplace.
+- **MVP Features:** Farmer/Buyer dashboards, AI-based recommendations, and secure messaging.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🗺 Future Roadmap
+- [ ] Mobile Application (iOS & Android)
+- [ ] IoT Sensor integration for soil monitoring
+- [ ] Government subsidy integration
+- [ ] Advanced AI Farmer Assistant (Multi-lingual support)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 👥 Contributors
+- **Project Lead:** [Shohaib Islam](https://github.com/sohaibislam45)
+- **Team Members:**
+  - [RAKIBUL HOSSAIN BHUIYA](https://github.com/rh-rakib04)
+  - [Shawcha](https://github.com/Shawcha20)
+  - [Mahmuda Nasrin](https://github.com/mahmudanasrin078)
+  - [Tawfiq Ahmed Rafi](https://github.com/TawfiqAhmedRafi)
+  - [Tanzim Hasan](https://github.com/Tanzim313)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Built with ❤️ for a better future in farming.*
