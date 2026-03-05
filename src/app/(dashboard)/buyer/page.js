@@ -45,6 +45,7 @@ import BuyerTopStats from "@/components/buyer/BuyerTopStats";
 
 export default function BuyerDashboard() {
   return (
+    
     <div>
       <h1 className="text-2xl font-bold mb-6">
         Buyer Dashboard

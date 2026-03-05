@@ -1,49 +1,75 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function BuyerSidebar() {
+export default function Sidebar({ open, setOpen }) {
   const pathname = usePathname();
 
   const linkClass = (path) =>
     `block px-4 py-2 rounded-md transition ${
       pathname === path
-        ? "bg-teal-600 text-white"
-        : "text-gray-700 hover:bg-teal-100"
+        ? "bg-[#2E7D32] text-white"
+        : "text-gray-700 hover:bg-[#66BB6A] hover:text-white"
     }`;
 
   return (
-    <aside className="
-      w-64 bg-white border-r hidden
-      md:block
-    ">
-      <div className="p-6 font-bold text-xl text-teal-600">
-        Buyer Panel
-      </div>
+    <>
+      {/* ================= OVERLAY (Mobile) ================= */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+        />
+      )}
 
-      <nav className="space-y-2 px-4">
-        <Link href="/buyer" className={linkClass("/buyer")}>
-          🏠 Overview
-        </Link>
+      {/* ================= SIDEBAR ================= */}
+      <aside
+        className={`
+          fixed md:static z-50
+          top-0 left-0 h-full
+          w-64 bg-white border-r
+          transform transition-transform duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+        `}
+      >
+        {/* Header */}
+        <div className="p-6 font-bold text-xl text-[#2E7D32] flex justify-between items-center">
+          Buyer Panel
+          {/* Close button (Mobile only) */}
+          <button className="md:hidden text-xl" onClick={() => setOpen(false)}>
+            ✕
+          </button>
+        </div>
 
-        <Link
-          href="/buyer/place-order"
-          className={linkClass("/buyer/place-order")}
-        >
-          ➕ Place Order
-        </Link>
+        {/* Navigation */}
+        <nav className="space-y-2 px-4">
+          <Link
+            href="/buyer"
+            onClick={() => setOpen(false)}
+            className={linkClass("/buyer")}
+          >
+            🏠 Overview
+          </Link>
 
-        <Link
-          href="/buyer/orders"
-          className={linkClass("/buyer/orders")}
-        >
-          📦 My Orders
-        </Link>
-      </nav>
-    </aside>
+          <Link
+            href="/buyer/place-order"
+            onClick={() => setOpen(false)}
+            className={linkClass("/buyer/place-order")}
+          >
+            ➕ Place Order
+          </Link>
+
+          <Link
+            href="/buyer/orders"
+            onClick={() => setOpen(false)}
+            className={linkClass("/buyer/orders")}
+          >
+            📦 My Orders
+          </Link>
+        </nav>
+      </aside>
+    </>
   );
 }
-
-
-
-
