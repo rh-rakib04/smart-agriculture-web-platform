@@ -22,6 +22,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuthContext } from "@/contexts/AuthProvider";
+import GoogleButton from "@/components/auth/GoogleLogin";
+import GithubButton from "@/components/auth/GithubLogin";
+import FacebookButton from "@/components/auth/FacebookLogin";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -308,6 +311,11 @@ const onSubmit = async (data) => {
             Sign in
           </Link>
         </p>
+         <div className="flex justify-center gap-4 mt-4">
+                  <GoogleButton></GoogleButton>
+                  <GithubButton></GithubButton>
+                  <FacebookButton></FacebookButton>
+                </div>
       </MOTION.div>
     </div>
   );
