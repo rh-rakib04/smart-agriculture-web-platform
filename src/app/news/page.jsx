@@ -24,14 +24,28 @@ function getTimeAgo(pubDate, now) {
   return date.toLocaleDateString("en-BD", { day: "numeric", month: "short" });
 }
 
-// ─── Tab config ───────────────────────────────────────────────────────────────
+// ─── Resolve CSS variable to computed color ───────────────────────────────────
+// Called client-side only; returns the computed hex/rgb value of a CSS variable.
+function useAccent(tab) {
+  const [accent, setAccent] = useState("#2E7D32");
+  useEffect(() => {
+    const val = getComputedStyle(document.documentElement)
+      .getPropertyValue(tab.accentVar).trim();
+    if (val) setAccent(val);
+  }, [tab.accentVar]);
+  const accentLight = `${accent}${tab.accentAlpha}`;
+  return { accent, accentLight };
+}
 
+
+
+// Accents use CSS variables so they respect the theme (light/dark)
 const TABS = [
-  { id: "all",     label: "All News",    icon: Newspaper,   accent: "#16a34a", accentLight: "#16a34a18", badge: "Latest"        },
-  { id: "crops",   label: "Crops",       icon: Wheat,       accent: "#d97706", accentLight: "#d9770618", badge: "Cultivation"   },
-  { id: "weather", label: "Weather",     icon: CloudRain,   accent: "#2563eb", accentLight: "#2563eb18", badge: "Climate"       },
-  { id: "policy",  label: "Policy",      icon: LandPlot,    accent: "#7c3aed", accentLight: "#7c3aed18", badge: "Government"    },
-  { id: "market",  label: "Market",      icon: TrendingUp,  accent: "#dc2626", accentLight: "#dc262618", badge: "Prices"        },
+  { id: "all",     label: "All News", icon: Newspaper,  accentVar: "--color-primary",   accentAlpha: "18", badge: "Latest"      },
+  { id: "crops",   label: "Crops",    icon: Wheat,       accentVar: "--color-chart-3",   accentAlpha: "22", badge: "Cultivation" },
+  { id: "weather", label: "Weather",  icon: CloudRain,   accentVar: "--color-chart-2",   accentAlpha: "22", badge: "Climate"     },
+  { id: "policy",  label: "Policy",   icon: LandPlot,    accentVar: "--color-chart-4",   accentAlpha: "22", badge: "Government"  },
+  { id: "market",  label: "Market",   icon: TrendingUp,  accentVar: "--color-chart-5",   accentAlpha: "22", badge: "Prices"      },
 ];
 
 // ─── Floating leaves ──────────────────────────────────────────────────────────
@@ -114,6 +128,7 @@ function PageBanner() {
 
 function TabButton({ tab, isActive, onClick, index }) {
   const Icon = tab.icon;
+  const { accent, accentLight } = useAccent(tab);
   return (
     <motion.button
       initial={{ opacity: 0, y: -12 }}
@@ -173,7 +188,8 @@ function SkeletonCard({ index }) {
 
 // ─── News card ────────────────────────────────────────────────────────────────
 
-function NewsCard({ article, index, accent, accentLight, now }) {
+function NewsCard({ article, index, tab, now }) {
+  const { accent, accentLight } = useAccent(tab);
   const timeAgo = getTimeAgo(article.pubDate, now);
 
   return (
@@ -246,7 +262,8 @@ function NewsCard({ article, index, accent, accentLight, now }) {
 
 // ─── Featured (first) card — with OG image preview ───────────────────────────
 
-function FeaturedCard({ article, accent, accentLight, now }) {
+function FeaturedCard({ article, tab, now }) {
+  const { accent, accentLight } = useAccent(tab);
   const timeAgo = getTimeAgo(article.pubDate, now);
   const [og, setOg]         = useState(null);
   const [ogLoading, setOgLoading] = useState(true);
@@ -386,6 +403,49 @@ function ErrorState({ onRetry }) {
   );
 }
 
+// ─── Section header (uses CSS-variable accent) ────────────────────────────────
+
+function SectionHeader({ tab, articleCount }) {
+  const { accent, accentLight } = useAccent(tab);
+  const Icon = tab.icon;
+  return (
+    <div className="flex items-center gap-3 mb-6">
+      <motion.div
+        initial={{ scale: 0.6, rotate: -15 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 250, delay: 0.05 }}
+        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+        style={{ backgroundColor: accentLight, border: `1px solid ${accent}30` }}
+      >
+        <Icon size={17} style={{ color: accent }} />
+      </motion.div>
+      <div>
+        <motion.span
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-xs font-extrabold tracking-widest uppercase px-2.5 py-0.5 rounded-full"
+          style={{ backgroundColor: accentLight, color: accent }}
+        >
+          {tab.badge}
+        </motion.span>
+        <p className="font-extrabold text-foreground text-base leading-tight mt-0.5">
+          {tab.label}
+        </p>
+      </div>
+      {articleCount != null && articleCount > 0 && (
+        <motion.span
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="ml-auto text-xs text-muted-foreground"
+        >
+          {articleCount} articles
+        </motion.span>
+      )}
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function NewsPage() {
@@ -430,7 +490,7 @@ export default function NewsPage() {
         <Header></Header>
       <PageBanner />
 
-      <div className="max-w-6xl mx-auto px-4 -mt-10 pb-16 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 -mt-10 pb-16 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -477,41 +537,7 @@ export default function NewsPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 {/* Section label */}
-                <div className="flex items-center gap-3 mb-6">
-                  <motion.div
-                    initial={{ scale: 0.6, rotate: -15 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 250, delay: 0.05 }}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: currentTab.accentLight, border: `1px solid ${currentTab.accent}30` }}
-                  >
-                    <currentTab.icon size={17} style={{ color: currentTab.accent }} />
-                  </motion.div>
-                  <div>
-                    <motion.span
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="text-xs font-extrabold tracking-widest uppercase px-2.5 py-0.5 rounded-full"
-                      style={{ backgroundColor: currentTab.accentLight, color: currentTab.accent }}
-                    >
-                      {currentTab.badge}
-                    </motion.span>
-                    <p className="font-extrabold text-foreground text-base leading-tight mt-0.5">
-                      {currentTab.label}
-                    </p>
-                  </div>
-
-                  {!loading && articles.length > 0 && (
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="ml-auto text-xs text-muted-foreground"
-                    >
-                      {articles.length} articles
-                    </motion.span>
-                  )}
-                </div>
+                <SectionHeader tab={currentTab} articleCount={!loading ? articles.length : null} />
 
                 {/* Divider wipe */}
                 <motion.div
@@ -544,8 +570,7 @@ export default function NewsPage() {
                       {featured && (
                         <FeaturedCard
                           article={featured}
-                          accent={currentTab.accent}
-                          accentLight={currentTab.accentLight}
+                          tab={currentTab}
                           now={now}
                         />
                       )}
@@ -554,8 +579,7 @@ export default function NewsPage() {
                           key={`${activeTab}-${article.id}-${i}`}
                           article={article}
                           index={i}
-                          accent={currentTab.accent}
-                          accentLight={currentTab.accentLight}
+                          tab={currentTab}
                           now={now}
                         />
                       ))}
