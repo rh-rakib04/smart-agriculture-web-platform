@@ -14,10 +14,11 @@ import {
   ShoppingCart,
   LogOut,
   ChevronRight,
+  BarChart3,
 } from "lucide-react";
 import Logo from "../Logo";
 
-export default function Sidebar({ userRole}) {
+export default function Sidebar({ userRole }) {
   const pathname = usePathname();
 
   const menuConfig = {
@@ -40,6 +41,7 @@ export default function Sidebar({ userRole}) {
       { name: "Users", href: "/admin/users", icon: Users },
       { name: "Crops", href: "/admin/crops", icon: Sprout },
       { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+      { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
     ],
   };
 
