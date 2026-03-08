@@ -33,6 +33,7 @@
     "react-leaflet": "^5.0.0",
     "react-lottie": "^1.2.10",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.8.0",
     "sweetalert2": "^11.26.21",
     "sweetalert2-react-content": "^5.1.1",
     "swr": "^2.4.0",
