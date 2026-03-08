@@ -38,8 +38,7 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { name: "Users", href: "/admin/users", icon: Users },
       { name: "Crops", href: "/admin/crops", icon: Sprout },
-      { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-    ],
+      { name: "Orders", href: "/admin/orders", icon: ShoppingCart },    ],
   };
 
   const navItems = menuConfig[userRole] || [];
@@ -55,7 +54,7 @@ export default function Sidebar({ userRole = "admin" }) {
 
       {/* Role Badge */}
       <div className="px-8 mb-6">
-        <div className="bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-2">
+        <div className="bg-slate-100 border border-slate-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
             {userRole} Menu
