@@ -16,6 +16,8 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
+import Logo from "../Logo";
+
 export default function Sidebar({ userRole = "admin" }) {
   const pathname = usePathname();
 
@@ -48,8 +50,7 @@ export default function Sidebar({ userRole = "admin" }) {
   const navItems = menuConfig[userRole] || [];
 
   return (
-    <aside className="sticky top-0 h-screen w-72 bg-white border-r border-slate-100 flex flex-col">
-
+    <aside className="sticky top-0 h-screen w-72 bg-white border-r border-slate-100 flex flex-col transition-all duration-300">
       {/* Logo */}
       <div className="hidden md:block px-8 py-7">
         <Link href="/">
@@ -103,14 +104,16 @@ export default function Sidebar({ userRole = "admin" }) {
 
       {/* Logout */}
       <div className="p-4 border-t border-gray-50">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-red-500 hover:bg-red-50 transition-colors">
+        <button
+          type="button"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-red-500 hover:bg-red-50 transition-colors"
+        >
           <div className="w-2 h-2 rounded-full bg-red-500" />
           <span className="text-sm uppercase tracking-widest font-black">
             Logout
           </span>
         </button>
       </div>
-
     </aside>
   );
 }
