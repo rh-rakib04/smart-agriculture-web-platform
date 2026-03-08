@@ -8,7 +8,6 @@ import { AuthProvider } from "@/contexts/AuthProvider";
 import { Providers } from "./Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
 import Header from "@/components/shared/Header";
 
 
