@@ -1,51 +1,98 @@
-import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/db/mongodb';
-import { COLLECTIONS, getCollection } from '@/lib/db/collections';
-import { withAuth } from '@/lib/auth/middleware';
+import { getCollection } from "@/lib/db/mongodb";
+import { COLLECTIONS } from "@/lib/db/collections";
 
-async function handler(request) {
+export async function GET(req) {
   try {
-    const db = await getDatabase();
-    
-    // Get counts for different entities
-    const usersCount = await getCollection(db, COLLECTIONS.USERS).countDocuments();
-    const farmersCount = await getCollection(db, COLLECTIONS.FARMERS).countDocuments();
-    const buyersCount = await getCollection(db, COLLECTIONS.BUYERS).countDocuments();
-    const cropsCount = await getCollection(db, COLLECTIONS.CROPS).countDocuments();
-    const paymentsCount = await getCollection(db, COLLECTIONS.PAYMENTS).countDocuments();
+    const role = req.headers.get("x-role");
+    if (role !== "admin") {
+      return Response.json(
+        { success: false, message: "Forbidden (admin only)" },
+        { status: 403 },
+      );
+    }
 
-    // Get total revenue
-    const payments = await getCollection(db, COLLECTIONS.PAYMENTS)
-      .find({ status: 'completed' })
-      .toArray();
-    
-    const totalRevenue = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
+    const usersCol = await getCollection(COLLECTIONS.USERS);
+    const cropsCol = await getCollection(COLLECTIONS.CROPS);
+    const ordersCol = await getCollection(COLLECTIONS.ORDERS || "orders");
+    const expensesCol = await getCollection(COLLECTIONS.EXPENSES);
 
-    return NextResponse.json({
+    const [users, crops, orders, expensesAgg, monthlyOrders, monthlyExpenses] =
+      await Promise.all([
+        usersCol.countDocuments(),
+        cropsCol.countDocuments(),
+        ordersCol.countDocuments(),
+        expensesCol
+          .aggregate([{ $group: { _id: null, total: { $sum: "$amount" } } }])
+          .toArray(),
+
+        // Monthly Orders
+        ordersCol
+          .aggregate([
+            {
+              $group: {
+                _id: { $month: "$createdAt" },
+                count: { $sum: 1 },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ])
+          .toArray(),
+
+        // Monthly Expenses
+        expensesCol
+          .aggregate([
+            {
+              $group: {
+                _id: { $month: "$createdAt" },
+                total: { $sum: "$amount" },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ])
+          .toArray(),
+      ]);
+
+    const monthNames = [
+      "",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formattedOrders = monthlyOrders.map((item) => ({
+      month: monthNames[item._id],
+      count: item.count,
+    }));
+
+    const formattedExpenses = monthlyExpenses.map((item) => ({
+      month: monthNames[item._id],
+      total: item.total,
+    }));
+
+    return Response.json({
       success: true,
-      analytics: {
-        users: {
-          total: usersCount,
-          farmers: farmersCount,
-          buyers: buyersCount,
-        },
-        crops: {
-          total: cropsCount,
-        },
-        payments: {
-          total: paymentsCount,
-          revenue: totalRevenue,
-        },
+      data: {
+        users,
+        crops,
+        orders,
+        expensesTotal: expensesAgg?.[0]?.total || 0,
+        monthlyOrders: formattedOrders,
+        monthlyExpenses: formattedExpenses,
       },
     });
   } catch (error) {
-    console.error('Admin analytics error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+    return Response.json(
+      { success: false, message: error.message },
+      { status: 500 },
     );
   }
 }
-
-export const GET = withAuth(handler, ['admin']);
-

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "../Logo";
+
 import {
   LayoutDashboard,
   Users,
@@ -29,16 +31,19 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Weather", href: "/farmer/weather", icon: CloudSun },
       { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
     ],
+
     buyer: [
       { name: "Dashboard", href: "/buyer", icon: LayoutDashboard },
       { name: "Browse Crops", href: "/buyer/crops", icon: Sprout },
       { name: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
     ],
+
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { name: "Users", href: "/admin/users", icon: Users },
       { name: "Crops", href: "/admin/crops", icon: Sprout },
       { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+      { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
     ],
   };
 
@@ -64,7 +69,7 @@ export default function Sidebar({ userRole = "admin" }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
 
@@ -83,7 +88,7 @@ export default function Sidebar({ userRole = "admin" }) {
                 className={
                   isActive
                     ? "text-white"
-                    : "group-hover:text-[var(--primary)] transition-colors"
+                    : "group-hover:text-emerald-600 transition-colors"
                 }
               />
 
