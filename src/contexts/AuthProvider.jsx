@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
   const [initialized, setInitialized] = useState(false);
   const [token, setToken] = useState(null);
   const [tokenResolved, setTokenResolved] = useState(false);
+  const { data: session, status: sessionStatus } = useSession(); // ← FIX: was missing
 
   // Check user when app loads
   useEffect(() => {

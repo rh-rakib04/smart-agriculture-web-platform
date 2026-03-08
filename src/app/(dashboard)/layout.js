@@ -20,8 +20,6 @@ import Logo from "@/components/Logo";
 import { useRole } from "@/hooks/useRole";
 
 export default function DashboardLayout({ children }) {
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuthContext();
   const { role, loading } = useRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,12 +92,7 @@ export default function DashboardLayout({ children }) {
         <header className="sticky top-0 z-[90] flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200/60">
           {/* Left Side */}
           <div className="flex items-center gap-4">
-
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={22} />
               className="md:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50"
               onClick={() => setIsMobileMenuOpen(true)}
             >
@@ -182,9 +175,6 @@ export default function DashboardLayout({ children }) {
                   setNotifOpen(false);
                 }}
               >
-                {user?.role ?? 'User'}
-              </span>
-
                 <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-slate-100 group-hover:border-emerald-500 transition-colors bg-slate-100">
                   {user?.image ? (
                     <Image
@@ -237,9 +227,7 @@ export default function DashboardLayout({ children }) {
                 </div>
               )}
             </div>
-
           </div>
-
         </header>
 
         {/* Page Content */}
