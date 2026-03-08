@@ -17,10 +17,11 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/components/Logo";
+import { useRole } from "@/hooks/useRole";
 
 export default function DashboardLayout({ children }) {
   const { user } = useAuthContext();
-
+  const { role, loading } = useRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function DashboardLayout({ children }) {
     <div className="flex min-h-screen bg-slate-50/50">
       {/* Desktop Sidebar */}
       <aside className="hidden md:block w-72 shrink-0 overflow-visible">
-        <Sidebar userRole={user?.role ?? "buyer"} />
+       <Sidebar userRole={role ?? "farmer"} />
       </aside>
 
       {/* Mobile Sidebar Overlay */}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import {
   LayoutDashboard,
   Users,
@@ -12,11 +13,11 @@ import {
   CloudSun,
   MessageSquare,
   ShoppingCart,
+  BarChart3,
 } from "lucide-react";
-
 import Logo from "../Logo";
 
-export default function Sidebar({ userRole = "admin" }) {
+export default function Sidebar({ userRole }) {
   const pathname = usePathname();
 
   const menuConfig = {
@@ -29,16 +30,20 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Weather", href: "/farmer/weather", icon: CloudSun },
       { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
     ],
+
     buyer: [
       { name: "Dashboard", href: "/buyer", icon: LayoutDashboard },
       { name: "Browse Crops", href: "/buyer/crops", icon: Sprout },
       { name: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
     ],
+
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { name: "Users", href: "/admin/users", icon: Users },
       { name: "Crops", href: "/admin/crops", icon: Sprout },
-      { name: "Orders", href: "/admin/orders", icon: ShoppingCart },    ],
+      { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+      { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    ],
   };
 
   const navItems = menuConfig[userRole] || [];
@@ -47,9 +52,7 @@ export default function Sidebar({ userRole = "admin" }) {
     <aside className="sticky top-0 h-screen w-72 bg-white border-r border-slate-100 flex flex-col transition-all duration-300">
       {/* Logo */}
       <div className="hidden md:block px-8 py-7">
-        <Link href="/">
-          <Logo />
-        </Link>
+        <Logo />
       </div>
 
       {/* Role Badge */}
@@ -63,7 +66,7 @@ export default function Sidebar({ userRole = "admin" }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
 
@@ -82,7 +85,7 @@ export default function Sidebar({ userRole = "admin" }) {
                 className={
                   isActive
                     ? "text-white"
-                    : "group-hover:text-[var(--primary)] transition-colors"
+                    : "group-hover:text-emerald-600 transition-colors"
                 }
               />
 
