@@ -2,6 +2,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+import { AuthProvider } from "@/contexts/AuthProvider";
+
 import { Providers } from "./Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -19,8 +22,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+
+ 
   title: "Smart Agriculture Platform",
   description: "Smart agriculture solution",
+
 };
 
 export default function RootLayout({ children }) {
@@ -30,15 +36,24 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          
-          {children}
 
+          
+
+          {/* Page content */}
+          <main className="min-h-screen">
+            {children}
+          </main>
+
+          {/* Footer */}
+          <Footer />
+
+          {/* Toast notifications */}
           <ToastContainer
             position="top-right"
             autoClose={3000}
             theme="colored"
           />
-          <Footer></Footer>
+
         </Providers>
       </body>
     </html>
