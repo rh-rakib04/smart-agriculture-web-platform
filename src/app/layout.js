@@ -10,7 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Header from "@/components/shared/Header";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -22,11 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-
- 
   title: "Smart Agriculture Platform",
   description: "Smart agriculture solution",
-
 };
 
 export default function RootLayout({ children }) {
@@ -36,13 +32,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-
-          
-
           {/* Page content */}
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <main className="min-h-screen">{children}</main>
 
           {/* Footer */}
           <Footer />
@@ -53,7 +44,6 @@ export default function RootLayout({ children }) {
             autoClose={3000}
             theme="colored"
           />
-
         </Providers>
       </body>
     </html>

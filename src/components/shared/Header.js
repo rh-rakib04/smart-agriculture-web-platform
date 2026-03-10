@@ -164,7 +164,7 @@ export default function Header() {
                 height={10}
               />
               <span className="text-xl font-bold text-highlight tracking-tight">
-                Smart<span className="text-secondary">Agriculture</span>
+                Krishi<span className="text-secondary">Nova</span>
               </span>
             </Link>
 
