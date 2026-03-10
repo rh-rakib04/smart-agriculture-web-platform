@@ -3,6 +3,7 @@
 import Lottie from "lottie-react";
 import loader from "../../public/farming-animation.json";
 import { motion } from "framer-motion";
+import Logo from "./Logo";
 
 export default function Loader() {
   return (
@@ -26,13 +27,9 @@ export default function Loader() {
       </motion.div>
 
       {/* Brand */}
-      <h2 className="text-2xl font-bold text-green-600 mt-4">
-        KrishiNova
-      </h2>
+      <Logo className="w-30" />
 
-      <p className="text-gray-500 text-sm">
-        Smart Agriculture Platform
-      </p>
+      <p className="text-gray-500 text-sm">Smart Agriculture Platform</p>
 
       {/* Loading dots */}
       <div className="flex gap-2 mt-4">

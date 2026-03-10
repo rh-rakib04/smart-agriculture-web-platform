@@ -16,20 +16,33 @@ export async function GET(req) {
 
     const crops = await getCollection(COLLECTIONS.CROPS);
     const expenses = await getCollection(COLLECTIONS.EXPENSES);
+    const orders = await getCollection(COLLECTIONS.ORDERS);
 
     const totalCrops = await crops.countDocuments({ farmerId });
-    const totalExpensesDocs = await expenses.find({ farmerId }).toArray();
 
-    const totalExpenses = totalExpensesDocs.reduce(
-      (sum, item) => sum + item.amount,
+    const expenseDocs = await expenses.find({ farmerId }).toArray();
+    const totalExpenses = expenseDocs.reduce(
+      (sum, item) => sum + Number(item.amount),
       0
     );
+
+    const orderDocs = await orders.find({ farmerId }).toArray();
+    const totalOrders = orderDocs.length;
+
+    const totalRevenue = orderDocs.reduce(
+      (sum, order) => sum + Number(order.totalPrice || 0),
+      0
+    );
+
+    const profit = totalRevenue - totalExpenses;
 
     return Response.json({
       success: true,
       stats: {
         totalCrops,
+        totalOrders,
         totalExpenses,
+        profit,
       },
     });
 

@@ -7,48 +7,42 @@ const allowedStatus = ["pending", "approved", "rejected", "hidden"];
 export async function PATCH(req, context) {
   try {
     const role = req.headers.get("x-role");
+
     if (role !== "admin") {
       return Response.json(
-        { success: false, message: "Forbidden (admin only)" },
+        { success: false, message: "Admin only" },
         { status: 403 }
       );
     }
 
-    const id = context?.params?.id; // ✅ safest way
-    if (!id || !ObjectId.isValid(id)) {
-      return Response.json(
-        { success: false, message: "Invalid crop id" },
-        { status: 400 }
-      );
-    }
+    const { id } = await context.params;
 
     const body = await req.json();
-    const status = body?.status;
+    const { status } = body;
 
-    if (!status || !allowedStatus.includes(status)) {
+    if (!allowedStatus.includes(status)) {
       return Response.json(
-        { success: false, message: `status must be one of: ${allowedStatus.join(", ")}` },
+        { success: false, message: "Invalid status" },
         { status: 400 }
       );
     }
 
-    const cropsCol = await getCollection(COLLECTIONS.CROPS);
+    const crops = await getCollection(COLLECTIONS.CROPS);
 
-    const result = await cropsCol.findOneAndUpdate(
+    const result = await crops.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: { status, updatedAt: new Date() } },
+      { $set: { status } },
       { returnDocument: "after" }
     );
 
-    if (!result.value) {
-      return Response.json(
-        { success: false, message: "Crop not found" },
-        { status: 404 }
-      );
-    }
+    return Response.json({
+      success: true,
+      data: result.value,
+    });
 
-    return Response.json({ success: true, data: result.value });
   } catch (error) {
+    console.error("Status update error:", error);
+
     return Response.json(
       { success: false, message: error.message },
       { status: 500 }
