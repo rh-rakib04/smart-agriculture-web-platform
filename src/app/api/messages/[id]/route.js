@@ -171,3 +171,80 @@ async function postHandler(request, { params }) {
 
 export const GET = withAuth(getHandler, ["farmer", "buyer"]);
 export const POST = withAuth(postHandler, ["farmer", "buyer"]);
+
+// DELETE /api/messages/[conversationId]?messageId=xxx
+async function deleteHandler(request, { params }) {
+  try {
+    const { id: conversationId } = await params;
+    const url = new URL(request.url);
+    const messageId = url.searchParams.get("messageId");
+
+    if (!ObjectId.isValid(conversationId) || !ObjectId.isValid(messageId)) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const db = await getDatabase();
+    const conversationsCollection = getCollection(db, COLLECTIONS.CONVERSATIONS);
+    const messagesCollection = getCollection(db, COLLECTIONS.MESSAGES);
+
+    const { role, userId, email } = request.user;
+
+    // Verify user is part of this conversation
+    const conversation = await conversationsCollection.findOne({
+      _id: new ObjectId(conversationId),
+    });
+
+    if (!conversation) {
+      return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+    }
+
+    const allowed = await verifyAccess(conversation, role, userId, email);
+    if (!allowed) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Find the message — only sender can delete
+    const message = await messagesCollection.findOne({
+      _id: new ObjectId(messageId),
+      conversationId: new ObjectId(conversationId),
+    });
+
+    if (!message) {
+      return NextResponse.json({ error: "Message not found" }, { status: 404 });
+    }
+
+    if (message.senderEmail !== email) {
+      return NextResponse.json(
+        { error: "You can only delete your own messages" },
+        { status: 403 }
+      );
+    }
+
+    // Delete the message
+    await messagesCollection.deleteOne({ _id: new ObjectId(messageId) });
+
+    // If it was the last message, update conversation's lastMessage
+    const lastMsg = await messagesCollection
+      .find({ conversationId: new ObjectId(conversationId) })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .toArray();
+
+    await conversationsCollection.updateOne(
+      { _id: new ObjectId(conversationId) },
+      {
+        $set: {
+          lastMessage: lastMsg[0]?.text || "",
+          lastMessageAt: lastMsg[0]?.createdAt || new Date(),
+        },
+      }
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("DELETE message error:", error);
+    return NextResponse.json({ error: "Failed to delete message" }, { status: 500 });
+  }
+}
+
+export const DELETE = withAuth(deleteHandler, ["farmer", "buyer"]);

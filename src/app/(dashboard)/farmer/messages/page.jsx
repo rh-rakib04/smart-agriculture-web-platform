@@ -7,8 +7,9 @@ import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 import {
   FiSend, FiSearch, FiCheck, FiCheckCircle,
-  FiMessageCircle, FiInbox, FiUser, FiArrowLeft
+  FiMessageCircle, FiInbox, FiUser, FiArrowLeft, FiTrash2
 } from "react-icons/fi";
+import Swal from "sweetalert2";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 function getToken() {
@@ -23,31 +24,84 @@ function authHeaders() {
 }
 
 // ─── MessageBubble ───────────────────────────────────────────────────────────
-function MessageBubble({ msg, myEmail }) {
+function MessageBubble({ msg, myEmail, conversationId, onDelete }) {
   const isMe = msg.senderEmail === myEmail;
+  const [showActions, setShowActions] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    const result = await Swal.fire({
+      title: "Delete message?",
+      text: "This will be removed for everyone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(
+        `/api/messages/${conversationId}?messageId=${msg._id}`,
+        { method: "DELETE", headers: authHeaders() }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      onDelete(msg._id);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
-    <div className={`flex ${isMe ? "justify-end" : "justify-start"} mb-1`}>
-      <div
-        className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm shadow-sm
-          ${isMe
-            ? "bg-primary text-primary-content rounded-br-none"
-            : "bg-base-100 text-base-content rounded-bl-none border border-base-300"
-          }`}
-      >
-        <p className="break-words leading-relaxed">{msg.text}</p>
-        <div className={`flex items-center justify-end gap-1 mt-0.5
-          text-xs opacity-60`}>
-          <span>
-            {new Date(msg.createdAt).toLocaleTimeString([], {
-              hour: "2-digit", minute: "2-digit",
-            })}
-          </span>
-          {isMe && (
-            msg.seen
-              ? <FiCheckCircle className="w-3 h-3" />
-              : <FiCheck className="w-3 h-3" />
-          )}
+    <div
+      className={`flex ${isMe ? "justify-end" : "justify-start"} mb-1 group`}
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
+    >
+      <div className={`flex items-end gap-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+        {/* Delete button — only for sender */}
+        {isMe && (
+          <div className={`transition-opacity ${showActions ? "opacity-100" : "opacity-0"}`}>
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="btn btn-ghost btn-xs text-error p-1"
+              title="Delete message"
+            >
+              {deleting
+                ? <span className="loading loading-spinner loading-xs" />
+                : <FiTrash2 className="w-3.5 h-3.5" />
+              }
+            </button>
+          </div>
+        )}
+
+        <div
+          className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm shadow-sm
+            ${isMe
+              ? "bg-primary text-primary-content rounded-br-none"
+              : "bg-base-100 text-base-content rounded-bl-none border border-base-300"
+            }`}
+        >
+          <p className="break-words leading-relaxed">{msg.text}</p>
+          <div className={`flex items-center justify-end gap-1 mt-0.5 text-xs opacity-60`}>
+            <span>
+              {new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: "2-digit", minute: "2-digit",
+              })}
+            </span>
+            {isMe && (
+              msg.seen
+                ? <FiCheckCircle className="w-3 h-3" />
+                : <FiCheck className="w-3 h-3" />
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -263,6 +317,12 @@ export default function MessagesPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
+
+  // ── Delete message ───────────────────────────────────────────────────────
+  const handleDeleteMessage = (messageId) => {
+    setMessages((prev) => prev.filter((m) => m._id !== messageId));
+    fetchConversations(); // refresh last message in sidebar
+  };
 
   // ── Send message ─────────────────────────────────────────────────────────
   const handleSend = async () => {
@@ -517,6 +577,8 @@ export default function MessagesPage() {
                       key={msg._id}
                       msg={msg}
                       myEmail={user?.email}
+                      conversationId={activeId}
+                      onDelete={handleDeleteMessage}
                     />
                   ))}
                   <div ref={bottomRef} />
