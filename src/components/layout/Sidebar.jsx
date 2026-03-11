@@ -15,6 +15,7 @@ import {
   BarChart3,
   LogOut,
   ChevronRight,
+  MessageCircle
 } from "lucide-react";
 import Logo from "../Logo";
 
@@ -30,13 +31,13 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Calculator", href: "/farmer/calculator", icon: Calculator },
       { name: "Weather", href: "/farmer/weather", icon: CloudSun },
       { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
-      { name: "Messages", href: "/farmer/chat", icon: MessageSquare },
+      { name: "Messages", href: "/farmer/chat", icon: MessageCircle },
     ],
     buyer: [
       { name: "Dashboard", href: "/buyer", icon: LayoutDashboard },
       { name: "Browse Crops", href: "/buyer/crops", icon: Sprout },
       { name: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
-      { name: "Messages", href: "/buyer/chat", icon: MessageSquare },
+      { name: "Messages", href: "/buyer/chat", icon: MessageCircle },
     ],
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
