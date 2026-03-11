@@ -152,17 +152,9 @@ export default function DashboardLayout({ children }) {
             </label>
 
             {/* Brand mark */}
-            <Link href="/" className="flex items-center gap-2 no-underline">
-              <div className="p-1.5 rounded-lg bg-muted border border-border">
-                <Leaf size={14} className="text-primary" />
-              </div>
-              <span
-                className="text-[15px] font-black text-foreground tracking-tight"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Dashboard
-              </span>
-            </Link>
+            <div className="flex items-center gap-2 no-underline">
+              <Logo />
+            </div>
 
             {/* Search — hidden on mobile */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-muted border border-border ml-2">
@@ -177,13 +169,6 @@ export default function DashboardLayout({ children }) {
 
           {/* Right: actions */}
           <div className="flex items-center gap-2">
-            {/* Home */}
-            <Link href="/" onClick={closeAll}>
-              <button className="btn btn-ghost btn-square text-muted-foreground hover:text-primary hover:bg-muted">
-                <Home size={17} />
-              </button>
-            </Link>
-
             {/* Notifications */}
             <div className="relative">
               <button

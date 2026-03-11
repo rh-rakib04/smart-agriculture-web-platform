@@ -101,7 +101,7 @@ export default function AdminOverviewPage() {
   ];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", gap: 20 }}>
+    <div className="p-5 md:p-10" style={{ fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", gap: 20 }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=Space+Grotesk:wght@700;800&display=swap');
         @keyframes spin    { to { transform: rotate(360deg); } }
