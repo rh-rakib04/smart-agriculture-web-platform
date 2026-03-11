@@ -171,6 +171,7 @@ export default function ManageProducts() {
       `}</style>
 
       <div
+        className="p-5 md:p-10 "
         style={{
           maxWidth: 1100,
           margin: "0 auto",
