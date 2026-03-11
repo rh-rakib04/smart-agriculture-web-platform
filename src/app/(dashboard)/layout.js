@@ -1,291 +1,368 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import { useAuthContext } from "@/contexts/AuthProvider";
 import {
-  PanelLeft, X, Bell, Home, ChevronDown,
-  User, Settings, LogOut, Search, Leaf,
+  PanelLeft,
+  Bell,
+  Home,
+  ChevronDown,
+  User,
+  Settings,
+  LogOut,
+  Search,
+  Leaf,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/components/Logo";
 import { useRole } from "@/hooks/useRole";
+import { useState } from "react";
 
-const B = {
-  primary:      "#2E7D32",
-  primaryLight: "#66BB6A",
-  highlight:    "#FBC02D",
-  accent:       "#8D6E63",
-  muted:        "#E8F5E9",
-  border:       "#C8E6C9",
-  foreground:   "#1B5E20",
-  mutedFg:      "#424242",
-  card:         "#ffffff",
-};
+/* ─────────────────────────────────────────────────────────────────────
+   Uses DaisyUI drawer pattern:
+   - `drawer lg:drawer-open` root
+   - `drawer-toggle` checkbox controls open/close on mobile
+   - `is-drawer-close:w-14` / `is-drawer-open:w-64` for collapse
+   - `is-drawer-close:hidden` to hide labels when collapsed
+   - `is-drawer-close:tooltip` for tooltips when icon-only
+   Exactly mirrors the eTuitionBd reference implementation.
+───────────────────────────────────────────────────────────────────── */
 
 const ROLE_CFG = {
-  admin:  { color: "#6A1B9A", bg: "#F3E5F5", border: "#E1BEE7" },
-  farmer: { color: B.primary, bg: B.muted,   border: B.border  },
-  buyer:  { color: "#1565C0", bg: "#E3F2FD", border: "#BBDEFB" },
+  admin: { textColor: "var(--highlight)" },
+  farmer: { textColor: "var(--secondary)" },
+  buyer: { textColor: "var(--accent)" },
 };
 
-function Avatar({ name, image, size = 36 }) {
-  const initials = (name || "U").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+function Avatar({ name, image, size = 34 }) {
+  const initials = (name || "U")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: B.muted, border: `2px solid ${B.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      {image
-        ? <Image src={image} alt="Profile" width={size} height={size} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
-        : <span style={{ color: B.primary, fontSize: size * 0.35, fontWeight: 900, fontFamily: "'DM Sans', sans-serif" }}>{initials}</span>
-      }
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        overflow: "hidden",
+        flexShrink: 0,
+        background: "var(--muted)",
+        border: "2px solid var(--border)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {image ? (
+        <Image
+          src={image}
+          alt="Profile"
+          width={size}
+          height={size}
+          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+        />
+      ) : (
+        <span
+          style={{
+            fontSize: size * 0.36,
+            fontWeight: 900,
+            color: "var(--primary)",
+          }}
+        >
+          {initials}
+        </span>
+      )}
     </div>
   );
 }
 
 export default function DashboardLayout({ children }) {
-  const { user }          = useAuthContext();
-  const { role }          = useRole();
-  const [collapsed,  setCollapsed]  = useState(false);   // sidebar toggle
-  const [mobileOpen, setMobileOpen] = useState(false);   // mobile drawer
-  const [notifOpen,  setNotifOpen]  = useState(false);
-  const [userOpen,   setUserOpen]   = useState(false);
+  const { user } = useAuthContext();
+  const { role } = useRole();
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
 
-  const closeMobileMenu = () => setMobileOpen(false);
-  const closeAll        = () => { setNotifOpen(false); setUserOpen(false); };
-
-  const notifications = [
-    { id: 1, text: "New order received for Aman Rice",  time: "2 min ago",  unread: true  },
-    { id: 2, text: "Your crop listing was approved",    time: "10 min ago", unread: true  },
-    { id: 3, text: "Payment of ৳ 4,200 processed",     time: "1 hr ago",   unread: false },
-  ];
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const closeAll = () => {
+    setNotifOpen(false);
+    setUserOpen(false);
+  };
   const roleCfg = ROLE_CFG[role] || ROLE_CFG.buyer;
 
+  const notifications = [
+    {
+      id: 1,
+      text: "New order received for Aman Rice",
+      time: "2 min ago",
+      unread: true,
+    },
+    {
+      id: 2,
+      text: "Your crop listing was approved",
+      time: "10 min ago",
+      unread: true,
+    },
+    {
+      id: 3,
+      text: "Payment of ৳ 4,200 processed",
+      time: "1 hr ago",
+      unread: false,
+    },
+  ];
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", display: "flex", minHeight: "100vh", background: B.muted }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=Space+Grotesk:wght@700;800&display=swap');
-        @keyframes pulse    { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-        @keyframes fadeIn   { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
-        @keyframes slideIn  { from{transform:translateX(-100%);} to{transform:translateX(0);} }
-        @keyframes fadeUp   { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+    /* ── DaisyUI drawer root ─────────────────────────────────────── */
+    <div className="drawer lg:drawer-open min-h-screen bg-background">
+      {/* Checkbox toggle — controls mobile open/close */}
+      <input id="kn-drawer" type="checkbox" className="drawer-toggle" />
 
-        .nav-btn { transition: background 0.15s, color 0.15s, transform 0.12s; }
-        .nav-btn:hover { transform: scale(1.06); }
-        .nav-btn:active { transform: scale(0.94); }
-        .notif-row { transition: background 0.15s; cursor: pointer; }
-        .notif-row:hover { background: ${B.muted}; }
-        .menu-link { transition: background 0.15s; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; text-decoration: none; font-size: 13px; font-weight: 700; color: ${B.mutedFg}; }
-        .menu-link:hover { background: ${B.muted}; color: ${B.foreground}; }
-        .toggle-btn { transition: background 0.15s, transform 0.15s, box-shadow 0.15s; }
-        .toggle-btn:hover { background: ${B.muted} !important; transform: scale(1.06); }
-        .toggle-btn:active { transform: scale(0.93); }
-
-        /* Desktop: show sidebar, hide hamburger */
-        @media (min-width: 768px) {
-          .desktop-sidebar { display: block !important; }
-          .mobile-hamburger { display: none !important; }
-          .mobile-drawer-overlay { display: none !important; }
-        }
-        /* Mobile: hide desktop sidebar + toggle, show hamburger */
-        @media (max-width: 767px) {
-          .desktop-sidebar { display: none !important; }
-          .desktop-toggle  { display: none !important; }
-          .search-bar      { display: none !important; }
-        }
-
-        .main-scroll::-webkit-scrollbar { width: 5px; }
-        .main-scroll::-webkit-scrollbar-track { background: transparent; }
-        .main-scroll::-webkit-scrollbar-thumb { background: ${B.border}; border-radius: 10px; }
-      `}</style>
-
-      {/* ══ DESKTOP SIDEBAR ══════════════════════════════════════════ */}
-      <div className="desktop-sidebar" style={{ display: "block", flexShrink: 0 }}>
-        <Sidebar
-          userRole={role ?? "farmer"}
-          collapsed={collapsed}
-        />
-      </div>
-
-      {/* ══ MOBILE DRAWER ════════════════════════════════════════════ */}
-      {mobileOpen && (
-        <div className="mobile-drawer-overlay" style={{ position: "fixed", inset: 0, zIndex: 200 }} onClick={closeMobileMenu}>
-          <div style={{ position: "absolute", inset: 0, background: "rgba(27,94,32,0.35)", backdropFilter: "blur(4px)" }} />
-          <div onClick={(e) => e.stopPropagation()}
-            style={{ position: "absolute", left: 0, top: 0, height: "100%", background: B.card, boxShadow: "4px 0 40px rgba(0,0,0,0.18)", animation: "slideIn 0.25s ease both", display: "flex", flexDirection: "column" }}>
-            <div style={{ padding: "18px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${B.border}` }}>
-              <Logo />
-              <button onClick={closeMobileMenu} className="nav-btn"
-                style={{ padding: "7px 8px", borderRadius: 10, background: B.muted, border: `1px solid ${B.border}`, color: B.foreground, display: "flex", cursor: "pointer" }}>
-                <X size={18} />
-              </button>
-            </div>
-            <div style={{ flex: 1, overflowY: "auto" }}>
-              <Sidebar userRole={user?.role ?? "buyer"} collapsed={false} onNavigate={closeMobileMenu} />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ══ MAIN COLUMN ══════════════════════════════════════════════ */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, transition: "all 0.28s" }}>
-
-        {/* ── Topbar ───────────────────────────────────────────────── */}
-        <header style={{
-          position: "sticky", top: 0, zIndex: 100,
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 20px", height: 64,
-          background: "rgba(255,255,255,0.88)", backdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${B.border}`,
-          boxShadow: "0 2px 16px rgba(46,125,50,0.07)",
-        }}>
-
-          {/* Left */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-
-            {/* ── DESKTOP TOGGLE (collapse/expand) ──────────────── */}
-            <button
-              className="desktop-toggle toggle-btn"
-              onClick={() => setCollapsed(!collapsed)}
-              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              style={{
-                padding: "8px 9px",
-                borderRadius: 11,
-                border: `1.5px solid ${B.border}`,
-                background: collapsed ? B.muted : "transparent",
-                color: collapsed ? B.primary : B.mutedFg,
-                display: "flex",
-                cursor: "pointer",
-                boxShadow: collapsed ? `0 2px 8px rgba(46,125,50,0.15)` : "none",
-              }}
+      {/* ══ MAIN CONTENT (drawer-content) ════════════════════════════ */}
+      <div className="drawer-content flex flex-col min-h-screen">
+        {/* ── Sticky Navbar ──────────────────────────────────────── */}
+        <nav className="navbar sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-border shadow-sm px-4 h-16">
+          {/* Left: hamburger + brand */}
+          <div className="flex items-center gap-3 flex-1">
+            {/* Hamburger / toggle — opens drawer on mobile, acts as toggle label */}
+            <label
+              htmlFor="kn-drawer"
+              aria-label="toggle sidebar"
+              className="btn btn-square btn-ghost text-muted-foreground hover:bg-muted hover:text-primary lg:flex"
             >
-              <PanelLeft size={18} style={{ transform: collapsed ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.28s" }} />
-            </button>
-
-            {/* ── MOBILE HAMBURGER ──────────────────────────────── */}
-            <button
-              className="mobile-hamburger nav-btn"
-              onClick={() => setMobileOpen(true)}
-              style={{ padding: "8px 9px", borderRadius: 11, border: `1.5px solid ${B.border}`, background: B.muted, color: B.foreground, display: "flex", cursor: "pointer" }}
-            >
-              <PanelLeft size={18} />
-            </button>
+              {/* PanelLeft SVG inline so no extra import needed */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M9 3v18" />
+                <path d="m14 9 3 3-3 3" />
+              </svg>
+            </label>
 
             {/* Brand mark */}
-            <div style={{ display: "flex", alignItems: "center", gap: 7, marginLeft: 2 }}>
-              <div style={{ padding: "5px 6px", borderRadius: 9, background: B.muted, border: `1.5px solid ${B.border}` }}>
-                <Leaf size={14} style={{ color: B.primary }} />
+            <Link href="/" className="flex items-center gap-2 no-underline">
+              <div className="p-1.5 rounded-lg bg-muted border border-border">
+                <Leaf size={14} className="text-primary" />
               </div>
-              <span style={{ fontSize: 15, fontWeight: 900, color: B.foreground, letterSpacing: "-0.02em" }}>
-                Krishi<span style={{ color: B.primary }}>Nova</span>
+              <span
+                className="text-[15px] font-black text-foreground tracking-tight"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Dashboard
               </span>
-            </div>
+            </Link>
 
-            {/* Search */}
-            <div className="search-bar" style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 12, background: B.muted, border: `1.5px solid ${B.border}`, marginLeft: 8 }}>
-              <Search size={13} style={{ color: B.mutedFg }} />
-              <input type="text" placeholder="Search records..."
-                style={{ border: "none", outline: "none", fontSize: 12, fontWeight: 600, color: B.foreground, background: "transparent", width: 160 }} />
+            {/* Search — hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-muted border border-border ml-2">
+              <Search size={13} className="text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search records..."
+                className="bg-transparent border-none outline-none text-xs font-semibold text-foreground w-36 lg:w-44"
+              />
             </div>
           </div>
 
-          {/* Right */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-
+          {/* Right: actions */}
+          <div className="flex items-center gap-2">
             {/* Home */}
             <Link href="/" onClick={closeAll}>
-              <button className="nav-btn" style={{ padding: "8px 9px", borderRadius: 11, border: `1.5px solid ${B.border}`, background: "transparent", color: B.mutedFg, display: "flex", cursor: "pointer" }}>
+              <button className="btn btn-ghost btn-square text-muted-foreground hover:text-primary hover:bg-muted">
                 <Home size={17} />
               </button>
             </Link>
 
             {/* Notifications */}
-            <div style={{ position: "relative" }}>
-              <button className="nav-btn" onClick={() => { setNotifOpen(!notifOpen); setUserOpen(false); }}
-                style={{ padding: "8px 9px", borderRadius: 11, border: `1.5px solid ${notifOpen ? B.primary : B.border}`, background: notifOpen ? B.muted : "transparent", color: notifOpen ? B.primary : B.mutedFg, display: "flex", cursor: "pointer", position: "relative" }}>
+            <div className="relative">
+              <button
+                className={`btn btn-square btn-ghost relative ${notifOpen ? "bg-muted text-primary" : "text-muted-foreground hover:bg-muted hover:text-primary"}`}
+                onClick={() => {
+                  setNotifOpen(!notifOpen);
+                  setUserOpen(false);
+                }}
+              >
                 <Bell size={17} />
-                {unreadCount > 0 && <span style={{ position: "absolute", top: 7, right: 7, width: 7, height: 7, borderRadius: "50%", background: "#C62828", border: "2px solid #fff", animation: "pulse 2s infinite" }} />}
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border-2 border-white animate-pulse" />
+                )}
               </button>
 
               {notifOpen && (
-                <div style={{ position: "absolute", right: 0, top: "calc(100% + 10px)", width: 300, background: B.card, border: `1.5px solid ${B.border}`, borderRadius: 18, boxShadow: "0 12px 40px rgba(46,125,50,0.15)", overflow: "hidden", animation: "fadeIn 0.2s ease both", zIndex: 200 }}>
-                  <div style={{ padding: "14px 18px", borderBottom: `1px solid ${B.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: B.primary, textTransform: "uppercase", letterSpacing: "0.14em" }}>Notifications</span>
-                    {unreadCount > 0 && <span style={{ fontSize: 9, fontWeight: 900, color: "#C62828", background: "#FFEBEE", border: "1px solid #FFCDD2", borderRadius: 20, padding: "2px 8px" }}>{unreadCount} NEW</span>}
+                <div className="absolute right-0 top-[calc(100%+8px)] w-72 bg-card border border-border rounded-2xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                    <span className="text-[11px] font-black text-primary uppercase tracking-widest">
+                      Notifications
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="text-[9px] font-black text-destructive bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
+                        {unreadCount} NEW
+                      </span>
+                    )}
                   </div>
-                  <div style={{ maxHeight: 280, overflowY: "auto" }}>
-                    {notifications.map((n) => (
-                      <div key={n.id} className="notif-row" style={{ padding: "12px 18px", borderBottom: `1px solid ${B.border}`, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: n.unread ? B.primary : B.border, flexShrink: 0, marginTop: 5, animation: n.unread ? "pulse 2s infinite" : "none" }} />
-                        <div>
-                          <div style={{ fontWeight: n.unread ? 800 : 600, fontSize: 12, color: B.foreground }}>{n.text}</div>
-                          <div style={{ fontSize: 10, color: B.mutedFg, fontWeight: 600, marginTop: 3 }}>{n.time}</div>
-                        </div>
+                  {notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className="flex gap-3 px-4 py-3 border-b border-border hover:bg-muted cursor-pointer transition-colors"
+                    >
+                      <div
+                        className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? "bg-primary animate-pulse" : "bg-border"}`}
+                      />
+                      <div>
+                        <p
+                          className={`text-sm ${n.unread ? "font-bold text-foreground" : "font-medium text-muted-foreground"}`}
+                        >
+                          {n.text}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">
+                          {n.time}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                  <button style={{ width: "100%", padding: "12px", fontSize: 11, fontWeight: 800, color: B.primary, background: B.muted, border: "none", cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+                    </div>
+                  ))}
+                  <button className="w-full py-3 text-[11px] font-black text-primary uppercase tracking-widest bg-muted hover:bg-border transition-colors">
                     View All Notifications
                   </button>
                 </div>
               )}
             </div>
 
+            {/* Divider */}
+            <div className="w-px h-8 bg-border mx-1" />
+
             {/* User dropdown */}
-            <div style={{ position: "relative", paddingLeft: 10, marginLeft: 4, borderLeft: `1px solid ${B.border}` }}>
-              <button onClick={() => { setUserOpen(!userOpen); setNotifOpen(false); }}
-                style={{ display: "flex", alignItems: "center", gap: 8, background: "transparent", border: "none", cursor: "pointer", padding: "3px 0" }}>
-                <div style={{ borderRadius: "50%", border: `2.5px solid ${B.border}`, transition: "border-color 0.15s" }}>
-                  <Avatar name={user?.name} image={user?.image} size={34} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1.2 }}>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: B.foreground, maxWidth: 90, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setUserOpen(!userOpen);
+                  setNotifOpen(false);
+                }}
+                className="flex items-center gap-2 btn btn-ghost px-2"
+              >
+                <Avatar name={user?.name} image={user?.image} size={30} />
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-[13px] font-bold text-foreground max-w-[80px] truncate">
                     {user?.name?.split(" ")[0] || "User"}
                   </span>
-                  <span style={{ fontSize: 9, fontWeight: 900, color: roleCfg.color, textTransform: "uppercase", letterSpacing: "0.1em" }}>{role || "member"}</span>
+                  <span
+                    className="text-[9px] font-black uppercase tracking-wide"
+                    style={{ color: roleCfg.textColor }}
+                  >
+                    {role || "member"}
+                  </span>
                 </div>
-                <ChevronDown size={13} style={{ color: B.mutedFg, transform: userOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+                <ChevronDown
+                  size={13}
+                  className="text-muted-foreground transition-transform duration-200"
+                  style={{
+                    transform: userOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
+                />
               </button>
 
               {userOpen && (
-                <div style={{ position: "absolute", right: 0, top: "calc(100% + 10px)", width: 220, background: B.card, border: `1.5px solid ${B.border}`, borderRadius: 18, boxShadow: "0 12px 40px rgba(46,125,50,0.15)", overflow: "hidden", animation: "fadeIn 0.2s ease both", zIndex: 200 }}>
-                  <div style={{ padding: "14px 16px", borderBottom: `1px solid ${B.border}`, background: B.muted, display: "flex", alignItems: "center", gap: 10 }}>
-                    <Avatar name={user?.name} image={user?.image} size={38} />
+                <div className="absolute right-0 top-[calc(100%+8px)] w-52 bg-card border border-border rounded-2xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center gap-3 p-4 bg-muted border-b border-border">
+                    <Avatar name={user?.name} image={user?.image} size={36} />
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: 13, color: B.foreground }}>{user?.name || "Member"}</div>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, padding: "2px 8px", borderRadius: 20, background: roleCfg.bg, border: `1px solid ${roleCfg.border}` }}>
-                        <div style={{ width: 5, height: 5, borderRadius: "50%", background: roleCfg.color, animation: "pulse 2s infinite" }} />
-                        <span style={{ fontSize: 9, fontWeight: 900, color: roleCfg.color, textTransform: "uppercase", letterSpacing: "0.1em" }}>{role || "member"}</span>
-                      </div>
+                      <p className="text-[13px] font-bold text-foreground">
+                        {user?.name || "Member"}
+                      </p>
+                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-card border border-border">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full animate-pulse"
+                          style={{ background: roleCfg.textColor }}
+                        />
+                        <span
+                          className="text-[9px] font-black uppercase tracking-wide"
+                          style={{ color: roleCfg.textColor }}
+                        >
+                          {role}
+                        </span>
+                      </span>
                     </div>
                   </div>
-                  <div style={{ padding: "8px" }}>
-                    <Link href="/profile" className="menu-link" onClick={closeAll}>
-                      <div style={{ padding: "5px 6px", borderRadius: 8, background: B.muted, border: `1px solid ${B.border}` }}><User size={13} style={{ color: B.primary }} /></div>
+                  <div className="p-2">
+                    <Link
+                      href="/profile"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors no-underline"
+                      onClick={closeAll}
+                    >
+                      <span className="p-1 rounded-lg bg-muted border border-border">
+                        <User size={13} className="text-primary" />
+                      </span>
                       Profile
                     </Link>
-                    <Link href="/settings" className="menu-link" onClick={closeAll}>
-                      <div style={{ padding: "5px 6px", borderRadius: 8, background: B.muted, border: `1px solid ${B.border}` }}><Settings size={13} style={{ color: B.primary }} /></div>
+                    <Link
+                      href="/settings"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors no-underline"
+                      onClick={closeAll}
+                    >
+                      <span className="p-1 rounded-lg bg-muted border border-border">
+                        <Settings size={13} className="text-primary" />
+                      </span>
                       Settings
                     </Link>
-                    <div style={{ height: 1, background: B.border, margin: "6px 0" }} />
-                    <button className="menu-link" style={{ width: "100%", border: "none", background: "transparent", cursor: "pointer", color: "#C62828" }}>
-                      <div style={{ padding: "5px 6px", borderRadius: 8, background: "#FFEBEE", border: "1px solid #FFCDD2" }}><LogOut size={13} style={{ color: "#C62828" }} /></div>
-                      Logout
+                    <div className="h-px bg-border my-1.5" />
+                    <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-bold text-destructive hover:bg-red-50 transition-colors">
+                      <span className="p-1 rounded-lg bg-red-50 border border-red-200">
+                        <LogOut size={13} className="text-destructive" />
+                      </span>
+                      Sign Out
                     </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
-        </header>
+        </nav>
 
         {/* ── Page content ─────────────────────────────────────────── */}
-        <main className="main-scroll" style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto", width: "100%", animation: "fadeUp 0.4s ease both" }}>
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="max-w-7xl mx-auto animate-in fade-in duration-300">
             {children}
           </div>
         </main>
+      </div>
+
+      {/* ══ SIDEBAR (drawer-side) ════════════════════════════════════ */}
+      <div className="drawer-side z-40">
+        {/* Overlay — closes drawer on mobile when clicking outside */}
+        <label
+          htmlFor="kn-drawer"
+          aria-label="close sidebar"
+          className="drawer-overlay"
+        />
+
+        {/* Sidebar shell: 
+            - is-drawer-close:w-14 → icon strip (56px)
+            - is-drawer-open:w-64  → full (256px) 
+            - hover:w-64           → expand on hover when collapsed  */}
+        <div
+          className="
+          flex flex-col min-h-full
+          is-drawer-close:w-14 is-drawer-open:w-64
+          hover:w-64
+          bg-sidebar
+          border-r border-sidebar-border
+          transition-[width] duration-300 ease-in-out
+          overflow-hidden
+          group/sb
+        "
+        >
+          <Sidebar userRole={role ?? "farmer"} />
+        </div>
       </div>
     </div>
   );

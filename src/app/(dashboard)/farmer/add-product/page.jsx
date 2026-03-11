@@ -133,7 +133,7 @@ export default function AddProductPage() {
         }
       `}</style>
 
-      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+      <div className="p-5 md:p-10 " style={{ maxWidth: 680, margin: "0 auto" }}>
 
         {/* ── Header ───────────────────────────────────────────────── */}
         <div style={{ marginBottom: 24, animation: "fadeUp 0.4s ease both" }}>
