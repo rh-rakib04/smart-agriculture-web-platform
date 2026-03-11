@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "../Logo";
 
 import {
   LayoutDashboard,
@@ -14,11 +13,11 @@ import {
   CloudSun,
   MessageSquare,
   ShoppingCart,
+  BarChart3,
 } from "lucide-react";
-
 import Logo from "../Logo";
 
-export default function Sidebar({ userRole = "admin" }) {
+export default function Sidebar({ userRole }) {
   const pathname = usePathname();
 
   const menuConfig = {
@@ -53,9 +52,7 @@ export default function Sidebar({ userRole = "admin" }) {
     <aside className="sticky top-0 h-screen w-72 bg-white border-r border-slate-100 flex flex-col transition-all duration-300">
       {/* Logo */}
       <div className="hidden md:block px-8 py-7">
-        <Link href="/">
-          <Logo />
-        </Link>
+        <Logo />
       </div>
 
       {/* Role Badge */}
