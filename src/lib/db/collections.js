@@ -1,8 +1,3 @@
-/**
- * Collection name constants for MongoDB
- * Centralized collection names to avoid typos and ensure consistency
- */
-
 export const COLLECTIONS = {
   USERS: "users",
   FARMERS: "farmers",
@@ -16,6 +11,8 @@ export const COLLECTIONS = {
   WEATHER_DATA: "weather_data",
   NEWS: "news",
   MESSAGES: "messages",
+  CONVERSATIONS: "conversations",
+  MESSAGE_REQUESTS: "message_requests",
   PAYMENTS: "payments",
   PURCHASE_REQUESTS: "purchase_requests",
   DISEASE_DETECTIONS: "disease_detections",
@@ -25,12 +22,6 @@ export const COLLECTIONS = {
   SESSIONS: "sessions",
 };
 
-/**
- * Get a collection by name
- * @param {import('mongodb').Db} db - Database instance
- * @param {string} collectionName - Name of the collection
- * @returns {import('mongodb').Collection}
- */
 export function getCollection(db, collectionName) {
   return db.collection(collectionName);
 }
