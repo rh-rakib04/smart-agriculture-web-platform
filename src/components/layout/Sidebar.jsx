@@ -9,14 +9,6 @@ import {
 } from "lucide-react";
 import Logo from "../Logo";
 
-/* ─────────────────────────────────────────────────────────────────────
-   Follows the eTuitionBd pattern exactly:
-   - `is-drawer-close:tooltip is-drawer-close:tooltip-right` on NavLinks
-   - `is-drawer-close:hidden` on all text labels
-   - `is-drawer-close:w-14 is-drawer-open:w-64` on the shell (in parent)
-   - DaisyUI `menu` for nav list
-   - `hover:w-64` on parent shell enables hover-expand (no JS needed)
-───────────────────────────────────────────────────────────────────── */
 
 const ROLE_CFG = {
   admin:  { label: "Admin Panel"  },

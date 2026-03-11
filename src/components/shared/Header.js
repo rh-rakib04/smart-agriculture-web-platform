@@ -181,6 +181,7 @@ export default function Header() {
                 Farm Planner
               </ProtectedLink>
 
+              <NavLink {...linkProps("/farmers")}>Farmers</NavLink>
               <NavLink {...linkProps("/WeatherMap/weather")}>Weather</NavLink>
               <NavLink {...linkProps("/news")}>News</NavLink>
               <NavLink {...linkProps("/about")}>About Us</NavLink>
@@ -394,6 +395,9 @@ export default function Header() {
               Farm Planner
             </ProtectedLink>
 
+            <MobileNavLink {...linkProps("/farmers")}>
+              Farmers
+            </MobileNavLink>
             <MobileNavLink {...linkProps("/WeatherMap/weather")}>
               Weather
             </MobileNavLink>
