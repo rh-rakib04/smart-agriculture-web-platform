@@ -16,19 +16,13 @@ import {
   LogOut,
   Leaf,
   Settings,
+<<<<<<< HEAD
   Heart,
   Home,
+=======
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
 } from "lucide-react";
 import Logo from "../Logo";
-
-/* ─────────────────────────────────────────────────────────────────────
-   Follows the eTuitionBd pattern exactly:
-   - `is-drawer-close:tooltip is-drawer-close:tooltip-right` on NavLinks
-   - `is-drawer-close:hidden` on all text labels
-   - `is-drawer-close:w-14 is-drawer-open:w-64` on the shell (in parent)
-   - DaisyUI `menu` for nav list
-   - `hover:w-64` on parent shell enables hover-expand (no JS needed)
-───────────────────────────────────────────────────────────────────── */
 
 const ROLE_CFG = {
   admin: { label: "Admin Panel" },
@@ -80,6 +74,15 @@ const MENU_CONFIG = {
       icon: MessageSquare,
       tip: "AI Chatbot",
     },
+<<<<<<< HEAD
+=======
+    {
+      name: "Messages",
+      href: "/farmer/messages",
+      icon: MessageSquare,
+      tip: "Messages",
+    },
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
   ],
   buyer: [
     {
@@ -89,16 +92,32 @@ const MENU_CONFIG = {
       tip: "Dashboard",
     },
     {
+<<<<<<< HEAD
+=======
+      name: "Browse Crops",
+      href: "/buyer/crops",
+      icon: Sprout,
+      tip: "Browse Crops",
+    },
+    {
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
       name: "My Orders",
       href: "/buyer/orders",
       icon: ShoppingCart,
       tip: "My Orders",
     },
     {
+<<<<<<< HEAD
       name: "My Wishlist",
       href: "/buyer/wishlist",
       icon: Heart,
       tip: "My Wishlist",
+=======
+      name: "Messages",
+      href: "/buyer/messages",
+      icon: MessageSquare,
+      tip: "Messages",
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
     },
   ],
   admin: [
@@ -146,7 +165,11 @@ export default function Sidebar({ userRole = "admin", onNavigate }) {
   return (
     <>
       {/* ── Logo header ────────────────────────────────────────────── */}
+<<<<<<< HEAD
       <Link href="/"
+=======
+      <div
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
         className="
         h-16 flex items-center gap-3 px-4
         border-b border-white/10
@@ -165,7 +188,11 @@ export default function Sidebar({ userRole = "admin", onNavigate }) {
           bg-white/15 border border-white/20
         "
         >
+<<<<<<< HEAD
           <Home size={15} className="text-sidebar-foreground" />
+=======
+          <Leaf size={15} className="text-sidebar-foreground" />
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
         </div>
 
         {/* Text — hidden when collapsed */}
@@ -178,7 +205,11 @@ export default function Sidebar({ userRole = "admin", onNavigate }) {
         "
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
+<<<<<<< HEAD
           Home
+=======
+          Krishi<span className="text-highlight">Nova</span>
+>>>>>>> 8cbc3eb8d76cdee1fa6ce50687b67aceadf913ae
         </span>
       </Link>
 
