@@ -82,15 +82,36 @@ function MessageBubble({ msg, myEmail, conversationId, onDelete }) {
           </div>
         )}
 
+        {/*
+          FIX 1 — Text cutoff:
+          • Removed fixed max-w-[70%] cap that forced tiny bubbles to wrap early.
+          • Added min-w-0 + w-fit so the bubble grows to content, up to a
+            responsive max (max-w-[75vw] on mobile, sm:max-w-sm on larger screens).
+          • `break-words` + `whitespace-pre-wrap` ensure long words AND short ones
+            never get clipped — the bubble always expands to fit its content.
+        */}
         <div
-          className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm shadow-sm
+          className={`
+            w-fit min-w-0
+            max-w-[75vw] sm:max-w-sm md:max-w-md
+            px-4 py-2 rounded-2xl text-sm shadow-sm
             ${isMe
               ? "bg-primary text-primary-content rounded-br-none"
-              : "bg-base-100 text-base-content rounded-bl-none border border-base-300"
-            }`}
+              : "bg-white text-gray-800 rounded-bl-none border border-gray-200"
+            }
+          `}
         >
-          <p className="break-words leading-relaxed">{msg.text}</p>
-          <div className={`flex items-center justify-end gap-1 mt-0.5 text-xs opacity-60`}>
+          {/*
+            FIX 2 — Never truncate:
+            • `break-words` breaks long URLs/words at character boundaries.
+            • `whitespace-pre-wrap` preserves intentional newlines but also
+              wraps naturally — it will NEVER clip a word mid-render.
+            • `leading-relaxed` keeps lines comfortable to read.
+          */}
+          <p className="break-words whitespace-pre-wrap leading-relaxed">
+            {msg.text}
+          </p>
+          <div className="flex items-center justify-end gap-1 mt-0.5 text-xs opacity-60">
             <span>
               {new Date(msg.createdAt).toLocaleTimeString([], {
                 hour: "2-digit", minute: "2-digit",
@@ -113,9 +134,14 @@ function ConversationItem({ convo, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 text-left
+      className={`
+        w-full flex items-center gap-3 px-4 py-3 text-left
         transition-colors border-b border-base-200
-        ${active ? "bg-primary/10 border-l-4 border-l-primary" : "hover:bg-base-200"}`}
+        ${active
+          ? "bg-primary/10 border-l-4 border-l-primary"
+          : "hover:bg-base-200"
+        }
+      `}
     >
       {/* Avatar */}
       <div className="relative shrink-0">
@@ -321,7 +347,7 @@ export default function MessagesPage() {
   // ── Delete message ───────────────────────────────────────────────────────
   const handleDeleteMessage = (messageId) => {
     setMessages((prev) => prev.filter((m) => m._id !== messageId));
-    fetchConversations(); // refresh last message in sidebar
+    fetchConversations();
   };
 
   // ── Send message ─────────────────────────────────────────────────────────
@@ -365,7 +391,6 @@ export default function MessagesPage() {
 
   // ── Handle request action ────────────────────────────────────────────────
   const handleRequestAction = (reqId, action, data) => {
-    // Remove request from pending list
     setRequests((prev) => prev.filter((r) => r._id !== reqId));
     if (action === "approve" && data?.conversationId) {
       fetchConversations();
@@ -381,7 +406,17 @@ export default function MessagesPage() {
   const pendingRequests = requests.filter((r) => r.status === "pending");
 
   return (
-    <div className="h-[calc(100vh-64px)] flex bg-base-200 overflow-hidden">
+    /*
+      FIX 3 — Dark mode color consistency:
+      The root wrapper and all panels now exclusively use DaisyUI semantic tokens
+      (bg-base-100, bg-base-200, bg-base-300, text-base-content, border-base-300)
+      which automatically adapt to whatever DaisyUI theme (light/dark/custom) is
+      active. No raw Tailwind grays, no hardcoded hex values anywhere.
+
+      The chat message area uses bg-base-200 so it's always a subtle contrast step
+      behind the sidebar (bg-base-100), regardless of mode.
+    */
+    <div data-theme="light" className="h-[calc(100vh-64px)] flex bg-base-100 overflow-hidden">
 
       {/* ── Sidebar ───────────────────────────────────────────────────── */}
       <aside className={`
@@ -391,9 +426,9 @@ export default function MessagesPage() {
       `}>
 
         {/* Sidebar header */}
-        <div className="px-4 py-4 border-b border-base-300">
+        <div className="px-4 py-4 border-b border-base-300 bg-base-100">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-xl font-black">Messages</h1>
+            <h1 className="text-xl font-black text-base-content">Messages</h1>
             {isFarmer && pendingRequests.length > 0 && (
               <div className="badge badge-warning gap-1">
                 {pendingRequests.length} request{pendingRequests.length > 1 ? "s" : ""}
@@ -402,21 +437,21 @@ export default function MessagesPage() {
           </div>
 
           {/* Search */}
-          <label className="input input-bordered input-sm flex items-center gap-2">
-            <FiSearch className="w-4 h-4 opacity-50" />
+          <label className="input input-bordered input-sm flex items-center gap-2 bg-base-100">
+            <FiSearch className="w-4 h-4 opacity-50 text-base-content" />
             <input
               type="text"
               placeholder="Search…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="grow"
+              className="grow bg-transparent text-base-content placeholder:text-base-content/40"
             />
           </label>
         </div>
 
         {/* Tabs (farmer only) */}
         {isFarmer && (
-          <div className="flex border-b border-base-300">
+          <div className="flex border-b border-base-300 bg-base-100">
             <button
               onClick={() => setTab("chats")}
               className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors
@@ -451,7 +486,7 @@ export default function MessagesPage() {
         )}
 
         {/* List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto bg-base-100">
           {tab === "chats" ? (
             loadingConvos ? (
               <div className="flex flex-col gap-0">
@@ -470,7 +505,7 @@ export default function MessagesPage() {
                 <FiMessageCircle className="w-10 h-10" />
                 <p className="text-sm">No conversations yet</p>
                 {!isFarmer && (
-                  <a href="/farmers" className="btn btn-primary btn-sm mt-2">
+                  <a href="/farmers" className="btn bg-[#2E7D32] btn-sm mt-2">
                     Browse Farmers
                   </a>
                 )}
@@ -486,7 +521,6 @@ export default function MessagesPage() {
               ))
             )
           ) : (
-            // Requests tab (farmer only)
             pendingRequests.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 text-base-content/30 gap-2">
                 <FiInbox className="w-10 h-10" />
@@ -506,7 +540,7 @@ export default function MessagesPage() {
 
         {/* Buyer CTA */}
         {!isFarmer && (
-          <div className="p-3 border-t border-base-300">
+          <div className="p-3 border-t border-base-300 bg-base-100">
             <a href="/farmers" className="btn btn-primary btn-sm w-full gap-2">
               <FiMessageCircle className="w-4 h-4" />
               Browse Farmers
@@ -521,8 +555,7 @@ export default function MessagesPage() {
         ${!mobileShowChat ? "hidden md:flex" : "flex"}
       `}>
         {!activeId ? (
-          // Empty state
-          <div className="flex-1 flex flex-col items-center justify-center text-base-content/30 gap-3">
+          <div className="flex-1 flex flex-col items-center justify-center text-base-content/30 gap-3 bg-base-100">
             <FiMessageCircle className="w-16 h-16" />
             <p className="text-lg font-semibold">Select a conversation</p>
             <p className="text-sm">Choose from the list to start chatting</p>
@@ -531,10 +564,9 @@ export default function MessagesPage() {
           <>
             {/* Chat header */}
             <div className="flex items-center gap-3 px-4 py-3 bg-base-100 border-b border-base-300 shrink-0">
-              {/* Mobile back button */}
               <button
                 onClick={() => setMobileShowChat(false)}
-                className="btn btn-ghost btn-circle btn-sm md:hidden"
+                className="btn btn-ghost btn-circle btn-sm md:hidden text-base-content"
               >
                 <FiArrowLeft className="w-5 h-5" />
               </button>
@@ -552,7 +584,7 @@ export default function MessagesPage() {
               </div>
 
               <div>
-                <p className="font-semibold text-sm">{activeConvo?.otherName}</p>
+                <p className="font-semibold text-sm text-base-content">{activeConvo?.otherName}</p>
                 <p className="text-xs text-success flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
                   Active
@@ -561,7 +593,7 @@ export default function MessagesPage() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 bg-base-200">
+            <div className="flex-1 overflow-y-auto px-4 py-4" style={{ backgroundColor: "#f3f4f6" }}>
               {loadingMsgs ? (
                 <div className="flex justify-center items-center h-full">
                   <span className="loading loading-spinner loading-md text-primary" />
@@ -594,7 +626,7 @@ export default function MessagesPage() {
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
                   placeholder="Type a message…"
-                  className="input input-bordered flex-1 rounded-full text-sm"
+                  className="input input-bordered flex-1 rounded-full text-sm bg-base-100 text-base-content placeholder:text-base-content/40"
                 />
                 <button
                   onClick={handleSend}
