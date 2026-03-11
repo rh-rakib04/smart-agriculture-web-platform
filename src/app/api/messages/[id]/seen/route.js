@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 
 async function patchHandler(request, { params }) {
   try {
-    const { id: conversationId } = params;
+    const { id: conversationId } = await params;
 
     if (!ObjectId.isValid(conversationId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });

@@ -31,13 +31,13 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Calculator", href: "/farmer/calculator", icon: Calculator },
       { name: "Weather", href: "/farmer/weather", icon: CloudSun },
       { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
-      { name: "Messages", href: "/farmer/chat", icon: MessageCircle },
+      { name: "Messages", href: "/farmer/messages", icon: MessageCircle },
     ],
     buyer: [
       { name: "Dashboard", href: "/buyer", icon: LayoutDashboard },
       { name: "Browse Crops", href: "/buyer/crops", icon: Sprout },
       { name: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
-      { name: "Messages", href: "/buyer/chat", icon: MessageCircle },
+      { name: "Messages", href: "/buyer/messages", icon: MessageCircle },
     ],
     admin: [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },

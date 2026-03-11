@@ -9,6 +9,7 @@ import {
   FiSend, FiSearch, FiCheck, FiCheckCircle,
   FiMessageCircle, FiInbox, FiUser, FiArrowLeft
 } from "react-icons/fi";
+import Header from "@/components/shared/Header";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 function getToken() {
@@ -305,16 +306,12 @@ export default function MessagesPage() {
 
   // ── Handle request action ────────────────────────────────────────────────
   const handleRequestAction = (reqId, action, data) => {
-    setRequests((prev) =>
-      prev.map((r) =>
-        r._id === reqId
-          ? { ...r, status: action === "approve" ? "approved" : "declined" }
-          : r
-      )
-    );
-    if (action === "approve") {
+    // Remove request from pending list
+    setRequests((prev) => prev.filter((r) => r._id !== reqId));
+    if (action === "approve" && data?.conversationId) {
       fetchConversations();
       setTab("chats");
+      toast.success("Request approved! Conversation started.");
     }
   };
 
@@ -326,7 +323,7 @@ export default function MessagesPage() {
 
   return (
     <div className="h-[calc(100vh-64px)] flex bg-base-200 overflow-hidden">
-
+      
       {/* ── Sidebar ───────────────────────────────────────────────────── */}
       <aside className={`
         w-full md:w-80 lg:w-96 flex-shrink-0

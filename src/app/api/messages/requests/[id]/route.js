@@ -4,18 +4,12 @@ import { COLLECTIONS, getCollection } from "@/lib/db/collections";
 import { withAuth } from "@/lib/auth/middleware";
 import { ObjectId } from "mongodb";
 
-// ─── PATCH /api/messages/requests/[id] ──────────────────────────────────────
-// Farmer approves or declines a request
-// Body: { action: "approve" | "decline" }
 async function patchHandler(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: "Invalid request ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid request ID" }, { status: 400 });
     }
 
     const db = await getDatabase();
@@ -26,33 +20,45 @@ async function patchHandler(request, { params }) {
 
     const { role, email, userId } = request.user;
 
+    console.log("PATCH requests/[id] — user:", { role, email, userId });
+
     if (role !== "farmer") {
-      return NextResponse.json(
-        { error: "Only farmers can respond to requests" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Only farmers can respond to requests" }, { status: 403 });
     }
 
-    const { action } = await request.json();
+    // Parse body safely
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    const { action } = body;
+    console.log("PATCH requests/[id] — action:", action);
 
     if (!["approve", "decline"].includes(action)) {
       return NextResponse.json(
-        { error: "action must be 'approve' or 'decline'" },
+        { error: `action must be 'approve' or 'decline', got: ${action}` },
         { status: 400 }
       );
     }
 
-    // Find request — make sure it belongs to this farmer
+    // Find request by id first
     const msgRequest = await requestsCollection.findOne({
       _id: new ObjectId(id),
-      farmerEmail: email,
     });
 
+    console.log("PATCH requests/[id] — found request:", msgRequest);
+
     if (!msgRequest) {
-      return NextResponse.json(
-        { error: "Request not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
+
+    // Verify this farmer owns the request
+    if (msgRequest.farmerEmail !== email) {
+      console.log("farmerEmail mismatch:", msgRequest.farmerEmail, "vs", email);
+      return NextResponse.json({ error: "Forbidden — not your request" }, { status: 403 });
     }
 
     if (msgRequest.status !== "pending") {
@@ -62,7 +68,7 @@ async function patchHandler(request, { params }) {
       );
     }
 
-    // Update request status
+    // Update status
     const newStatus = action === "approve" ? "approved" : "declined";
     await requestsCollection.updateOne(
       { _id: new ObjectId(id) },
@@ -72,13 +78,12 @@ async function patchHandler(request, { params }) {
     let conversation = null;
 
     if (action === "approve") {
-      // Get farmer user doc for their _id
       const farmerUser = await usersCollection.findOne(
         { email },
         { projection: { _id: 1, name: 1, image: 1, photoURL: 1 } }
       );
 
-      // Check if conversation already exists
+      // Check existing conversation
       const existing = await conversationsCollection.findOne({
         farmerId: farmerUser._id,
         buyerId: msgRequest.buyerId,
@@ -87,7 +92,6 @@ async function patchHandler(request, { params }) {
       if (existing) {
         conversation = existing;
       } else {
-        // Create new conversation
         const convoDoc = {
           type: "farmer-buyer",
           farmerId: farmerUser._id,
@@ -110,18 +114,17 @@ async function patchHandler(request, { params }) {
         conversation = { _id: result.insertedId, ...convoDoc };
       }
 
-      // Notify buyer: approved
+      // Notify buyer
       await notificationsCollection.insertOne({
         userEmail: msgRequest.buyerEmail,
         type: "REQUEST_APPROVED",
         title: "Message Request Approved",
         message: `${msgRequest.farmerName} accepted your message request`,
-        link: `/buyer/messages/${conversation._id}`,
+        link: `/buyer/messages`,
         isRead: false,
         createdAt: new Date(),
       });
     } else {
-      // Notify buyer: declined
       await notificationsCollection.insertOne({
         userEmail: msgRequest.buyerEmail,
         type: "REQUEST_DECLINED",
@@ -136,14 +139,11 @@ async function patchHandler(request, { params }) {
     return NextResponse.json({
       success: true,
       action,
-      conversationId: conversation?._id || null,
+      conversationId: conversation?._id?.toString() || null,
     });
   } catch (error) {
-    console.error("PATCH /api/messages/requests/[id] error:", error);
-    return NextResponse.json(
-      { error: "Failed to process request" },
-      { status: 500 }
-    );
+    console.error("PATCH requests/[id] error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 

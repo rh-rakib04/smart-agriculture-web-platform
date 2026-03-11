@@ -18,7 +18,7 @@ async function verifyAccess(conversation, role, userId, email) {
 // GET /api/messages/[conversationId]
 async function getHandler(request, { params }) {
   try {
-    const { id: conversationId } = params;
+    const { id: conversationId } = await params;
 
     if (!ObjectId.isValid(conversationId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -64,7 +64,7 @@ async function getHandler(request, { params }) {
 // POST /api/messages/[conversationId]
 async function postHandler(request, { params }) {
   try {
-    const { id: conversationId } = params;
+    const { id: conversationId } = await params;
 
     if (!ObjectId.isValid(conversationId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
