@@ -7,7 +7,7 @@ const Logo = () => {
     <Link href="/" className="flex items-center  ">
       <Image src="/logo.png" alt="SmartStudy Logo" width={40} height={40} />
       <span className="text-xl font-bold text-highlight tracking-tight">
-        Smart<span className="text-secondary">Agriculture</span>
+       Krishi<span className="text-secondary">Nova</span>
       </span>
     </Link>
   );
