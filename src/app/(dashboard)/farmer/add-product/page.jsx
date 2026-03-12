@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Upload } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
@@ -12,12 +13,11 @@ export default function AddProductPage() {
     price: "",
     quantity: "",
     unit: "kg",
-    image: null,
+    image: "",
   });
 
   const [preview, setPreview] = useState(null);
 
-  // ⚠️ Replace this later with your auth user
   const user = { id: "farmer123" };
 
   const handleChange = (e) => {
@@ -29,21 +29,32 @@ export default function AddProductPage() {
     });
   };
 
+  // Convert image to Base64
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
-    if (file) {
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setPreview(reader.result);
+
       setFormData({
         ...formData,
-        image: file,
+        image: reader.result,
       });
+    };
 
-      setPreview(URL.createObjectURL(file));
-    }
+    reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const loadingToast = toast.loading("Adding crop...");
+
+  try {
 
     const productData = {
       title: formData.name,
@@ -56,7 +67,7 @@ export default function AddProductPage() {
       description: formData.description,
       farmerId: user.id,
       status: "available",
-      imageUrl: preview || "",
+      image: formData.image
     };
 
     const res = await fetch("/api/crops", {
@@ -69,26 +80,45 @@ export default function AddProductPage() {
 
     const data = await res.json();
 
-    if (data.success) {
-      alert("Crop Added Successfully");
-      setFormData({
-        name: "",
-        category: "",
-        location: "",
-        description: "",
-        price: "",
-        quantity: "",
-        unit: "kg",
-        image: null,
-      });
-      setPreview(null);
-    } else {
-      alert(data.message);
+    if (!data.success) {
+      throw new Error(data.message || "Failed to add crop");
     }
-  };
+
+    toast.update(loadingToast, {
+      render: "Crop added successfully 🌾",
+      type: "success",
+      isLoading: false,
+      autoClose: 2000,
+    });
+
+    setFormData({
+      name: "",
+      category: "",
+      location: "",
+      description: "",
+      price: "",
+      quantity: "",
+      unit: "kg",
+      image: "",
+    });
+
+    setPreview(null);
+
+  } catch (error) {
+
+    toast.update(loadingToast, {
+      render: error.message,
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+
+  }
+};
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow">
+
       <h1 className="text-2xl font-bold text-green-700 mb-6">
         Add Crop to Market
       </h1>
@@ -100,6 +130,7 @@ export default function AddProductPage() {
           <label className="block text-sm font-semibold mb-2">
             Crop Name
           </label>
+
           <input
             type="text"
             name="name"
@@ -115,6 +146,7 @@ export default function AddProductPage() {
           <label className="block text-sm font-semibold mb-2">
             Category
           </label>
+
           <select
             name="category"
             value={formData.category}
@@ -135,6 +167,7 @@ export default function AddProductPage() {
           <label className="block text-sm font-semibold mb-2">
             Farm Location
           </label>
+
           <input
             type="text"
             name="location"
@@ -150,6 +183,7 @@ export default function AddProductPage() {
           <label className="block text-sm font-semibold mb-2">
             Crop Description
           </label>
+
           <textarea
             name="description"
             rows="4"
@@ -166,6 +200,7 @@ export default function AddProductPage() {
             <label className="block text-sm font-semibold mb-2">
               Price
             </label>
+
             <input
               type="number"
               name="price"
@@ -180,6 +215,7 @@ export default function AddProductPage() {
             <label className="block text-sm font-semibold mb-2">
               Quantity
             </label>
+
             <input
               type="number"
               name="quantity"
@@ -194,6 +230,7 @@ export default function AddProductPage() {
             <label className="block text-sm font-semibold mb-2">
               Unit
             </label>
+
             <select
               name="unit"
               value={formData.unit}
@@ -210,11 +247,13 @@ export default function AddProductPage() {
 
         {/* Image Upload */}
         <div>
+
           <label className="block text-sm font-semibold mb-2">
             Crop Image
           </label>
 
           <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-green-600">
+
             <div className="text-center">
               <Upload className="mx-auto mb-2 text-gray-500" />
               <p className="text-sm text-gray-600">
@@ -228,13 +267,16 @@ export default function AddProductPage() {
               onChange={handleImageChange}
               className="hidden"
             />
+
           </label>
+
         </div>
 
-        {/* Image Preview */}
+        {/* Preview */}
         {preview && (
           <div>
             <p className="text-sm font-semibold mb-2">Preview</p>
+
             <img
               src={preview}
               className="w-48 h-48 object-cover rounded-lg border"
@@ -251,6 +293,7 @@ export default function AddProductPage() {
         </button>
 
       </form>
+
     </div>
   );
 }

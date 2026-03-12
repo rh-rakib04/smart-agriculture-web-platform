@@ -27,7 +27,7 @@ import Header from "@/components/shared/Header";
 export default function HomePage() {
   return (
     <div className="w-full min-h-screen bg-white">
-      <Header />
+      
       <HeroSection />
       <StatsBar></StatsBar>
       <FarmerFeatures />

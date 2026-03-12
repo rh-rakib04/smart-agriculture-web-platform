@@ -18,12 +18,13 @@ export async function POST(req) {
       farmerId,
       description,
       status,
+      image
     } = body;
 
     if (!title || !price || !farmerId) {
       return Response.json(
         { success: false, message: "title, price and farmerId required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -40,6 +41,7 @@ export async function POST(req) {
       description: description || "",
       farmerId,
       status: status || "available",
+      image: image || "",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -50,10 +52,11 @@ export async function POST(req) {
       success: true,
       data: { _id: result.insertedId, ...newCrop },
     });
+
   } catch (error) {
     return Response.json(
       { success: false, message: error.message },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
