@@ -171,7 +171,20 @@ export default function Header() {
             {/* ── CENTER: Desktop Nav (xl+) ── */}
             <nav className="hidden xl:flex items-center gap-8 flex-1 justify-center">
               <NavLink {...linkProps("/")}>Home</NavLink>
-              <NavLink {...linkProps("/crops")}>Crops</NavLink>
+              <Link
+                href="/crops"
+                onClick={closeAll}
+                className={`text-[15px] font-bold tracking-wide transition-colors duration-200
+                  ${
+                    pathname === "/crops"
+                      ? "text-secondary font-extrabold"
+                      : scrolled
+                        ? "text-foreground hover:text-primary"
+                        : "text-white/90 hover:text-highlight"
+                  }`}
+              >
+                Crops
+              </Link>
 
               <ProtectedLink
                 href="/planner"
@@ -385,7 +398,20 @@ export default function Header() {
             }`}
           >
             <MobileNavLink {...linkProps("/")}>Home</MobileNavLink>
-            <MobileNavLink {...linkProps("/crops")}>Crops</MobileNavLink>
+            <Link
+              href="/crops"
+              onClick={closeAll}
+              className={`flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-colors duration-200
+                ${
+                  pathname === "/crops"
+                    ? "text-secondary bg-white/5 font-extrabold"
+                    : scrolled
+                      ? "text-foreground hover:bg-muted hover:text-primary"
+                      : "text-white hover:bg-white/10"
+                }`}
+            >
+              Crops
+            </Link>
 
             <ProtectedLink
               href="/planner"

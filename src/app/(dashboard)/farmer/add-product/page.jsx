@@ -1,123 +1,123 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, Sprout, MapPin, Tag, FileText, DollarSign, Package, X, CheckCircle } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-
-const B = {
-  primary:      "#2E7D32",
-  primaryLight: "#66BB6A",
-  highlight:    "#FBC02D",
-  accent:       "#8D6E63",
-  muted:        "#E8F5E9",
-  border:       "#C8E6C9",
-  foreground:   "#1B5E20",
-  mutedFg:      "#424242",
-  card:         "#ffffff",
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "11px 14px",
-  borderRadius: 11,
-  border: `1.5px solid ${B.border}`,
-  outline: "none",
-  fontSize: 13,
-  fontWeight: 600,
-  color: B.foreground,
-  background: B.muted,
-  boxSizing: "border-box",
-  fontFamily: "'DM Sans', sans-serif",
-  transition: "border-color 0.15s, background 0.15s",
-};
-
-function Field({ label, icon: Icon, children, required }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 800, color: B.primary, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-        {Icon && <Icon size={11} style={{ color: B.primary }} />}
-        {label}
-        {required && <span style={{ color: "#C62828", marginLeft: 2 }}>*</span>}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const CATEGORIES = [
-  { value: "",          label: "Select Category" },
-  { value: "vegetable", label: "🥬 Vegetable" },
-  { value: "fruit",     label: "🍎 Fruit" },
-  { value: "grain",     label: "🌾 Grain" },
-  { value: "herb",      label: "🌿 Herb" },
-];
+import { Upload } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
-    name: "", category: "", location: "", description: "",
-    price: "", quantity: "", unit: "kg", image: null,
+    name: "",
+    category: "",
+    location: "",
+    description: "",
+    price: "",
+    quantity: "",
+    unit: "kg",
+    image: "",
   });
-  const [preview,    setPreview]    = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [success,    setSuccess]    = useState(false);
-  const [error,      setError]      = useState("");
-  const { user } = useAuth();
+
+  const [preview, setPreview] = useState(null);
+
+  const user = { id: "farmer123" };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
 
+  // Convert image to Base64
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-      setPreview(URL.createObjectURL(file));
-    }
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setPreview(reader.result);
+
+      setFormData({
+        ...formData,
+        image: reader.result,
+      });
+    };
+
+    reader.readAsDataURL(file);
   };
 
-  const clearImage = () => {
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const loadingToast = toast.loading("Adding crop...");
+
+  try {
+
+    const productData = {
+      title: formData.name,
+      cropType: formData.name,
+      category: formData.category,
+      location: formData.location,
+      price: Number(formData.price),
+      quantity: Number(formData.quantity),
+      unit: formData.unit,
+      description: formData.description,
+      farmerId: user.id,
+      status: "available",
+      image: formData.image
+    };
+
+    const res = await fetch("/api/crops", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to add crop");
+    }
+
+    toast.update(loadingToast, {
+      render: "Crop added successfully 🌾",
+      type: "success",
+      isLoading: false,
+      autoClose: 2000,
+    });
+
+    setFormData({
+      name: "",
+      category: "",
+      location: "",
+      description: "",
+      price: "",
+      quantity: "",
+      unit: "kg",
+      image: "",
+    });
+
     setPreview(null);
-    setFormData({ ...formData, image: null });
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setSubmitting(true); setError("");
-      const productData = {
-        title: formData.name, cropType: formData.name,
-        category: formData.category, location: formData.location,
-        price: Number(formData.price), quantity: Number(formData.quantity),
-        unit: formData.unit, description: formData.description,
-        farmerId: user?.id, status: "available",
-        imageUrl: preview || "",
-      };
-      const res  = await fetch("/api/crops", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(productData) });
-      const data = await res.json();
-      if (data.success) {
-        setSuccess(true);
-        setFormData({ name: "", category: "", location: "", description: "", price: "", quantity: "", unit: "kg", image: null });
-        setPreview(null);
-        setTimeout(() => setSuccess(false), 3500);
-      } else {
-        setError(data.message || "Something went wrong.");
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  } catch (error) {
+
+    toast.update(loadingToast, {
+      render: error.message,
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+
+  }
+};
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", padding: "8px 0" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=Space+Grotesk:wght@700;800&display=swap');
-        @keyframes fadeUp  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes pulse   { 0%,100% { opacity:.5; } 50% { opacity:1; } }
-        @keyframes popIn   { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
-        @keyframes spin    { to { transform: rotate(360deg); } }
+    <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow">
+
+      <h1 className="text-2xl font-bold text-green-700 mb-6">
+        Add Crop to Market
+      </h1>
 
         .field-input:focus { border-color: ${B.primary} !important; background: #fff !important; }
         .upload-zone { transition: border-color 0.2s, background 0.2s; }
@@ -126,50 +126,125 @@ export default function AddProductPage() {
         .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,125,50,0.35) !important; }
         .submit-btn:active:not(:disabled) { transform: translateY(0); }
 
-        @media (max-width: 600px) {
-          .pqg-grid { grid-template-columns: 1fr 1fr !important; }
-          .pqg-grid > *:last-child { grid-column: 1 / -1; }
-          .form-card { padding: 20px !important; }
-        }
-      `}</style>
+        {/* Crop Name */}
+        <div>
+          <label className="block text-sm font-semibold mb-2">
+            Crop Name
+          </label>
 
-      <div className="p-5 md:p-10 " style={{ maxWidth: 680, margin: "0 auto" }}>
-
-        {/* ── Header ───────────────────────────────────────────────── */}
-        <div style={{ marginBottom: 24, animation: "fadeUp 0.4s ease both" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "4px 12px", borderRadius: 20, background: B.muted, border: `1.5px solid ${B.border}`, marginBottom: 10 }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%", background: B.primaryLight, animation: "pulse 2s ease infinite" }} />
-            <span style={{ color: B.primary, fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase" }}>Farmer · Listings</span>
-          </div>
-          <h1 style={{ color: B.foreground, fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 1.1 }}>
-            Add Crop{" "}
-            <span style={{ color: B.primary, position: "relative" }}>
-              Listing
-              <span style={{ position: "absolute", bottom: -3, left: 0, right: 0, height: 3, borderRadius: 2, background: `linear-gradient(90deg, ${B.highlight}, transparent)` }} />
-            </span>
-          </h1>
-          <p style={{ color: B.mutedFg, fontSize: 13, fontWeight: 500, margin: "8px 0 0" }}>List your crop on the marketplace for buyers to discover</p>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-600"
+          />
         </div>
 
-        {/* ── Success toast ─────────────────────────────────────────── */}
-        {success && (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 18px", borderRadius: 14, background: B.muted, border: `1.5px solid ${B.border}`, marginBottom: 18, animation: "popIn 0.25s ease both" }}>
-            <CheckCircle size={18} style={{ color: B.primary, flexShrink: 0 }} />
-            <span style={{ color: B.foreground, fontWeight: 700, fontSize: 13 }}>Crop listed successfully on the marketplace!</span>
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-semibold mb-2">
+            Category
+          </label>
+
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="w-full border rounded-lg p-3"
+          >
+            <option value="">Select Category</option>
+            <option value="vegetable">Vegetable</option>
+            <option value="fruit">Fruit</option>
+            <option value="grain">Grain</option>
+            <option value="herb">Herb</option>
+          </select>
+        </div>
+
+        {/* Location */}
+        <div>
+          <label className="block text-sm font-semibold mb-2">
+            Farm Location
+          </label>
+
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Example: Jessore"
+            className="w-full border rounded-lg p-3"
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-semibold mb-2">
+            Crop Description
+          </label>
+
+          <textarea
+            name="description"
+            rows="4"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+          />
+        </div>
+
+        {/* Price + Quantity */}
+        <div className="grid grid-cols-3 gap-4">
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">
+              Price
+            </label>
+
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              className="w-full border rounded-lg p-3"
+            />
           </div>
         )}
 
-        {/* ── Error banner ─────────────────────────────────────────── */}
-        {error && (
-          <div style={{ padding: "12px 18px", borderRadius: 12, background: "#FFEBEE", border: "1.5px solid #FFCDD2", color: "#C62828", fontWeight: 700, fontSize: 13, marginBottom: 18 }}>
-            ⚠️ {error}
+          <div>
+            <label className="block text-sm font-semibold mb-2">
+              Quantity
+            </label>
+
+            <input
+              type="number"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              required
+              className="w-full border rounded-lg p-3"
+            />
           </div>
         )}
 
-        {/* ── Form card ─────────────────────────────────────────────── */}
-        <div className="form-card" style={{ background: B.card, border: `1.5px solid ${B.border}`, borderRadius: 22, padding: 28, boxShadow: "0 2px 20px rgba(46,125,50,0.08)", animation: "fadeUp 0.45s ease 0.05s both", position: "relative", overflow: "hidden" }}>
-          {/* top accent */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, ${B.primary}, ${B.primaryLight})` }} />
+          <div>
+            <label className="block text-sm font-semibold mb-2">
+              Unit
+            </label>
+
+            <select
+              name="unit"
+              value={formData.unit}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+            >
+              <option value="kg">Kg</option>
+              <option value="ton">Ton</option>
+              <option value="piece">Piece</option>
+            </select>
+          </div>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
 
@@ -200,59 +275,44 @@ export default function AddProductPage() {
                 placeholder="Describe your crop — freshness, harvest date, storage method…" />
             </Field>
 
-            {/* Divider */}
-            <div style={{ height: 1, background: B.border, margin: "2px 0" }} />
+        {/* Image Upload */}
+        <div>
 
-            {/* Price / Quantity / Unit */}
-            <div className="pqg-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-              <Field label="Price ($)" icon={DollarSign} required>
-                <input className="field-input" style={inputStyle} type="number" name="price" min="0"
-                  value={formData.price} onChange={handleChange} placeholder="0.00" required />
-              </Field>
-              <Field label="Quantity" icon={Package} required>
-                <input className="field-input" style={inputStyle} type="number" name="quantity" min="0"
-                  value={formData.quantity} onChange={handleChange} placeholder="0" required />
-              </Field>
-              <Field label="Unit">
-                <select className="field-input" style={inputStyle} name="unit" value={formData.unit} onChange={handleChange}>
-                  <option value="kg">Kg</option>
-                  <option value="ton">Ton</option>
-                  <option value="piece">Piece</option>
-                </select>
-              </Field>
+          <label className="block text-sm font-semibold mb-2">
+            Crop Image
+          </label>
+
+          <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-green-600">
+
+            <div className="text-center">
+              <Upload className="mx-auto mb-2 text-gray-500" />
+              <p className="text-sm text-gray-600">
+                Click to upload crop image
+              </p>
             </div>
 
-            {/* Divider */}
-            <div style={{ height: 1, background: B.border, margin: "2px 0" }} />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
 
-            {/* Image upload */}
-            <Field label="Crop Image" icon={Upload}>
-              {!preview ? (
-                <label className="upload-zone" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, padding: "28px 20px", borderRadius: 14, border: `2px dashed ${B.border}`, background: "#fafffe", cursor: "pointer" }}>
-                  <div style={{ padding: "12px 13px", borderRadius: 14, background: B.muted, border: `1.5px solid ${B.border}` }}>
-                    <Upload size={22} style={{ color: B.primary }} />
-                  </div>
-                  <div style={{ textAlign: "center" }}>
-                    <p style={{ color: B.foreground, fontWeight: 700, fontSize: 13, margin: "0 0 3px" }}>Click to upload a photo</p>
-                    <p style={{ color: B.mutedFg, fontSize: 11, margin: 0 }}>PNG, JPG, WEBP — max 5MB</p>
-                  </div>
-                  <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
-                </label>
-              ) : (
-                <div style={{ position: "relative", display: "inline-block" }}>
-                  <img src={preview} alt="Preview"
-                    style={{ width: "100%", maxHeight: 220, objectFit: "cover", borderRadius: 14, border: `1.5px solid ${B.border}` }} />
-                  <button type="button" onClick={clearImage}
-                    style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, borderRadius: "50%", background: "rgba(0,0,0,0.55)", border: "none", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <X size={14} />
-                  </button>
-                  <div style={{ position: "absolute", bottom: 10, left: 10, padding: "4px 10px", borderRadius: 20, background: "rgba(46,125,50,0.85)", display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <CheckCircle size={11} style={{ color: "#fff" }} />
-                    <span style={{ color: "#fff", fontSize: 10, fontWeight: 800 }}>Image ready</span>
-                  </div>
-                </div>
-              )}
-            </Field>
+          </label>
+
+        </div>
+
+        {/* Preview */}
+        {preview && (
+          <div>
+            <p className="text-sm font-semibold mb-2">Preview</p>
+
+            <img
+              src={preview}
+              className="w-48 h-48 object-cover rounded-lg border"
+            />
+          </div>
+        )}
 
             {/* Submit */}
             <button type="submit" disabled={submitting} className="submit-btn"
@@ -267,9 +327,8 @@ export default function AddProductPage() {
               )}
             </button>
 
-          </form>
-        </div>
-      </div>
+      </form>
+
     </div>
   );
 }
