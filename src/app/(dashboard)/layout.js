@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import { useAuthContext } from "@/contexts/AuthProvider";
 import {
-  Menu,
-  X,
+  PanelLeft,
   Bell,
   Home,
   ChevronDown,
@@ -13,229 +12,357 @@ import {
   Settings,
   LogOut,
   Search,
+  Leaf,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/components/Logo";
 import { useRole } from "@/hooks/useRole";
+import { useState } from "react";
+
+/* ─────────────────────────────────────────────────────────────────────
+   Uses DaisyUI drawer pattern:
+   - `drawer lg:drawer-open` root
+   - `drawer-toggle` checkbox controls open/close on mobile
+   - `is-drawer-close:w-14` / `is-drawer-open:w-64` for collapse
+   - `is-drawer-close:hidden` to hide labels when collapsed
+   - `is-drawer-close:tooltip` for tooltips when icon-only
+   Exactly mirrors the eTuitionBd reference implementation.
+───────────────────────────────────────────────────────────────────── */
+
+const ROLE_CFG = {
+  admin: { textColor: "var(--highlight)" },
+  farmer: { textColor: "var(--secondary)" },
+  buyer: { textColor: "var(--accent)" },
+};
+
+function Avatar({ name, image, size = 34 }) {
+  const initials = (name || "U")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        overflow: "hidden",
+        flexShrink: 0,
+        background: "var(--muted)",
+        border: "2px solid var(--border)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {image ? (
+        <Image
+          src={image}
+          alt="Profile"
+          width={size}
+          height={size}
+          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+        />
+      ) : (
+        <span
+          style={{
+            fontSize: size * 0.36,
+            fontWeight: 900,
+            color: "var(--primary)",
+          }}
+        >
+          {initials}
+        </span>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardLayout({ children }) {
   const { user } = useAuthContext();
-  const { role, loading } = useRole();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { role } = useRole();
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
   const closeAll = () => {
     setNotifOpen(false);
     setUserOpen(false);
   };
+  const roleCfg = ROLE_CFG[role] || ROLE_CFG.buyer;
 
   const notifications = [
-    { id: 1, text: "New order received", time: "2 min ago", unread: true },
+    {
+      id: 1,
+      text: "New order received for Aman Rice",
+      time: "2 min ago",
+      unread: true,
+    },
     {
       id: 2,
-      text: "Crop approved by admin",
+      text: "Your crop listing was approved",
       time: "10 min ago",
+      unread: true,
+    },
+    {
+      id: 3,
+      text: "Payment of ৳ 4,200 processed",
+      time: "1 hr ago",
       unread: false,
     },
   ];
-
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <div className="flex min-h-screen bg-slate-50/50">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:block w-72 shrink-0 overflow-visible">
-       <Sidebar userRole={role ?? "farmer"} />
-      </aside>
+    /* ── DaisyUI drawer root ─────────────────────────────────────── */
+    <div className="drawer lg:drawer-open min-h-screen bg-background">
+      {/* Checkbox toggle — controls mobile open/close */}
+      <input id="kn-drawer" type="checkbox" className="drawer-toggle" />
 
-      {/* Mobile Sidebar Overlay */}
-      <div
-        className={`fixed inset-0 z-[100] transition-opacity duration-300 md:hidden ${
-          isMobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div
-          className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-          onClick={closeMobileMenu}
-        />
-        <div
-          className={`absolute left-0 top-0 h-full w-72 bg-white transition-transform duration-300 shadow-2xl ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <div className="p-6 flex items-center justify-between border-b border-slate-100">
-            <Logo />
-            <button
-              onClick={closeMobileMenu}
-              className="p-2 rounded-xl bg-slate-50 text-slate-500"
+      {/* ══ MAIN CONTENT (drawer-content) ════════════════════════════ */}
+      <div className="drawer-content flex flex-col min-h-screen">
+        {/* ── Sticky Navbar ──────────────────────────────────────── */}
+        <nav className="navbar sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-border shadow-sm px-4 h-16">
+          {/* Left: hamburger + brand */}
+          <div className="flex items-center gap-3 flex-1">
+            {/* Hamburger / toggle — opens drawer on mobile, acts as toggle label */}
+            <label
+              htmlFor="kn-drawer"
+              aria-label="toggle sidebar"
+              className="btn btn-square btn-ghost text-muted-foreground hover:bg-muted hover:text-primary lg:flex"
             >
-              <X size={20} />
-            </button>
-          </div>
-          <div className="h-[calc(100%-80px)] overflow-y-auto">
-            <Sidebar
-              userRole={user?.role ?? "buyer"}
-              onNavigate={closeMobileMenu}
-            />
-          </div>
-        </div>
-      </div>
+              {/* PanelLeft SVG inline so no extra import needed */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M9 3v18" />
+                <path d="m14 9 3 3-3 3" />
+              </svg>
+            </label>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <header className="sticky top-0 z-[90] flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200/60">
-          {/* Left Side */}
-          <div className="flex items-center gap-4">
-            <button
-              className="md:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={20} />
-            </button>
-            <div className="text-xl lg:text-2xl font-semibold italic  ">Dashboard</div>
-            <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-xl text-slate-400 focus-within:ring-2 ring-emerald-500/20 transition-all">
-              <Search size={16} />
+            {/* Brand mark */}
+            <Link href="/" className="flex items-center gap-2 no-underline">
+              <div className="p-1.5 rounded-lg bg-muted border border-border">
+                <Leaf size={14} className="text-primary" />
+              </div>
+              <span
+                className="text-[15px] font-black text-foreground tracking-tight"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Dashboard
+              </span>
+            </Link>
+
+            {/* Search — hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-muted border border-border ml-2">
+              <Search size={13} className="text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Search global records..."
-                className="bg-transparent border-none outline-none text-xs font-medium text-slate-700 w-40 lg:w-64"
+                placeholder="Search records..."
+                className="bg-transparent border-none outline-none text-xs font-semibold text-foreground w-36 lg:w-44"
               />
             </div>
           </div>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center gap-2 md:gap-4">
-            {/* Quick Home */}
-            <Link
-              href="/"
-              className="p-2.5 rounded-xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
-              onClick={closeAll}
-            >
-              <Home size={20} />
+          {/* Right: actions */}
+          <div className="flex items-center gap-2">
+            {/* Home */}
+            <Link href="/" onClick={closeAll}>
+              <button className="btn btn-ghost btn-square text-muted-foreground hover:text-primary hover:bg-muted">
+                <Home size={17} />
+              </button>
             </Link>
 
-            {/* Notifications Dropdown */}
+            {/* Notifications */}
             <div className="relative">
               <button
-                className={`p-2.5 rounded-xl transition-all ${
-                  notifOpen
-                    ? "bg-emerald-50 text-emerald-600"
-                    : "text-slate-400 hover:bg-slate-100"
-                }`}
+                className={`btn btn-square btn-ghost relative ${notifOpen ? "bg-muted text-primary" : "text-muted-foreground hover:bg-muted hover:text-primary"}`}
                 onClick={() => {
                   setNotifOpen(!notifOpen);
                   setUserOpen(false);
                 }}
               >
-                <Bell size={20} />
+                <Bell size={17} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border-2 border-white animate-pulse" />
                 )}
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white border border-slate-100 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 overflow-hidden">
-                  <div className="p-4 border-b border-slate-50 font-black text-xs uppercase tracking-widest text-slate-400">
-                    Recent Alerts
+                <div className="absolute right-0 top-[calc(100%+8px)] w-72 bg-card border border-border rounded-2xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                    <span className="text-[11px] font-black text-primary uppercase tracking-widest">
+                      Notifications
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="text-[9px] font-black text-destructive bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
+                        {unreadCount} NEW
+                      </span>
+                    )}
                   </div>
-                  <div className="max-h-[300px] overflow-y-auto">
-                    {notifications.map((n) => (
+                  {notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className="flex gap-3 px-4 py-3 border-b border-border hover:bg-muted cursor-pointer transition-colors"
+                    >
                       <div
-                        key={n.id}
-                        className="p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer"
-                      >
-                        <div className="text-sm font-bold text-slate-700">
+                        className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? "bg-primary animate-pulse" : "bg-border"}`}
+                      />
+                      <div>
+                        <p
+                          className={`text-sm ${n.unread ? "font-bold text-foreground" : "font-medium text-muted-foreground"}`}
+                        >
                           {n.text}
-                        </div>
-                        <div className="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-tighter">
+                        </p>
+                        <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">
                           {n.time}
-                        </div>
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                  <button className="w-full py-3 text-[11px] font-black uppercase text-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 transition-colors">
+                    </div>
+                  ))}
+                  <button className="w-full py-3 text-[11px] font-black text-primary uppercase tracking-widest bg-muted hover:bg-border transition-colors">
                     View All Notifications
                   </button>
                 </div>
               )}
             </div>
 
-            {/* User Profile Dropdown */}
-            <div className="relative border-l border-slate-200 pl-2 md:pl-4 ml-1">
+            {/* Divider */}
+            <div className="w-px h-8 bg-border mx-1" />
+
+            {/* User dropdown */}
+            <div className="relative">
               <button
-                className="flex items-center gap-2 group"
                 onClick={() => {
                   setUserOpen(!userOpen);
                   setNotifOpen(false);
                 }}
+                className="flex items-center gap-2 btn btn-ghost px-2"
               >
-                <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-slate-100 group-hover:border-emerald-500 transition-colors bg-slate-100">
-                  {user?.image ? (
-                    <Image
-                      src={user.image}
-                      alt="Profile"
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center text-xs font-black text-slate-400 uppercase">
-                      {user?.name?.[0] || "U"}
-                    </div>
-                  )}
+                <Avatar name={user?.name} image={user?.image} size={30} />
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-[13px] font-bold text-foreground max-w-[80px] truncate">
+                    {user?.name?.split(" ")[0] || "User"}
+                  </span>
+                  <span
+                    className="text-[9px] font-black uppercase tracking-wide"
+                    style={{ color: roleCfg.textColor }}
+                  >
+                    {role || "member"}
+                  </span>
                 </div>
                 <ChevronDown
-                  size={14}
-                  className={`text-slate-400 transition-transform ${userOpen ? "rotate-180" : ""}`}
+                  size={13}
+                  className="text-muted-foreground transition-transform duration-200"
+                  style={{
+                    transform: userOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
                 />
               </button>
 
               {userOpen && (
-                <div className="absolute right-0 mt-3 w-56 bg-white border border-slate-100 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 overflow-hidden">
-                  <div className="p-4 bg-slate-50/50 border-b border-slate-100">
-                    <div className="font-bold text-slate-800 text-sm truncate">
-                      {user?.name || "Member User"}
-                    </div>
-                    <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-0.5">
-                      {user?.role}
+                <div className="absolute right-0 top-[calc(100%+8px)] w-52 bg-card border border-border rounded-2xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center gap-3 p-4 bg-muted border-b border-border">
+                    <Avatar name={user?.name} image={user?.image} size={36} />
+                    <div>
+                      <p className="text-[13px] font-bold text-foreground">
+                        {user?.name || "Member"}
+                      </p>
+                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-card border border-border">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full animate-pulse"
+                          style={{ background: roleCfg.textColor }}
+                        />
+                        <span
+                          className="text-[9px] font-black uppercase tracking-wide"
+                          style={{ color: roleCfg.textColor }}
+                        >
+                          {role}
+                        </span>
+                      </span>
                     </div>
                   </div>
-
                   <div className="p-2">
                     <Link
                       href="/profile"
-                      className="flex items-center gap-3 w-full p-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors no-underline"
+                      onClick={closeAll}
                     >
-                      <User size={16} className="text-slate-400" /> Profile
+                      <span className="p-1 rounded-lg bg-muted border border-border">
+                        <User size={13} className="text-primary" />
+                      </span>
+                      Profile
                     </Link>
                     <Link
                       href="/settings"
-                      className="flex items-center gap-3 w-full p-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors no-underline"
+                      onClick={closeAll}
                     >
-                      <Settings size={16} className="text-slate-400" /> Settings
+                      <span className="p-1 rounded-lg bg-muted border border-border">
+                        <Settings size={13} className="text-primary" />
+                      </span>
+                      Settings
                     </Link>
-                    <div className="h-[1px] bg-slate-100 my-1" />
-                    <button className="flex items-center gap-3 w-full p-2.5 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-50 transition-colors">
-                      <LogOut size={16} /> Logout
+                    <div className="h-px bg-border my-1.5" />
+                    <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-bold text-destructive hover:bg-red-50 transition-colors">
+                      <span className="p-1 rounded-lg bg-red-50 border border-red-200">
+                        <LogOut size={13} className="text-destructive" />
+                      </span>
+                      Sign Out
                     </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
-        </header>
+        </nav>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto w-full animate-in fade-in duration-500">
+        {/* ── Page content ─────────────────────────────────────────── */}
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="max-w-7xl mx-auto animate-in fade-in duration-300">
             {children}
           </div>
         </main>
+      </div>
+
+      {/* ══ SIDEBAR (drawer-side) ════════════════════════════════════ */}
+      <div className="drawer-side z-40">
+        {/* Overlay — closes drawer on mobile when clicking outside */}
+        <label
+          htmlFor="kn-drawer"
+          aria-label="close sidebar"
+          className="drawer-overlay"
+        />
+
+        {/* Sidebar shell: 
+            - is-drawer-close:w-14 → icon strip (56px)
+            - is-drawer-open:w-64  → full (256px) 
+            - hover:w-64           → expand on hover when collapsed  */}
+        <div
+          className="
+          flex flex-col min-h-full
+          is-drawer-close:w-14 is-drawer-open:w-64
+          hover:w-64
+          bg-sidebar
+          border-r border-sidebar-border
+          transition-[width] duration-300 ease-in-out
+          overflow-hidden
+          group/sb
+        "
+        >
+          <Sidebar userRole={role ?? "farmer"} />
+        </div>
       </div>
     </div>
   );

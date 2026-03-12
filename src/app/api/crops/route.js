@@ -61,7 +61,6 @@ export async function POST(req) {
   }
 }
 //  GET /api/crops
-// search + filter + pagination + sort
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -69,6 +68,7 @@ export async function GET(req) {
     const search = searchParams.get("search");
     const category = searchParams.get("category");
     const location = searchParams.get("location");
+    const farmerId = searchParams.get("farmerId"); // NEW
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
@@ -79,10 +79,9 @@ export async function GET(req) {
 
     const crops = await getCollection(COLLECTIONS.CROPS);
 
-    // filter
-
     let filter = {};
 
+    // 🔎 search filter
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: "i" } },
@@ -90,14 +89,22 @@ export async function GET(req) {
       ];
     }
 
+    // 📂 category filter
     if (category) {
       filter.category = category;
     }
 
+    // 📍 location filter
     if (location) {
       filter.location = location;
     }
 
+    // 👨‍🌾 farmer crops filter
+    if (farmerId) {
+      filter.farmerId = farmerId;
+    }
+
+    // 💰 price filter
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
@@ -126,10 +133,11 @@ export async function GET(req) {
         totalPages: Math.ceil(total / limit),
       },
     });
+
   } catch (error) {
     return Response.json(
       { success: false, message: error.message },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

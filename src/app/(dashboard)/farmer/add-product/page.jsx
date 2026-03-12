@@ -21,12 +21,8 @@ export default function AddProductPage() {
   const user = { id: "farmer123" };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   // Convert image to Base64
@@ -123,7 +119,12 @@ const handleSubmit = async (e) => {
         Add Crop to Market
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+        .field-input:focus { border-color: ${B.primary} !important; background: #fff !important; }
+        .upload-zone { transition: border-color 0.2s, background 0.2s; }
+        .upload-zone:hover { border-color: ${B.primary} !important; background: ${B.muted} !important; }
+        .submit-btn  { transition: transform 0.15s, box-shadow 0.15s; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,125,50,0.35) !important; }
+        .submit-btn:active:not(:disabled) { transform: translateY(0); }
 
         {/* Crop Name */}
         <div>
@@ -210,6 +211,7 @@ const handleSubmit = async (e) => {
               className="w-full border rounded-lg p-3"
             />
           </div>
+        )}
 
           <div>
             <label className="block text-sm font-semibold mb-2">
@@ -225,6 +227,7 @@ const handleSubmit = async (e) => {
               className="w-full border rounded-lg p-3"
             />
           </div>
+        )}
 
           <div>
             <label className="block text-sm font-semibold mb-2">
@@ -243,7 +246,34 @@ const handleSubmit = async (e) => {
             </select>
           </div>
 
-        </div>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+
+            {/* Crop Name */}
+            <Field label="Crop Name" icon={Sprout} required>
+              <input className="field-input" style={inputStyle} type="text" name="name"
+                value={formData.name} onChange={handleChange} placeholder="e.g. Aman Rice" required />
+            </Field>
+
+            {/* Category */}
+            <Field label="Category" icon={Tag} required>
+              <select className="field-input" style={inputStyle} name="category"
+                value={formData.category} onChange={handleChange} required>
+                {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+              </select>
+            </Field>
+
+            {/* Location */}
+            <Field label="Farm Location" icon={MapPin}>
+              <input className="field-input" style={inputStyle} type="text" name="location"
+                value={formData.location} onChange={handleChange} placeholder="e.g. Jessore, Rajshahi" />
+            </Field>
+
+            {/* Description */}
+            <Field label="Description" icon={FileText}>
+              <textarea className="field-input" style={{ ...inputStyle, resize: "vertical", minHeight: 88 }}
+                name="description" rows={4} value={formData.description} onChange={handleChange}
+                placeholder="Describe your crop — freshness, harvest date, storage method…" />
+            </Field>
 
         {/* Image Upload */}
         <div>
@@ -284,13 +314,18 @@ const handleSubmit = async (e) => {
           </div>
         )}
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-800"
-        >
-          Add Product
-        </button>
+            {/* Submit */}
+            <button type="submit" disabled={submitting} className="submit-btn"
+              style={{ width: "100%", padding: "14px", borderRadius: 14, background: submitting ? B.primary : `linear-gradient(135deg, ${B.primary}, ${B.foreground})`, color: "#fff", fontWeight: 900, fontSize: 14, border: "none", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.75 : 1, boxShadow: `0 4px 18px rgba(46,125,50,0.3)`, letterSpacing: "0.04em", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 4 }}>
+              {submitting ? (
+                <>
+                  <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", display: "inline-block", animation: "spin 0.7s linear infinite" }} />
+                  Listing crop…
+                </>
+              ) : (
+                <><Sprout size={16} /> Add to Marketplace</>
+              )}
+            </button>
 
       </form>
 

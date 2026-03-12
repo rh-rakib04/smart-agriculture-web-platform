@@ -1,16 +1,26 @@
-import FarmerSidebar from "@/components/farmer/sidebar";
+"use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/useRole";
 
 export default function FarmerLayout({ children }) {
-  return (
-    <div className="flex min-h-screen">
+  const router = useRouter();
+  const { role, loading, isFarmer } = useRole();
 
-   
-      {/* Main Content */}
-      <main className="ml-64 flex-1 min-h-[calc(100vh-64px)] bg-[#EEF3E8] p-6">
-        {children}
-      </main>
+  useEffect(() => {
+    if (loading) return;
 
-    </div>
-  );
+    // logged-in but not Farmer
+    if (role && !isFarmer) {
+      router.replace("/403");
+    }
+  }, [role, loading, isFarmer, router]);
+
+  if (loading) return <div className="p-6">Checking Farmer access...</div>;
+
+  // if role exists but not Farmer, show nothing (redirect will happen)
+  if (role && !isFarmer) return null;
+
+  return <div className="min-h-screen bg-gray-50">{children}</div>;
 }
