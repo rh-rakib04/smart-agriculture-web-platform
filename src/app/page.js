@@ -33,41 +33,21 @@ export default function HomePage() {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
-
-      {loading ? (
-
-        <Loader key="loader" />
-
-      ) : (
-
-        <motion.div
-          key="homepage"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="w-full min-h-screen bg-white"
-        >
-
-          <Header />
-          <HeroSection />
-          <StatsBar />
-          <FarmerFeatures />
-          <BuyerFeatures />
-          <OurService />
-          <HowItWork />
-          <AIChatbotHighlight />
-          <PlannerHighlight />
-          <WeatherHighlight />
-          <StudentSection />
-          <NewsTeaser />
-          <AboutUs />
-          <CTASection />
-
-        </motion.div>
-
-      )}
-
-    </AnimatePresence>
+    <div className="w-full min-h-screen bg-white">
+      
+      <HeroSection />
+      <StatsBar></StatsBar>
+      <FarmerFeatures />
+      <BuyerFeatures></BuyerFeatures>
+      <OurService></OurService>
+      <HowItWork></HowItWork>
+      <AIChatbotHighlight></AIChatbotHighlight>
+      <PlannerHighlight></PlannerHighlight>
+      <WeatherHighlight></WeatherHighlight>
+      <StudentSection></StudentSection>
+      <NewsTeaser></NewsTeaser>
+      <AboutUs></AboutUs>
+      <CTASection></CTASection>
+    </div>
   );
 }
