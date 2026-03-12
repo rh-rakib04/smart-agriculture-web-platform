@@ -98,7 +98,7 @@ const bottomFeatures = [
 
 export default function HeroSection() {
   return (
-    <section className="relative h-screen min-h-[680px] w-full overflow-hidden ">
+    <section className="relative h-[80vh] min-h-[680px] w-full overflow-hidden ">
       {/* ── Background Image ── */}
       <Image
         src="/images/hero-bg.jpg"
@@ -139,14 +139,14 @@ quality={90}
 
       {/* ── Main Content ── */}
       <div
-        className="relative z-10 h-full max-w-[1320px] mx-auto px-6 lg:px-10
+        className="relative z-10 h-full  mx-auto px-6 lg:px-10
         flex flex-col justify-center mt-10"
       >
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="max-w-xl"
+          className="max-w-2xl"
         >
           {/* Tag pill */}
           <motion.div variants={slideRight} className="mb-6">
@@ -164,7 +164,7 @@ quality={90}
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-5xl sm:text-6xl lg:text-[72px] font-extrabold
+            className="text-4xl sm:text-6xl lg:text-[72px] font-extrabold
               text-white leading-[1.05] tracking-tight mb-6"
           >
             Rooted in Nature,
