@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   Heart,
@@ -16,160 +15,273 @@ import {
   ChevronLeft,
   Share2,
   Zap,
-  Droplet,
+  CheckCircle,
+  Leaf,
+  Droplets,
   Wind,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import SproutSpinner from "@/components/ui/SproutSpinner";
 
-const TabContent = ({ activeTab, crop, farmerInfo, reviews }) => {
-  switch (activeTab) {
-    case "description":
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
-        >
-          <div className="prose prose-sm max-w-none">
-            <p className="text-gray-700 leading-relaxed">{crop.description}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            <SpecCard icon={Package} label="Type" value={crop.cropType} />
-            <SpecCard icon={Package} label="Unit" value={crop.unit} />
-            <SpecCard
-              icon={Calendar}
-              label="Listed"
-              value={new Date(crop.createdAt).toLocaleDateString()}
-            />
-            <SpecCard icon={Zap} label="Status" value={crop.status} />
-          </div>
-        </motion.div>
-      );
+// ── Josefin Sans loaded via next/font or just inline style ───────────────────
+const FONT = { fontFamily: "'Josefin Sans', sans-serif" };
 
-    case "farmer":
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
-        >
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-100">
-            <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                <User size={40} className="text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900">
-                  {farmerInfo.name}
-                </h3>
-                <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                  <MapPin size={14} />
-                  {farmerInfo.location}
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  {farmerInfo.experience} years of farming experience
-                </p>
-                <div className="flex gap-2 mt-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all"
-                  >
-                    <MessageCircle size={18} />
-                    Chat
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
-                  >
-                    <User size={18} />
-                    Profile
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-green-200">
-              <StatBox label="Crops Listed" value="42" />
-              <StatBox label="Rating" value="4.8" />
-              <StatBox label="Followers" value="1.2K" />
-            </div>
-          </div>
-        </motion.div>
-      );
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-components
+// ─────────────────────────────────────────────────────────────────────────────
 
-    case "reviews":
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
-        >
-          {reviews.map((review, i) => (
-            <div
-              key={i}
-              className="p-4 border border-gray-200 rounded-xl hover:shadow-lg transition-all"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-900">{review.user}</p>
-                  <div className="flex gap-1 mt-1">
-                    {[...Array(5)].map((_, j) => (
-                      <Star
-                        key={j}
-                        size={14}
-                        className={
-                          j < review.rating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }
-                      />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500">{review.date}</p>
-              </div>
-              <p className="text-gray-700 text-sm">{review.comment}</p>
-            </div>
-          ))}
-        </motion.div>
-      );
+function StarRow({ count = 4, size = 13 }) {
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star
+          key={i}
+          size={size}
+          className={
+            i < count
+              ? "fill-[#c8a227] text-[#c8a227]"
+              : "fill-[#e8e2d6] text-[#e8e2d6]"
+          }
+        />
+      ))}
+    </div>
+  );
+}
 
-    default:
-      return null;
-  }
-};
+function WidgetHead({ children }) {
+  return (
+    <div className="flex items-center gap-2 bg-[#2d5a1b] px-4 py-2.5 rounded-t-lg">
+      <span className="w-2 h-2 rounded-full bg-[#f0c040] flex-shrink-0" />
+      <span
+        className="text-white text-[11px] font-bold uppercase tracking-[0.12em]"
+        style={FONT}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
 
-const SpecCard = ({ icon: Icon, label, value }) => (
-  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-green-300 transition-all">
-    <div className="flex items-center gap-3">
-      <Icon size={20} className="text-green-600 flex-shrink-0" />
+function InfoChip({ icon: Icon, label, value, accent = "green" }) {
+  const colors = {
+    green: {
+      bg: "bg-[#eef4e6]",
+      text: "text-[#2d5a1b]",
+      icon: "text-[#4a7c2f]",
+    },
+    gold: {
+      bg: "bg-[#fdf3dc]",
+      text: "text-[#7a5e10]",
+      icon: "text-[#c8a227]",
+    },
+    blue: {
+      bg: "bg-[#e6f1fb]",
+      text: "text-[#0c447c]",
+      icon: "text-[#378add]",
+    },
+    purple: {
+      bg: "bg-[#eeebfe]",
+      text: "text-[#4a3ab0]",
+      icon: "text-[#7f77dd]",
+    },
+  };
+  const c = colors[accent];
+  return (
+    <div
+      className={`flex items-center gap-3 p-3 ${c.bg} rounded-lg border border-white/60`}
+    >
+      <Icon size={18} className={`${c.icon} flex-shrink-0`} />
       <div>
-        <p className="text-xs text-gray-500">{label}</p>
-        <p className="font-semibold text-gray-900">{value}</p>
+        <p className="text-[10px] text-[#6b7a5e] uppercase tracking-wider mb-0.5">
+          {label}
+        </p>
+        <p className={`text-[13px] font-bold ${c.text}`} style={FONT}>
+          {value}
+        </p>
       </div>
     </div>
-  </div>
-);
+  );
+}
 
-const StatBox = ({ label, value }) => (
-  <div className="text-center">
-    <p className="text-2xl font-bold text-green-600">{value}</p>
-    <p className="text-xs text-gray-600">{label}</p>
-  </div>
-);
+// ── Tab: Description ──────────────────────────────────────────────────────────
+function TabDescription({ crop }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-5"
+    >
+      <p className="text-[14px] text-[#4a5c3a] leading-relaxed">
+        {crop.description || "No description provided for this crop."}
+      </p>
+      <div className="grid grid-cols-2 gap-3 pt-2">
+        <InfoChip
+          icon={Package}
+          label="Crop Type"
+          value={crop.cropType || crop.category || "—"}
+          accent="green"
+        />
+        <InfoChip
+          icon={Package}
+          label="Unit"
+          value={crop.unit || "kg"}
+          accent="blue"
+        />
+        <InfoChip
+          icon={Calendar}
+          label="Listed"
+          value={
+            crop.createdAt
+              ? new Date(crop.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "—"
+          }
+          accent="purple"
+        />
+        <InfoChip
+          icon={Zap}
+          label="Status"
+          value={crop.status || "Available"}
+          accent="gold"
+        />
+      </div>
 
+      {/* Growing conditions */}
+      <div className="grid grid-cols-3 gap-3 pt-2 border-t border-[#dde4d0]">
+        {[
+          { icon: Leaf, label: "Soil", value: crop.soil || "Loamy" },
+          { icon: Droplets, label: "Water", value: crop.water || "Medium" },
+          { icon: Wind, label: "Season", value: crop.season || "Winter" },
+        ].map(({ icon: Icon, label, value }) => (
+          <div
+            key={label}
+            className="flex flex-col items-center gap-1.5 p-3 bg-[#f7f5ef] rounded-lg border border-[#dde4d0] text-center"
+          >
+            <Icon size={18} className="text-[#4a7c2f]" />
+            <p className="text-[10px] text-[#6b7a5e] uppercase tracking-wider">
+              {label}
+            </p>
+            <p className="text-[12px] font-bold text-[#2d3a1e]" style={FONT}>
+              {value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Tab: Farmer ───────────────────────────────────────────────────────────────
+function TabFarmer({ farmerInfo }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-5"
+    >
+      <div className="flex items-start gap-4">
+        <div className="w-16 h-16 bg-[#2d5a1b] rounded-full flex items-center justify-center flex-shrink-0 border-2 border-[#c8a227]">
+          <User size={32} className="text-white" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-[16px] font-bold text-[#2d3a1e]" style={FONT}>
+            {farmerInfo.name}
+          </h3>
+          <p className="flex items-center gap-1 text-[12px] text-[#6b7a5e] mt-1">
+            <MapPin size={12} /> {farmerInfo.location}
+          </p>
+          <p className="text-[12px] text-[#6b7a5e] mt-1">
+            {farmerInfo.experience} yrs experience
+          </p>
+          <StarRow count={5} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 py-4 border-y border-[#dde4d0]">
+        {[
+          ["42", "Crops"],
+          ["4.8", "Rating"],
+          ["1.2K", "Buyers"],
+        ].map(([n, l]) => (
+          <div key={l} className="text-center">
+            <p className="text-[20px] font-bold text-[#4a7c2f]" style={FONT}>
+              {n}
+            </p>
+            <p className="text-[11px] text-[#6b7a5e] uppercase tracking-wide">
+              {l}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#2d5a1b] hover:bg-[#4a7c2f] text-white text-[12px] font-bold rounded-md transition-colors uppercase tracking-wide"
+          style={FONT}
+        >
+          <MessageCircle size={14} /> Chat
+        </button>
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white border border-[#dde4d0] hover:border-[#4a7c2f] text-[#2d3a1e] text-[12px] font-bold rounded-md transition-colors uppercase tracking-wide"
+          style={FONT}
+        >
+          <User size={14} /> Profile
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Tab: Reviews ──────────────────────────────────────────────────────────────
+function TabReviews({ reviews }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-3"
+    >
+      {reviews.map((review, i) => (
+        <div
+          key={i}
+          className="p-4 bg-[#f7f5ef] border border-[#dde4d0] rounded-lg"
+        >
+          <div className="flex items-start justify-between mb-2">
+            <div>
+              <p className="text-[13px] font-bold text-[#2d3a1e]" style={FONT}>
+                {review.user}
+              </p>
+              <StarRow count={review.rating} />
+            </div>
+            <p className="text-[11px] text-[#6b7a5e]">{review.date}</p>
+          </div>
+          <p className="text-[13px] text-[#4a5c3a] leading-relaxed">
+            {review.comment}
+          </p>
+        </div>
+      ))}
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main page
+// ─────────────────────────────────────────────────────────────────────────────
 export default function CropDetailsPage() {
   const params = useParams();
   const router = useRouter();
+
   const [crop, setCrop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+  const [imgError, setImgError] = useState(false);
 
   const farmerInfo = {
-    name: "Ahmed Hassan Farmer",
+    name: "Ahmed Hassan",
     location: "Dhaka, Bangladesh",
     experience: 15,
   };
@@ -178,7 +290,7 @@ export default function CropDetailsPage() {
     {
       user: "Karim Khan",
       rating: 5,
-      comment: "Excellent quality rice! Fresh and delivered on time.",
+      comment: "Excellent quality! Fresh and delivered on time.",
       date: "2 weeks ago",
     },
     {
@@ -190,7 +302,7 @@ export default function CropDetailsPage() {
     {
       user: "Roni Ahmed",
       rating: 5,
-      comment: "Best rice I've ever bought. Will order again!",
+      comment: "Best crop I've bought. Will order again!",
       date: "1 month ago",
     },
   ];
@@ -198,346 +310,459 @@ export default function CropDetailsPage() {
   useEffect(() => {
     const fetchCrop = async () => {
       try {
-        const response = await fetch(`/api/crops/${params.id}`);
-        const result = await response.json();
-        if (result.success) {
-          setCrop(result.data);
-        }
-      } catch (error) {
-        console.error("Error fetching crop:", error);
+        const res = await fetch(`/api/crops/${params.id}`);
+        const result = await res.json();
+        if (result.success) setCrop(result.data);
+      } catch (err) {
+        console.error("Error fetching crop:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCrop();
   }, [params.id]);
 
+  // ── Loading ─────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center pt-20">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full"
-        />
+      <div className="flex items-center justify-center min-h-screen bg-[#f7f5ef]">
+        <SproutSpinner size={56} />
       </div>
     );
   }
 
+  // ── Not found ───────────────────────────────────────────────────────────
   if (!crop) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
+      <div className="min-h-screen bg-[#f7f5ef] flex items-center justify-center">
+        <div className="text-center">
+          <span className="text-6xl mb-4 block">🌾</span>
+          <h1 className="text-2xl font-bold text-[#2d3a1e] mb-4" style={FONT}>
+            Crop Not Found
+          </h1>
+          <Link
+            href="/crops"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#2d5a1b] hover:bg-[#4a7c2f] text-white text-sm font-bold rounded-md transition-colors uppercase tracking-wide"
+            style={FONT}
           >
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Crop Not Found
-            </h1>
-            <Link
-              href="/crops"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all"
-            >
-              <ChevronLeft size={20} />
-              Back to Crops
-            </Link>
-          </motion.div>
+            <ChevronLeft size={16} /> Back to Crops
+          </Link>
         </div>
       </div>
     );
   }
 
+  const totalPrice = (Number(crop.price) * quantity).toLocaleString();
+  const tabs = ["description", "farmer", "reviews"];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
-      {/* Header */}
-      <div className="sticky top-16 bg-white/95 backdrop-blur-md border-b border-gray-100 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
-          <motion.button
-            whileHover={{ x: -4 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => router.back()}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-all"
-          >
-            <ChevronLeft size={24} className="text-gray-700" />
-          </motion.button>
-          <h1 className="text-xl font-bold text-gray-900">{crop.title}</h1>
+    <div className="min-h-screen bg-[#f7f5ef]">
+      {/* ── HERO BANNER ────────────────────────────────────────────────── */}
+      <div className="relative bg-[#1e3a0f] overflow-hidden">
+        {/* bg image */}
+        <div
+          className="absolute inset-0 opacity-25"
+          style={{
+            backgroundImage: "url('/images/crops1.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(20,45,10,0.92), rgba(45,90,27,0.75), rgba(20,45,10,0.6))",
+          }}
+        />
+        <span className="absolute right-8 bottom-0 text-[110px] opacity-10 select-none leading-none">
+          🌾
+        </span>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 flex items-end justify-between">
+          <div>
+            <h1
+              className="text-3xl lg:text-4xl font-bold text-white tracking-wide"
+              style={FONT}
+            >
+              {crop.title}
+            </h1>
+          </div>
+
+          {/* Category + status badges */}
+          <div className="hidden md:flex flex-col items-end gap-2">
+            {crop.category && (
+              <span
+                className="px-3 py-1.5 bg-[#2d5a1b] text-white text-[11px] font-bold uppercase tracking-widest rounded border border-white/10"
+                style={FONT}
+              >
+                {crop.category}
+              </span>
+            )}
+            <span
+              className="px-3 py-1.5 bg-[#c8a227] text-white text-[11px] font-bold uppercase tracking-widest rounded"
+              style={FONT}
+            >
+              {crop.status || "Available"}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-        >
-          {/* Left Column - Images and Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative h-80 sm:h-96 rounded-3xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 shadow-xl group"
+      {/* ── STICKY BACK BAR ────────────────────────────────────────────── */}
+      <div className="sticky top-0 z-40 bg-white border-b border-[#dde4d0] shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-3">
+          <motion.button
+            whileHover={{ x: -3 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => router.back()}
+            className="flex items-center gap-1.5 text-[#2d5a1b] hover:text-[#4a7c2f] text-[13px] font-bold transition-colors"
+            style={FONT}
+          >
+            <ChevronLeft size={18} /> Back to Crops
+          </motion.button>
+          <span className="text-[#dde4d0]">|</span>
+          <p className="text-[13px] text-[#6b7a5e] truncate">{crop.title}</p>
+          <div className="ml-auto flex items-center gap-2">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsLiked(!isLiked)}
+              className="p-2 rounded-md border border-[#dde4d0] bg-white hover:border-[#4a7c2f] transition-colors"
             >
-              <img
-                src={crop.image || crop.imageUrl || "/placeholder-crop.jpg"}
-                alt={crop.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              <Heart
+                size={16}
+                className={
+                  isLiked ? "fill-red-500 text-red-500" : "text-[#6b7a5e]"
+                }
+              />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="p-2 rounded-md border border-[#dde4d0] bg-white hover:border-[#4a7c2f] transition-colors"
+            >
+              <Share2 size={16} className="text-[#6b7a5e]" />
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MAIN CONTENT ───────────────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-7">
+          {/* ── LEFT: image + chips + tabs ─────────────────────────────── */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Hero image */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              className="relative h-72 sm:h-96 rounded-xl overflow-hidden border border-[#dde4d0] group bg-[#eef4e6]"
+            >
+              {!imgError ? (
+                <img
+                  src={crop.image || crop.imageUrl || "/placeholder-crop.jpg"}
+                  alt={crop.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-8xl opacity-30">
+                  🌾
+                </div>
+              )}
+
+              {/* overlaid gradient bottom */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-24"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(20,45,10,0.6), transparent)",
+                }}
               />
 
-              {/* Category Badge */}
-              <div className="absolute top-6 left-6">
-                <motion.div
-                  initial={{ y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-bold rounded-full shadow-lg"
+              {/* category badge */}
+              {crop.category && (
+                <span
+                  className="absolute top-4 left-4 px-3 py-1.5 bg-[#2d5a1b] text-white text-[10px] font-bold uppercase tracking-widest rounded"
+                  style={FONT}
                 >
                   {crop.category}
-                </motion.div>
-              </div>
+                </span>
+              )}
 
-              {/* Like Button */}
+              {/* like btn */}
               <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.88 }}
                 onClick={() => setIsLiked(!isLiked)}
-                className="absolute top-6 right-6 p-3 rounded-full bg-white shadow-lg hover:shadow-xl transition-all"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white shadow flex items-center justify-center border border-[#dde4d0]"
               >
                 <Heart
-                  size={24}
+                  size={16}
                   className={
-                    isLiked
-                      ? "fill-red-500 text-red-500"
-                      : "text-gray-600 hover:text-red-500"
+                    isLiked ? "fill-red-500 text-red-500" : "text-[#6b7a5e]"
                   }
                 />
               </motion.button>
 
-              {/* Status Badge */}
-              <div className="absolute bottom-6 right-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/95 text-green-600 font-semibold rounded-full text-sm">
-                  <Zap size={16} className="flex-shrink-0" />
-                  {crop.status}
-                </div>
-              </div>
+              {/* status bottom-left */}
+              <span
+                className="absolute bottom-4 left-4 px-3 py-1.5 bg-[#c8a227] text-white text-[10px] font-bold uppercase tracking-widest rounded"
+                style={FONT}
+              >
+                {crop.status || "Available"}
+              </span>
             </motion.div>
 
-            {/* Key Details Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <motion.div
-                whileHover={{ y: -4 }}
-                className="p-4 bg-white rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <MapPin size={20} className="text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Location</p>
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {crop.location}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -4 }}
-                className="p-4 bg-white rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Package size={20} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Available</p>
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {crop.quantity} {crop.unit}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -4 }}
-                className="p-4 bg-white rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-yellow-100 rounded-lg">
-                    <Star size={20} className="text-yellow-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Rating</p>
-                    <p className="font-semibold text-gray-900 text-sm">4.8/5</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -4 }}
-                className="p-4 bg-white rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Calendar size={20} className="text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Listed</p>
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {new Date(crop.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
+            {/* Info chips */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+            >
+              <InfoChip
+                icon={MapPin}
+                label="Location"
+                value={crop.location || "—"}
+                accent="green"
+              />
+              <InfoChip
+                icon={Package}
+                label="Available"
+                value={`${crop.quantity ?? "—"} ${crop.unit || "kg"}`}
+                accent="blue"
+              />
+              <InfoChip
+                icon={Star}
+                label="Rating"
+                value="4.8 / 5"
+                accent="gold"
+              />
+              <InfoChip
+                icon={Calendar}
+                label="Listed"
+                value={
+                  crop.createdAt
+                    ? new Date(crop.createdAt).toLocaleDateString("en-GB", {
                         day: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+                        month: "short",
+                      })
+                    : "—"
+                }
+                accent="purple"
+              />
+            </motion.div>
 
             {/* Tabs */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
-              <div className="flex border-b border-gray-200 bg-gray-50">
-                {["description", "farmer", "reviews"].map((tab) => (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18, duration: 0.4 }}
+              className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden"
+            >
+              {/* tab bar */}
+              <div className="flex border-b border-[#dde4d0] bg-[#f7f5ef]">
+                {tabs.map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 px-4 py-4 font-semibold transition-all capitalize ${
-                      activeTab === tab
-                        ? "border-b-2 border-green-600 text-green-600 bg-white"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
+                    className={`flex-1 py-3 text-[12px] font-bold uppercase tracking-wider capitalize transition-all
+                      ${
+                        activeTab === tab
+                          ? "border-b-2 border-[#2d5a1b] text-[#2d5a1b] bg-white"
+                          : "text-[#6b7a5e] hover:text-[#2d3a1e]"
+                      }`}
+                    style={FONT}
                   >
                     {tab}
                   </button>
                 ))}
               </div>
 
-              <div className="p-6">
-                <TabContent
-                  activeTab={activeTab}
-                  crop={crop}
-                  farmerInfo={farmerInfo}
-                  reviews={reviews}
-                />
+              <div className="p-5">
+                <AnimatePresence mode="wait">
+                  {activeTab === "description" && (
+                    <TabDescription key="desc" crop={crop} />
+                  )}
+                  {activeTab === "farmer" && (
+                    <TabFarmer key="farmer" farmerInfo={farmerInfo} />
+                  )}
+                  {activeTab === "reviews" && (
+                    <TabReviews key="reviews" reviews={reviews} />
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right Column - Pricing & Actions */}
+          {/* ── RIGHT: price card + actions ────────────────────────────── */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="sticky top-32 space-y-6"
+              transition={{ delay: 0.15, duration: 0.45 }}
+              className="sticky top-20 space-y-4"
             >
-              {/* Price Card */}
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-3xl p-8 shadow-xl">
-                <p className="text-sm text-gray-600 mb-2">Price per {crop.unit}</p>
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-                  Tk {crop.price}
-                </h2>
-                <p className="text-xs text-gray-500">Plus shipping charges</p>
-
-                <div className="mt-6 pt-6 border-t border-green-200 space-y-4">
-                  {/* Quantity Selector */}
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 mb-3">
-                      Quantity
-                    </p>
-                    <div className="flex items-center gap-3 bg-white rounded-xl p-2 border border-gray-200">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                        className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-all"
-                      >
-                        −
-                      </motion.button>
-                      <input
-                        type="number"
-                        value={quantity}
-                        onChange={(e) =>
-                          setQuantity(Math.max(1, parseInt(e.target.value)))
-                        }
-                        className="flex-1 text-center font-semibold bg-transparent outline-none"
-                      />
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() =>
-                          setQuantity(quantity + 1)
-                        }
-                        className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-all"
-                      >
-                        +
-                      </motion.button>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Available: {crop.quantity} {crop.unit}
-                    </p>
+              {/* Price widget */}
+              <div className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden">
+                <WidgetHead>Pricing</WidgetHead>
+                <div className="p-5">
+                  <p className="text-[11px] text-[#6b7a5e] uppercase tracking-wider mb-1">
+                    Price per {crop.unit || "kg"}
+                  </p>
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span
+                      className="text-[32px] font-bold text-[#4a7c2f] leading-none"
+                      style={FONT}
+                    >
+                      Tk {Number(crop.price).toLocaleString()}
+                    </span>
+                    {crop.oldPrice && (
+                      <span className="text-[14px] text-[#aaa] line-through">
+                        Tk {Number(crop.oldPrice).toLocaleString()}
+                      </span>
+                    )}
                   </div>
+                  <p className="text-[11px] text-[#6b7a5e]">
+                    + shipping charges apply
+                  </p>
 
-                  {/* Total Price */}
-                  <div className="pt-4 border-t border-green-200">
-                    <div className="flex justify-between items-center">
-                      <p className="text-gray-600">Total:</p>
-                      <p className="text-2xl font-bold text-green-600">
-                        Tk {(crop.price * quantity).toLocaleString()}
+                  <div className="mt-5 pt-5 border-t border-[#dde4d0] space-y-4">
+                    {/* Quantity */}
+                    <div>
+                      <p className="text-[11px] text-[#6b7a5e] uppercase tracking-wider mb-2">
+                        Quantity
                       </p>
+                      <div className="flex items-center gap-0 border border-[#dde4d0] rounded-md overflow-hidden bg-[#f7f5ef]">
+                        <button
+                          onClick={() =>
+                            quantity > 1 && setQuantity((q) => q - 1)
+                          }
+                          className="w-10 h-10 flex items-center justify-center text-[#2d5a1b] font-bold hover:bg-[#dde4d0] transition-colors text-lg flex-shrink-0"
+                        >
+                          −
+                        </button>
+                        <input
+                          type="number"
+                          value={quantity}
+                          min={1}
+                          max={crop.quantity}
+                          onChange={(e) =>
+                            setQuantity(
+                              Math.max(1, parseInt(e.target.value) || 1),
+                            )
+                          }
+                          className="flex-1 text-center text-[14px] font-bold text-[#2d3a1e] bg-transparent outline-none py-2"
+                          style={FONT}
+                        />
+                        <button
+                          onClick={() => setQuantity((q) => q + 1)}
+                          className="w-10 h-10 flex items-center justify-center text-[#2d5a1b] font-bold hover:bg-[#dde4d0] transition-colors text-lg flex-shrink-0"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-[#6b7a5e] mt-1">
+                        Max: {crop.quantity ?? "—"} {crop.unit || "kg"}
+                      </p>
+                    </div>
+
+                    {/* Total */}
+                    <div className="flex items-center justify-between pt-3 border-t border-[#dde4d0]">
+                      <p className="text-[12px] text-[#6b7a5e] uppercase tracking-wide">
+                        Total
+                      </p>
+                      <span
+                        className="text-[22px] font-bold text-[#4a7c2f]"
+                        style={FONT}
+                      >
+                        Tk {totalPrice}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
+              {/* Action buttons */}
               <motion.button
-                whileHover={{ scale: 1.02, }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all group"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className="w-full flex items-center justify-center gap-2.5 py-3.5 bg-[#2d5a1b] hover:bg-[#4a7c2f]
+                           text-white text-[13px] font-bold rounded-lg transition-colors uppercase tracking-wide shadow-md"
+                style={FONT}
               >
-                <ShoppingCart
-                  size={22}
-                  className="group-hover:scale-110 transition-transform"
-                />
-                Add to Cart
+                <ShoppingCart size={17} /> Add to Cart
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-white border-2 border-green-600 text-green-600 font-bold rounded-2xl hover:bg-green-50 transition-all group"
+                whileTap={{ scale: 0.97 }}
+                className="w-full flex items-center justify-center gap-2.5 py-3.5 bg-[#c8a227] hover:bg-[#d4ad30]
+                           text-white text-[13px] font-bold rounded-lg transition-colors uppercase tracking-wide"
+                style={FONT}
               >
-                <MessageCircle
-                  size={22}
-                  className="group-hover:scale-110 transition-transform"
-                />
-                Message Farmer
+                <Zap size={17} /> Buy Now
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-center gap-3 py-3 px-6 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200 transition-all"
+                whileTap={{ scale: 0.97 }}
+                className="w-full flex items-center justify-center gap-2.5 py-3 bg-white border border-[#dde4d0]
+                           hover:border-[#4a7c2f] text-[#2d3a1e] text-[13px] font-bold rounded-lg transition-colors uppercase tracking-wide"
+                style={FONT}
               >
-                <Share2 size={20} />
-                Share
+                <MessageCircle size={17} /> Message Farmer
               </motion.button>
 
-              {/* Info Box */}
-              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
-                <p className="text-xs text-blue-900 leading-relaxed">
-                  ✓ Fresh from farm<br />
-                  ✓ Free shipping on orders over Tk 500<br />
-                  ✓ 30-day quality guarantee<br />
-                  ✓ Secure payment
-                </p>
+              {/* Trust badges widget */}
+              <div className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden">
+                <WidgetHead>Why Buy Here</WidgetHead>
+                <div className="p-4 space-y-2.5">
+                  {[
+                    "Fresh directly from farm",
+                    "Free shipping over Tk 500",
+                    "30-day quality guarantee",
+                    "Secure payment",
+                  ].map((text) => (
+                    <div
+                      key={text}
+                      className="flex items-center gap-2.5 text-[12px] text-[#4a5c3a]"
+                    >
+                      <CheckCircle
+                        size={14}
+                        className="text-[#4a7c2f] flex-shrink-0"
+                      />
+                      {text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact info widget */}
+              <div className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden">
+                <WidgetHead>Contact Info</WidgetHead>
+                <div className="p-4 space-y-2">
+                  {[
+                    { icon: MapPin, text: "Dhaka, Bangladesh" },
+                    { icon: MessageCircle, text: "+880 199-000-0000" },
+                  ].map(({ icon: Icon, text }) => (
+                    <div
+                      key={text}
+                      className="flex items-center gap-2.5 text-[12px] text-[#6b7a5e]"
+                    >
+                      <Icon
+                        size={13}
+                        className="text-[#4a7c2f] flex-shrink-0"
+                      />
+                      {text}
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
