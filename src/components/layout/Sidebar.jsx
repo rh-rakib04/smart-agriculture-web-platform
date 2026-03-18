@@ -19,7 +19,7 @@ import {
   Heart,
   Home,
 } from "lucide-react";
-import Logo from "../Logo";
+
 
 const ROLE_CFG = {
   admin: { label: "Admin Panel" },
