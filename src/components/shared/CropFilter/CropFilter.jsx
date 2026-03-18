@@ -7,9 +7,7 @@ import { Cloud, Droplets, Leaf, X, SlidersHorizontal, Tag } from "lucide-react";
 function FilterSelect({ icon: Icon, label, value, onChange, options }) {
   return (
     <div className="mb-1">
-      <label
-        className="flex items-center gap-2 text-[11px] font-bold text-[#6b7a5e] uppercase tracking-[0.1em] mb-2"
-      >
+      <label className="flex items-center gap-2 text-[11px] font-bold text-[#6b7a5e] uppercase tracking-[0.1em] mb-2">
         <Icon size={13} className="text-[#4a7c2f]" />
         {label}
       </label>
@@ -22,7 +20,9 @@ function FilterSelect({ icon: Icon, label, value, onChange, options }) {
       >
         <option value="">All {label}s</option>
         {options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
         ))}
       </select>
     </div>
@@ -31,12 +31,12 @@ function FilterSelect({ icon: Icon, label, value, onChange, options }) {
 
 // ── Category pill list ────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { value: "",           label: "All Products" },
-  { value: "grain",      label: "Grain" },
-  { value: "vegetable",  label: "Vegetable" },
-  { value: "fruit",      label: "Fruit" },
-  { value: "legume",     label: "Legume" },
-  { value: "herb",       label: "Herb" },
+  { value: "", label: "All Products" },
+  { value: "grain", label: "Grain" },
+  { value: "vegetable", label: "Vegetable" },
+  { value: "fruit", label: "Fruit" },
+  { value: "legume", label: "Legume" },
+  { value: "herb", label: "Herb" },
 ];
 
 export default function CropFilter({ filters, setFilters }) {
@@ -52,35 +52,6 @@ export default function CropFilter({ filters, setFilters }) {
       transition={{ duration: 0.4 }}
       className="w-56 flex-shrink-0 flex flex-col gap-4 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto"
     >
-
-      {/* ── Search widget ────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden">
-        <div className="bg-[#2d5a1b] px-4 py-2.5 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#f0c040] flex-shrink-0" />
-          <span
-            className="text-white text-[11px] font-bold uppercase tracking-[0.1em]"
-            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-          >
-            Search
-          </span>
-        </div>
-        <div className="p-3">
-          <div className="flex gap-0">
-            <input
-              type="text"
-              value={filters.search || ""}
-              onChange={(e) => setFilter("search", e.target.value)}
-              placeholder="Search crops…"
-              className="flex-1 text-[13px] px-3 py-2 border border-[#dde4d0] border-r-0 rounded-l-md bg-[#f7f5ef] text-[#2a2a2a]
-                         focus:outline-none focus:border-[#4a7c2f] transition-colors"
-            />
-            <button className="px-3 bg-[#4a7c2f] text-white rounded-r-md text-sm hover:bg-[#2d5a1b] transition-colors">
-              🔍
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* ── Category widget ──────────────────────────────────────────── */}
       <div className="bg-white border border-[#dde4d0] rounded-lg overflow-hidden">
         <div className="bg-[#2d5a1b] px-4 py-2.5 flex items-center gap-2">
@@ -100,9 +71,10 @@ export default function CropFilter({ filters, setFilters }) {
                 <button
                   onClick={() => setFilter("category", value)}
                   className={`w-full flex items-center justify-between text-[13px] px-2 py-1.5 rounded text-left transition-all
-                    ${active
-                      ? "text-[#4a7c2f] font-bold"
-                      : "text-[#6b7a5e] hover:text-[#4a7c2f] font-medium"
+                    ${
+                      active
+                        ? "text-[#4a7c2f] font-bold"
+                        : "text-[#6b7a5e] hover:text-[#4a7c2f] font-medium"
                     }`}
                 >
                   <span>{label}</span>
@@ -178,8 +150,10 @@ export default function CropFilter({ filters, setFilters }) {
             onChange={(e) => setFilter("maxPrice", e.target.value)}
             className="w-full accent-[#4a7c2f]"
           />
-          <div className="flex justify-between text-[11px] text-[#6b7a5e] mt-1"
-               style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+          <div
+            className="flex justify-between text-[11px] text-[#6b7a5e] mt-1"
+            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+          >
             <span>Tk 1</span>
             <span>Tk {Number(filters.maxPrice || 2000).toLocaleString()}</span>
           </div>
@@ -200,7 +174,10 @@ export default function CropFilter({ filters, setFilters }) {
                        hover:bg-[#eef4e6] hover:border-[#4a7c2f] transition-all group"
             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
           >
-            <X size={14} className="group-hover:rotate-90 transition-transform duration-200" />
+            <X
+              size={14}
+              className="group-hover:rotate-90 transition-transform duration-200"
+            />
             Clear All Filters
           </motion.button>
         )}
@@ -212,7 +189,6 @@ export default function CropFilter({ filters, setFilters }) {
           💡 Combine filters to find the perfect crops for your farm conditions.
         </p>
       </div>
-
     </motion.aside>
   );
 }
