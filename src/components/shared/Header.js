@@ -19,6 +19,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { useRole } from "@/hooks/useRole";
+import Logo from "../Logo";
 
 function NavLink({ href, children, scrolled, isActive, onClick }) {
   return (
@@ -156,17 +157,7 @@ export default function Header() {
         <div className="max-w-420 mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between gap-6">
             {/* ── LEFT: Logo ── */}
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/logo.png"
-                alt="SmartStudy Logo"
-                width={60}
-                height={10}
-              />
-              <span className="text-xl font-bold text-highlight tracking-tight">
-                Krishi<span className="text-secondary">Nova</span>
-              </span>
-            </Link>
+            <Logo />
 
             {/* ── CENTER: Desktop Nav (xl+) ── */}
             <nav className="hidden xl:flex items-center gap-8 flex-1 justify-center">
@@ -421,9 +412,7 @@ export default function Header() {
               Farm Planner
             </ProtectedLink>
 
-            <MobileNavLink {...linkProps("/farmers")}>
-              Farmers
-            </MobileNavLink>
+            <MobileNavLink {...linkProps("/farmers")}>Farmers</MobileNavLink>
             <MobileNavLink {...linkProps("/WeatherMap/weather")}>
               Weather
             </MobileNavLink>
