@@ -11,7 +11,7 @@ const page = () => {
   
   return (
     <div className="p-4 md:p-6 space-y-6 bg-gray-50 min-h-screen">
-     
+     hello vai
       {/* Title */}
       <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
 
