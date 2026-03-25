@@ -77,6 +77,12 @@ const MENU_CONFIG = {
       icon: MessageSquare,
       tip: "Messages",
     },
+    {
+      name:"Plant Disease Detection",
+      href:"/farmer/plantDisease",
+      icon:Leaf,
+      tip:"Plant disease detection"
+    }
   ],
   buyer: [
     {
