@@ -127,14 +127,14 @@ export default function CropsPage() {
     setCurrentPage(1);
   }, []);
 
-  // ── Loading ───────────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <SproutSpinner size={56} />
-      </div>
-    );
-  }
+  // // ── Loading ───────────────────────────────────────────────────────────────
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <SproutSpinner size={56} />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-[#f7f5ef] font-sans">
@@ -158,7 +158,7 @@ export default function CropsPage() {
         <span className="absolute right-10 bottom-0 text-[140px] opacity-10 select-none leading-none">
           🚜
         </span>
-        <div className="relative z-10 flex items-end justify-between px-6 lg:px-10 py-12 max-w-7xl mx-auto">
+        <div className="relative z-10 flex items-end justify-between px-6 lg:px-10 py-18 max-w-7xl mx-auto">
           <h1
             className="text-4xl lg:text-5xl font-bold text-white tracking-wide mt-10"
             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
