@@ -21,5 +21,121 @@
   "auth.logout": "Logout",
   "auth.signingOut": "Signing out...",
   "auth.logoutSuccess": "Logged out successfully",
-  "auth.logoutFail": "Logout failed"
+  "auth.logoutFail": "Logout failed",
+  "hero.tag": "Agriculture & Organic Farms",
+  "hero.title1": "Rooted in Nature,",
+  "hero.title2": "Growing",
+  "hero.title3": "the Future",
+  "hero.subtitle": "Empowering Bangladeshi farmers and buyers with AI-driven tools, direct market access, and real-time agricultural insights — no middlemen, no barriers.",
+  "hero.stat1Label": "Farmers",
+  "hero.stat2Label": "Crops Listed",
+  "hero.stat3Label": "Satisfaction",
+  "hero.ctaExplore": "Explore Crops",
+  "hero.ctaAi": "Try AI Assistant",
+  "hero.scroll": "Scroll",
+  "hero.badge1Title": "100% Organic",
+  "hero.badge1Subtitle": "Certified natural farming",
+  "hero.badge2Title": "Seasonal Harvest",
+  "hero.badge2Subtitle": "Fresh crops year-round",
+  "hero.badge3Title": "Smart Irrigation",
+  "hero.badge3Subtitle": "Water-efficient methods",
+  "hero.bottom1": "Healthy Soil Solutions",
+  "hero.bottom2": "Pure Organic Growth",
+  "hero.bottom3": "Nature-Driven Innovation",
+  "hero.slide1": "Golden Harvest",
+  "hero.slide2": "Rice Paddies",
+  "hero.slide3": "Farmer's Journey",
+  "stats.title": "Growing Together",
+  "stats.item1Label": "Farmers Joined",
+  "stats.item1Desc": "Across Bangladesh",
+  "stats.item2Label": "Buyers Connected",
+  "stats.item2Desc": "Direct, no middlemen",
+  "stats.item3Label": "AI Queries Answered",
+  "stats.item3Desc": "Smart recommendations",
+  "stats.item4Label": "Districts Covered",
+  "stats.item4Desc": "Nationwide reach",
+  "buyer.label": "For Buyers",
+  "buyer.decorative": "DIRECT",
+  "buyer.title1": "Farm Fresh,",
+  "buyer.title2": "No Middlemen",
+  "buyer.subtitle": "Connect directly with farmers across Bangladesh. Get the freshest produce at fair prices — no brokers, no delays, no hidden costs.",
+
+  "buyer.feature1Title": "Fresh Crop Catalog",
+  "buyer.feature1Desc": "Browse harvests directly from verified farmers across Bangladesh — quality grades, availability, and fair pricing.",
+
+  "buyer.feature2Title": "Zero Middlemen",
+  "buyer.feature2Desc": "Trade directly with farmers. No brokers, no hidden markups — fairer prices for buyers, better income for farmers.",
+
+  "buyer.feature3Title": "Direct Messaging",
+  "buyer.feature3Desc": "Negotiate, arrange logistics, and build lasting relationships with farmers — all within the platform.",
+
+  "buyer.perk1": "Verified farmer profiles",
+  "buyer.perk2": "Real-time stock availability",
+  "buyer.perk3": "Transparent pricing",
+  "buyer.perk4": "Secure transactions",
+
+  "buyer.cta": "Browse Marketplace",
+  "buyer.badgeTitle": "Direct Farm-to-Table",
+  "buyer.badgeDesc": "No broker. No markup. Just fresh.",
+  "farmer.label": "For Farmers",
+  "farmer.title1": "Everything a Farmer",
+  "farmer.title2": "Needs to Thrive",
+  "farmer.subtitle": "From planting to profit — manage crops, track expenses, and grow smarter with AI-powered guidance built for Bangladesh.",
+
+  "farmer.feature1Title": "Crop Management",
+  "farmer.feature1Desc": "Track every crop from seed to harvest — health scores, growth stages, and real-time alerts all in one dashboard.",
+
+  "farmer.feature2Title": "Expense & Profit Tracker",
+  "farmer.feature2Desc": "Log every taka spent. See your margin, ROI, and seasonal profitability instantly — no spreadsheets needed.",
+
+  "farmer.feature3Title": "AI Recommendations",
+  "farmer.feature3Desc": "Intelligent fertilizer, irrigation, and pest management advice tuned to your specific land, soil, and season.",
+
+  "farmer.feature4Title": "Smart Farm Planner",
+  "farmer.feature4Desc": "Generate a full seasonal plan in 3 steps. Powered by Bangladesh DAE agricultural guidelines.",
+
+  "service.label": "Our Services",
+  "service.title1": "Everything Agriculture,",
+  "service.title2": "Under One Roof",
+  "service.subtitle": "From AI-powered crop planning to direct market access — SmartAgri is the complete digital platform for Bangladesh's agriculture ecosystem.",
+
+  "service.item1Title": "Crop Management & AI Planning",
+  "service.item1Desc": "End-to-end crop tracking with AI-generated seasonal plans tailored to your land, soil type, and district — powered by Bangladesh DAE guidelines.",
+
+  "service.item2Title": "Direct Farmer-Buyer Trade",
+  "service.item2Desc": "A transparent marketplace where farmers list harvests and buyers connect directly — no brokers, no commissions, no inflated prices.",
+
+  "service.item3Title": "AI Disease Detection",
+  "service.item3Desc": "Upload a photo of your affected crop. Our computer vision AI identifies the disease, confidence level, and gives immediate treatment recommendations.",
+
+  "service.item4Title": "Weather & Farm Alerts",
+  "service.item4Desc": "10-day hyper-local forecasts with farming-specific alerts — rain warnings, frost advisories, irrigation scheduling, and optimal harvest windows.",
+
+  "service.item5Title": "Student & Researcher Network",
+  "service.item5Desc": "Agriculture students connect directly with verified farmers for field research, thesis data collection, and mentorship — bridging academia and ground reality.",
+
+  "service.learnMore": "Learn More",
+  "how.label": "How It Works",
+  "how.title1": "Simple. Direct.",
+  "how.title2": "Transparent.",
+  "how.subtitle": "Three steps connect a farmer's harvest directly to a buyer's table — with AI making every deal fast and fair.",
+
+  "how.stepLabel": "Step",
+
+  "how.step1Tag": "For Farmers",
+  "how.step1Title": "Farmer Lists Crops",
+  "how.step1Desc": "Farmers upload harvest details — crop type, quantity, quality grade, location, and expected ready date. Takes under 2 minutes.",
+
+  "how.step2Tag": "Powered by AI",
+  "how.step2Title": "AI Validates & Prices",
+  "how.step2Desc": "Our AI verifies the listing, suggests a fair market price based on live data, and surfaces it to the most relevant buyers nearby.",
+
+  "how.step3Tag": "For Buyers",
+  "how.step3Title": "Buyer Connects Directly",
+  "how.step3Desc": "Buyers browse, message farmers directly, negotiate terms, and finalise deals — no broker, no commission, no delay.",
+
+  "how.cta": "Get Started Free",
+  "how.statValue": "3x",
+  "how.statTitle": "Faster Trade",
+  "how.statDesc": "vs traditional channels"
 }

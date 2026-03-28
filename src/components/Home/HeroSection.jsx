@@ -19,7 +19,7 @@
  *   /public/images/hero-bg-2.jpg
  *   /public/images/hero-bg-3.jpg
  */
-
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
@@ -179,7 +179,7 @@ const VIDEO_STYLE = {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function HeroSection() {
   const prefersReduced = useReducedMotion();
-
+const { t } = useTranslation();
   const refA = useRef(null);
   const refB = useRef(null);
 
@@ -443,7 +443,7 @@ export default function HeroSection() {
               }}
             >
               <Sprout size={13} />
-              Agriculture &amp; Organic Farms
+             {t("hero.tag")}
             </span>
           </motion.div>
 
@@ -454,9 +454,9 @@ export default function HeroSection() {
                        leading-[1.05] tracking-tight mb-6"
             style={{ fontFamily: "'Josefin Sans', sans-serif" }}
           >
-            Rooted in Nature,
+           {t("hero.title1")}
             <br />
-            <span style={{ color: "#f0c040" }}>Growing</span> the Future
+            <span style={{ color: "#f0c040" }}>{t("hero.title2")}</span> {t("hero.title3")}
           </motion.h1>
 
           {/* Subtext */}
@@ -464,9 +464,7 @@ export default function HeroSection() {
             variants={fadeUp}
             className="text-[16px] text-white/65 leading-relaxed mb-8 max-w-md"
           >
-            Empowering Bangladeshi farmers and buyers with AI-driven tools,
-            direct market access, and real-time agricultural insights — no
-            middlemen, no barriers.
+            {t("hero.subtitle")}
           </motion.p>
 
           {/* Stats */}
@@ -502,7 +500,7 @@ export default function HeroSection() {
                 color: "#fff",
               }}
             >
-              Explore Crops
+              {t("hero.ctaExplore")}
               <ArrowUpRight
                 size={16}
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -520,7 +518,7 @@ export default function HeroSection() {
                 color: "#fff",
               }}
             >
-              Try AI Assistant
+              {t("hero.ctaAi")}
               <ArrowUpRight
                 size={16}
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

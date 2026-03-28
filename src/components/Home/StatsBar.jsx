@@ -7,7 +7,7 @@
  * that echo the hero's warm sunset tones without repeating the image.
  * Glass container floats over it with white divider lines.
  */
-
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Sprout, ShoppingBasket, Brain, MapPin } from "lucide-react";
@@ -19,32 +19,32 @@ const STATS = [
     icon: Sprout,
     value: 12400,
     suffix: "+",
-    label: "Farmers Joined",
-    desc: "Across Bangladesh",
+    label: "stats.item1Label",
+    desc: "stats.item1Desc",
     iconColor: "text-secondary",
   },
   {
     icon: ShoppingBasket,
     value: 3800,
     suffix: "+",
-    label: "Buyers Connected",
-    desc: "Direct, no middlemen",
+    label: "stats.item2Label",
+    desc: "stats.item2Desc",
     iconColor: "text-highlight",
   },
   {
     icon: Brain,
     value: 98000,
     suffix: "+",
-    label: "AI Queries Answered",
-    desc: "Smart recommendations",
+    label: "stats.item3Label",
+    desc: "stats.item3Desc",
     iconColor: "text-secondary",
   },
   {
     icon: MapPin,
     value: 64,
     suffix: "",
-    label: "Districts Covered",
-    desc: "Nationwide reach",
+    label: "stats.item4Label",
+    desc: "stats.item4Desc",
     iconColor: "text-highlight",
   },
 ];
@@ -78,7 +78,8 @@ function AnimatedCounter({ value, suffix, color }) {
 
   return (
     <span ref={ref} className={`font-extrabold tracking-tight ${color}`}>
-      {count.toLocaleString()}{suffix}
+      {count.toLocaleString()}
+      {suffix}
     </span>
   );
 }
@@ -88,7 +89,7 @@ function AnimatedCounter({ value, suffix, color }) {
 export default function StatsBar() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-
+  const { t } = useTranslation();
   return (
     <section
       className="relative overflow-hidden"
@@ -115,12 +116,16 @@ export default function StatsBar() {
       />
 
       {/* Warm amber glow at bottom — echoes hero sunset */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2
-        w-[500px] h-24 bg-highlight/10 blur-3xl pointer-events-none" />
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2
+        w-[500px] h-24 bg-highlight/10 blur-3xl pointer-events-none"
+      />
 
       {/* Content */}
-      <div ref={ref} className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10 pt-14 pb-8">
-
+      <div
+        ref={ref}
+        className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10 pt-14 pb-8"
+      >
         {/* Label */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
@@ -129,7 +134,7 @@ export default function StatsBar() {
           className="text-center text-white/30 text-xs font-bold
             tracking-[0.25em] uppercase mb-10"
         >
-          Growing Together
+          t("stats.title")
         </motion.p>
 
         {/* Glass card container */}
@@ -161,7 +166,8 @@ export default function StatsBar() {
                   transition-colors duration-300"
               >
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-2xl
+                <div
+                  className="w-12 h-12 rounded-2xl
                   bg-white/8 border border-white/10
                   flex items-center justify-center mb-5
                   group-hover:scale-110 group-hover:border-white/25
@@ -172,17 +178,28 @@ export default function StatsBar() {
 
                 {/* Counter */}
                 <p className="text-4xl xl:text-5xl mb-2 leading-none">
-                  {inView
-                    ? <AnimatedCounter value={stat.value} suffix={stat.suffix} color={stat.iconColor} />
-                    : <span className={`font-extrabold tracking-tight ${stat.iconColor}`}>0</span>
-                  }
+                  {inView ? (
+                    <AnimatedCounter
+                      value={stat.value}
+                      suffix={stat.suffix}
+                      color={stat.iconColor}
+                    />
+                  ) : (
+                    <span
+                      className={`font-extrabold tracking-tight ${stat.iconColor}`}
+                    >
+                      0
+                    </span>
+                  )}
                 </p>
 
                 {/* Label */}
-                <p className="text-white font-bold text-sm mb-1">{stat.label}</p>
+                <p className="text-white font-bold text-sm mb-1">
+                 {t(stat.label)}
+                </p>
 
                 {/* Desc */}
-                <p className="text-white/35 text-xs">{stat.desc}</p>
+                <p className="text-white/35 text-xs">{t(stat.desc)}</p>
               </motion.div>
             );
           })}

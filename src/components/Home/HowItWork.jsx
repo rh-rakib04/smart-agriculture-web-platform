@@ -14,12 +14,18 @@
  * - planner-bg.jpg used as a subtle right-side panel image
  *   to add visual interest without going full-dark
  */
-
+import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Sprout, Brain, ShoppingBasket, ArrowUpRight, ArrowRight } from "lucide-react";
+import {
+  Sprout,
+  Brain,
+  ShoppingBasket,
+  ArrowUpRight,
+  ArrowRight,
+} from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -27,37 +33,37 @@ const STEPS = [
   {
     num: "01",
     icon: Sprout,
-    title: "Farmer Lists Crops",
-    desc: "Farmers upload harvest details — crop type, quantity, quality grade, location, and expected ready date. Takes under 2 minutes.",
+    title: "how.step1Title",
+    desc: "how.step1Desc",
     accent: "border-t-primary",
     iconBg: "bg-primary/10",
     iconColor: "text-primary",
     numColor: "text-primary/10",
-    tag: "For Farmers",
+    tag: "how.step1Tag",
     tagColor: "bg-primary/10 text-primary",
   },
   {
     num: "02",
     icon: Brain,
-    title: "AI Validates & Prices",
-    desc: "Our AI verifies the listing, suggests a fair market price based on live data, and surfaces it to the most relevant buyers nearby.",
+    title: "how.step2Title",
+    desc: "how.step2Desc",
     accent: "border-t-highlight",
     iconBg: "bg-highlight/15",
     iconColor: "text-amber-700",
     numColor: "text-highlight/15",
-    tag: "Powered by AI",
+    tag: "how.step2Tag",
     tagColor: "bg-highlight/15 text-amber-700",
   },
   {
     num: "03",
     icon: ShoppingBasket,
-    title: "Buyer Connects Directly",
-    desc: "Buyers browse, message farmers directly, negotiate terms, and finalise deals — no broker, no commission, no delay.",
+    title: "how.step3Title",
+    desc: "how.step3Desc",
     accent: "border-t-secondary",
     iconBg: "bg-secondary/10",
     iconColor: "text-secondary",
     numColor: "text-secondary/10",
-    tag: "For Buyers",
+    tag:"how.step3Tag",
     tagColor: "bg-secondary/10 text-secondary",
   },
 ];
@@ -85,6 +91,7 @@ function Connector({ inView, delay }) {
 
 function StepCard({ step, index, inView }) {
   const Icon = step.icon;
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -99,38 +106,46 @@ function StepCard({ step, index, inView }) {
         transition-all duration-400 overflow-hidden`}
     >
       {/* Ghost number */}
-      <div className={`absolute -bottom-4 -right-2 text-[100px] font-extrabold
-        leading-none select-none pointer-events-none ${step.numColor}`}>
+      <div
+        className={`absolute -bottom-4 -right-2 text-[100px] font-extrabold
+        leading-none select-none pointer-events-none ${step.numColor}`}
+      >
         {step.num}
       </div>
 
       {/* Tag */}
-      <span className={`inline-flex items-center px-3 py-1 rounded-full
-        text-xs font-bold mb-5 ${step.tagColor}`}>
-        {step.tag}
+      <span
+        className={`inline-flex items-center px-3 py-1 rounded-full
+        text-xs font-bold mb-5 ${step.tagColor}`}
+      >
+        {t(step.tag)}
       </span>
 
       {/* Icon */}
-      <div className={`w-12 h-12 rounded-2xl ${step.iconBg}
+      <div
+        className={`w-12 h-12 rounded-2xl ${step.iconBg}
         flex items-center justify-center mb-5
-        group-hover:scale-110 transition-transform duration-300`}>
+        group-hover:scale-110 transition-transform duration-300`}
+      >
         <Icon size={22} className={step.iconColor} />
       </div>
 
       {/* Step label */}
       <p className="text-muted-foreground text-xs font-bold tracking-[0.2em] uppercase mb-2">
-        Step {step.num}
+        {t("how.stepLabel")} {step.num}
       </p>
 
       {/* Title */}
-      <h3 className="text-foreground font-extrabold text-xl mb-3 leading-tight
-        group-hover:text-primary transition-colors duration-300">
-        {step.title}
+      <h3
+        className="text-foreground font-extrabold text-xl mb-3 leading-tight
+        group-hover:text-primary transition-colors duration-300"
+      >
+        {t(step.title)}
       </h3>
 
       {/* Desc */}
       <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-        {step.desc}
+        {t(step.desc)}
       </p>
     </motion.div>
   );
@@ -141,15 +156,13 @@ function StepCard({ step, index, inView }) {
 export default function HowItWorks() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-
+  const { t } = useTranslation();
   return (
     <section ref={ref} className="bg-background overflow-hidden">
       <div className="max-w-[1320px] mx-auto">
         <div className="grid lg:grid-cols-[1fr_380px]">
-
           {/* ── LEFT: Main content ── */}
           <div className="px-8 lg:px-14 py-24 lg:py-32">
-
             {/* Header */}
             <div className="mb-14">
               <motion.div
@@ -160,18 +173,22 @@ export default function HowItWorks() {
                   bg-primary/10 border border-primary/20
                   text-primary text-xs font-bold tracking-widest uppercase mb-5"
               >
-                How It Works
+                {t("how.label")}
               </motion.div>
 
               <motion.h2
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  delay: 0.1,
+                  duration: 0.8,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 className="text-4xl lg:text-5xl font-extrabold text-foreground
                   leading-tight tracking-tight mb-4"
               >
-                Simple. Direct.{" "}
-                <span className="text-primary">Transparent.</span>
+                {t("how.title1")}{" "}
+                <span className="text-primary"> {t("how.title2")}</span>
               </motion.h2>
 
               <motion.p
@@ -180,8 +197,7 @@ export default function HowItWorks() {
                 transition={{ delay: 0.2, duration: 0.7 }}
                 className="text-muted-foreground text-lg leading-relaxed max-w-lg"
               >
-                Three steps connect a farmer&apos;s harvest directly to a buyer&apos;s
-                table — with AI making every deal fast and fair.
+                {t("how.subtitle")}
               </motion.p>
             </div>
 
@@ -189,9 +205,18 @@ export default function HowItWorks() {
             <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:gap-0 mb-12">
               {STEPS.map((step, i) => (
                 <Fragment key={step.num}>
-                  <StepCard key={step.num} step={step} index={i} inView={inView} />
+                  <StepCard
+                    key={step.num}
+                    step={step}
+                    index={i}
+                    inView={inView}
+                  />
                   {i < STEPS.length - 1 && (
-                    <Connector key={`c-${i}`} inView={inView} delay={0.4 + i * 0.15} />
+                    <Connector
+                      key={`c-${i}`}
+                      inView={inView}
+                      delay={0.4 + i * 0.15}
+                    />
                   )}
                 </Fragment>
               ))}
@@ -204,16 +229,18 @@ export default function HowItWorks() {
               transition={{ delay: 0.8, duration: 0.6 }}
             >
               <Link
-                href="/register"
+                href="/"
                 className="group inline-flex items-center gap-2.5 px-7 py-3.5
                   bg-primary text-primary-foreground rounded-full
                   font-bold text-sm hover:bg-primary/90
                   transition-all duration-300 shadow-md shadow-primary/20"
               >
-                Get Started Free
-                <ArrowUpRight size={16}
+                   {t(("how.cta"))}
+                <ArrowUpRight
+                  size={16}
                   className="transition-transform duration-300
-                    group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </Link>
             </motion.div>
           </div>
@@ -247,12 +274,13 @@ export default function HowItWorks() {
                 bg-white/90 backdrop-blur-md border border-border
                 rounded-2xl px-6 py-4 shadow-xl text-center"
             >
-              <p className="text-4xl font-extrabold text-primary">3x</p>
-              <p className="text-foreground font-bold text-sm">Faster Trade</p>
-              <p className="text-muted-foreground text-xs">vs traditional channels</p>
+              <p className="text-4xl font-extrabold text-primary">   {t(("how.statDesc"))}</p>
+              <p className="text-foreground font-bold text-sm">   {t(("how.statTitle"))}</p>
+              <p className="text-muted-foreground text-xs">
+                   {t(("how.statDesc"))}
+              </p>
             </motion.div>
           </motion.div>
-
         </div>
       </div>
     </section>

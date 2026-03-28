@@ -12,7 +12,7 @@
  * - Highlight accent on active/hovered feature number.
  * - Section has diagonal bottom clip to flow into BuyerFeatures.
  */
-
+import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -31,26 +31,26 @@ const FEATURES = [
   {
     num: "01",
     icon: Wheat,
-    title: "Crop Management",
-    desc: "Track every crop from seed to harvest — health scores, growth stages, and real-time alerts all in one dashboard.",
+    title: "farmer.feature1Title",
+    desc: "farmer.feature1Desc",
   },
   {
     num: "02",
     icon: TrendingUp,
-    title: "Expense & Profit Tracker",
-    desc: "Log every taka spent. See your margin, ROI, and seasonal profitability instantly — no spreadsheets needed.",
+    title: "farmer.feature2Title",
+    desc: "farmer.feature2Desc",
   },
   {
     num: "03",
     icon: Brain,
-    title: "AI Recommendations",
-    desc: "Intelligent fertilizer, irrigation, and pest management advice tuned to your specific land, soil, and season.",
+    title: "farmer.feature3Title",
+    desc: "farmer.feature3Desc",
   },
   {
     num: "04",
     icon: CalendarDays,
-    title: "Smart Farm Planner",
-    desc: "Generate a full seasonal plan in 3 steps. Powered by Bangladesh DAE agricultural guidelines.",
+    title: "farmer.feature4Title",
+    desc: "farmer.feature4Desc",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function FarmerFeatures() {
   const [activeIdx, setActiveIdx] = useState(0);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-
+  const { t } = useTranslation();
   return (
     <section
       ref={ref}
@@ -107,7 +107,7 @@ export default function FarmerFeatures() {
               text-highlight text-xs font-bold tracking-widest uppercase mb-6"
           >
             <Wheat size={13} />
-            For Farmers
+            {t("farmer.label")}
           </motion.div>
 
           {/* Heading */}
@@ -118,9 +118,9 @@ export default function FarmerFeatures() {
             className="text-4xl lg:text-5xl xl:text-6xl font-extrabold
               text-white leading-tight tracking-tight mb-5"
           >
-            Everything a Farmer
+          {t("farmer.title1")}
             <br />
-            <span className="text-highlight">Needs to Thrive</span>
+            <span className="text-highlight">{t("farmer.title2")}</span>
           </motion.h2>
 
           {/* Subtext */}
@@ -130,8 +130,7 @@ export default function FarmerFeatures() {
             transition={{ delay: 0.2, duration: 0.7 }}
             className="text-white/60 text-lg leading-relaxed mb-14"
           >
-            From planting to profit — manage crops, track expenses, and grow
-            smarter with AI-powered guidance built for Bangladesh.
+        {t("farmer.subtitle")}
           </motion.p>
 
           {/* ── Numbered feature track ── */}
@@ -189,14 +188,14 @@ export default function FarmerFeatures() {
                           className={`font-bold text-base transition-colors duration-300
                           ${isActive ? "text-white" : "text-white/70"}`}
                         >
-                          {f.title}
+                          {t(f.title)}
                         </h4>
                       </div>
                       <p
                         className={`text-sm leading-relaxed transition-colors duration-300
                         ${isActive ? "text-white/70" : "text-white/35"}`}
                       >
-                        {f.desc}
+                        {t(f.desc)}
                       </p>
                     </div>
                   </motion.div>

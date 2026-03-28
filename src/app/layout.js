@@ -2,7 +2,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import AutoTranslate from "./AutoTranslate";
 import { Providers } from "./Providers";
 import Header from "@/components/shared/Header";
 import Footer from "@/components/Footer";
@@ -31,10 +31,10 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <I18nProvider>
+            {" "}
+            <AutoTranslate />
             <Header />
-            <main className="min-h-screen">
-              {children}
-            </main>
+            <main className="min-h-screen">{children}</main>
             <Footer />
             <ToastContainer
               position="top-right"

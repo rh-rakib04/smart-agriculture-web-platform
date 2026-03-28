@@ -11,14 +11,18 @@
  * - Cards animate in with staggered reveal from bottom
  * - Active/hovered card expands slightly with a colored glow
  */
-
+import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Sprout, Brain, ShoppingBasket,
-  CloudSun, FlaskConical, ArrowUpRight
+  Sprout,
+  Brain,
+  ShoppingBasket,
+  CloudSun,
+  FlaskConical,
+  ArrowUpRight,
 } from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -27,8 +31,8 @@ const SERVICES = [
   {
     num: "01",
     icon: Sprout,
-    title: "Crop Management & AI Planning",
-    desc: "End-to-end crop tracking with AI-generated seasonal plans tailored to your land, soil type, and district — powered by Bangladesh DAE guidelines.",
+    title: "service.item1Title",
+    desc: "service.item1Desc",
     href: "/farmer",
     gradient: "from-primary/20 to-emerald-700/10",
     glow: "shadow-primary/20",
@@ -39,8 +43,8 @@ const SERVICES = [
   {
     num: "02",
     icon: ShoppingBasket,
-    title: "Direct Farmer-Buyer Trade",
-    desc: "A transparent marketplace where farmers list harvests and buyers connect directly — no brokers, no commissions, no inflated prices.",
+    title: "service.item2Title",
+    desc: "service.item2Desc",
     href: "/buyer",
     gradient: "from-highlight/15 to-amber-700/10",
     glow: "shadow-highlight/20",
@@ -51,8 +55,8 @@ const SERVICES = [
   {
     num: "03",
     icon: Brain,
-    title: "AI Disease Detection",
-    desc: "Upload a photo of your affected crop. Our computer vision AI identifies the disease, confidence level, and gives immediate treatment recommendations.",
+    title: "service.item3Title",
+    desc: "service.item3Desc",
     href: "/smart-ai-chatbot",
     gradient: "from-secondary/15 to-green-800/10",
     glow: "shadow-secondary/20",
@@ -63,8 +67,8 @@ const SERVICES = [
   {
     num: "04",
     icon: CloudSun,
-    title: "Weather & Farm Alerts",
-    desc: "10-day hyper-local forecasts with farming-specific alerts — rain warnings, frost advisories, irrigation scheduling, and optimal harvest windows.",
+    title: "service.item4Title",
+    desc: "service.item4Desc",
     href: "/farmer/weather",
     gradient: "from-sky-500/15 to-blue-800/10",
     glow: "shadow-sky-500/20",
@@ -75,8 +79,8 @@ const SERVICES = [
   {
     num: "05",
     icon: FlaskConical,
-    title: "Student & Researcher Network",
-    desc: "Agriculture students connect directly with verified farmers for field research, thesis data collection, and mentorship — bridging academia and ground reality.",
+    title: "service.item5Title",
+    desc: "service.item5Desc",
     href: "/register",
     gradient: "from-purple-500/10 to-primary/10",
     glow: "shadow-purple-500/15",
@@ -91,7 +95,7 @@ const SERVICES = [
 function ServiceCard({ service, index, inView }) {
   const [hovered, setHovered] = useState(false);
   const Icon = service.icon;
-
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 60 }}
@@ -116,7 +120,6 @@ function ServiceCard({ service, index, inView }) {
       />
 
       <div className="relative z-10 p-7 flex flex-col h-full min-h-[240px]">
-
         {/* Top row: icon + number */}
         <div className="flex items-start justify-between mb-6">
           <motion.div
@@ -135,13 +138,15 @@ function ServiceCard({ service, index, inView }) {
 
         {/* Title */}
         <h3 className="text-white font-extrabold text-lg leading-snug mb-3">
-          {service.title}
+          {t(service.title)}
         </h3>
 
         {/* Desc */}
-        <p className="text-white/45 text-sm leading-relaxed flex-1 group-hover:text-white/65
-          transition-colors duration-300">
-          {service.desc}
+        <p
+          className="text-white/45 text-sm leading-relaxed flex-1 group-hover:text-white/65
+          transition-colors duration-300"
+        >
+          {t(service.desc)}
         </p>
 
         {/* Arrow link */}
@@ -155,13 +160,14 @@ function ServiceCard({ service, index, inView }) {
             className={`text-xs font-bold tracking-widest uppercase ${service.iconColor}
               flex items-center gap-1.5 hover:gap-2.5 transition-all duration-200`}
           >
-            Learn More <ArrowUpRight size={13} />
+            {t("service.learnMore")} <ArrowUpRight size={13} />
           </Link>
         </motion.div>
       </div>
 
       {/* Bottom accent bar */}
-      <div className={`absolute bottom-0 left-0 right-0 h-[3px]
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-[3px]
         bg-gradient-to-r ${service.accentBar}
         opacity-0 group-hover:opacity-100 transition-opacity duration-400`}
       />
@@ -174,10 +180,12 @@ function ServiceCard({ service, index, inView }) {
 export default function OurService() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-
+  const { t } = useTranslation();
   return (
-    <section ref={ref} className="relative bg-foreground overflow-hidden py-24 lg:py-32">
-
+    <section
+      ref={ref}
+      className="relative bg-foreground overflow-hidden py-24 lg:py-32"
+    >
       {/* Subtle background texture */}
       <div className="absolute inset-0">
         <Image
@@ -193,11 +201,12 @@ export default function OurService() {
       {/* Ambient glows */}
       <div className="absolute top-1/4 left-0 w-80 h-80 bg-primary/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-highlight/8 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        w-[600px] h-60 bg-secondary/5 blur-3xl pointer-events-none" />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+        w-[600px] h-60 bg-secondary/5 blur-3xl pointer-events-none"
+      />
 
       <div className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <motion.div
@@ -209,7 +218,7 @@ export default function OurService() {
               text-secondary text-xs font-bold tracking-widest uppercase mb-5"
           >
             <Sprout size={13} />
-            Our Services
+            {t("service.label")}
           </motion.div>
 
           <motion.h2
@@ -219,9 +228,9 @@ export default function OurService() {
             className="text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white
               leading-tight tracking-tight mb-5"
           >
-            Everything Agriculture,
+            {t("service.title1")}
             <br />
-            <span className="text-highlight">Under One Roof</span>
+            <span className="text-highlight">{t("service.title2")}</span>
           </motion.h2>
 
           <motion.p
@@ -230,9 +239,7 @@ export default function OurService() {
             transition={{ delay: 0.2, duration: 0.7 }}
             className="text-white/45 text-lg max-w-xl mx-auto leading-relaxed"
           >
-            From AI-powered crop planning to direct market access —
-            SmartAgri is the complete digital platform for Bangladesh&apos;s
-            agriculture ecosystem.
+            {t("service.subtitle")}
           </motion.p>
         </div>
 
@@ -244,10 +251,14 @@ export default function OurService() {
         </div>
         <div className="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
           {SERVICES.slice(3).map((s, i) => (
-            <ServiceCard key={s.num} service={s} index={i + 3} inView={inView} />
+            <ServiceCard
+              key={s.num}
+              service={s}
+              index={i + 3}
+              inView={inView}
+            />
           ))}
         </div>
-
       </div>
     </section>
   );
