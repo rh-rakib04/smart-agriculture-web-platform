@@ -23,14 +23,14 @@ export async function POST(request) {
         }
       );
     }
-
+    const authToken = request.cookies.get("authToken")?.value || "";
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=failed&tran_id=${tranId || ""}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=failed&tran_id=${tranId || ""}&token=${authToken}`
     );
   } catch (error) {
     console.error(" Payment fail handler error:", error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=failed`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=failed&token=${authToken}`
     );
   }
 }
@@ -38,7 +38,8 @@ export async function POST(request) {
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const tranId = searchParams.get("tran_id") || "";
+  const authToken = request.cookies.get("authToken")?.value || "";
   return NextResponse.redirect(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=failed&tran_id=${tranId}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=failed&tran_id=${tranId}&token=${authToken}`
   );
 }

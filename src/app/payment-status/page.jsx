@@ -58,6 +58,17 @@ export default function PaymentStatusPage() {
   const Icon = cfg.icon;
 
   const [countdown, setCountdown] = useState(status === "success" ? 8 : null);
+  // Restore auth token if SSLCommerz redirect carried it
+useEffect(() => {
+  const urlToken = searchParams.get("token");
+  if (urlToken) {
+    localStorage.setItem("authToken", urlToken);
+    // Clean the token from the URL without re-rendering
+    const url = new URL(window.location.href);
+    url.searchParams.delete("token");
+    window.history.replaceState({}, "", url.toString());
+  }
+}, []);
 
   // Auto-redirect to orders on success
   useEffect(() => {

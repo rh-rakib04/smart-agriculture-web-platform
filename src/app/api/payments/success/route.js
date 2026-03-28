@@ -34,7 +34,7 @@ export async function POST(request) {
             paidAt: new Date(),
             updatedAt: new Date(),
           },
-        }
+        },
       );
 
       // Also update the linked order to "approved"
@@ -43,20 +43,21 @@ export async function POST(request) {
         try {
           await ordersCollection.updateOne(
             { _id: new ObjectId(payment.orderId) },
-            { $set: { status: "approved", updatedAt: new Date() } }
+            { $set: { status: "approved", updatedAt: new Date() } },
           );
         } catch (_) {}
       }
     }
 
-    // Redirect buyer to the status page
+    const authToken = request.cookies.get("authToken")?.value || "";
+
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=success&tran_id=${tranId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId}&token=${authToken}`,
     );
   } catch (error) {
     console.error(" Payment success handler error:", error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=error`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=error`,
     );
   }
 }
@@ -66,6 +67,6 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const tranId = searchParams.get("tran_id") || "";
   return NextResponse.redirect(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/buyer/payment-status?status=success&tran_id=${tranId}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId}`,
   );
 }

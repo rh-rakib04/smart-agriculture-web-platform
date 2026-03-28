@@ -29,7 +29,7 @@ export async function initiateSSLCommerzPayment({
 }) {
   if (!STORE_ID || !STORE_PASSWORD) {
     throw new Error(
-      "SSLCommerz credentials are not set in environment variables."
+      "SSLCommerz credentials are not set in environment variables.",
     );
   }
 
@@ -77,7 +77,7 @@ export async function initiateSSLCommerzPayment({
 
   if (!apiResponse?.GatewayPageURL) {
     throw new Error(
-      apiResponse?.failedreason || "Failed to get SSLCommerz gateway URL"
+      apiResponse?.failedreason || "Failed to get SSLCommerz gateway URL",
     );
   }
 
@@ -103,8 +103,5 @@ export async function validateSSLCommerzIPN(tranId, amount, currency = "BDT") {
     format: "json",
   });
 
-  return (
-    response?.status === "VALID" ||
-    response?.status === "VALIDATED"
-  );
+  return response?.status === "VALID" || response?.status === "VALIDATED";
 }
