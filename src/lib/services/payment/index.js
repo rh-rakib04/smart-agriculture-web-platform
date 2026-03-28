@@ -3,7 +3,7 @@
  * Handles all SSLCommerz gateway interactions
  */
 
-const SSLCommerzPayment = require("sslcommerz-lts");
+import SSLCommerzPayment from "sslcommerz-lts";
 
 const STORE_ID = process.env.SSLCOMMERZ_STORE_ID;
 const STORE_PASSWORD = process.env.SSLCOMMERZ_STORE_PASSWORD;
