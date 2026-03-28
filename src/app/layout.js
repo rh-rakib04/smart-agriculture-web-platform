@@ -3,12 +3,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import { AuthProvider } from "@/contexts/AuthProvider";
-
 import { Providers } from "./Providers";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Header from "@/components/shared/Header";
+import Footer from "@/components/Footer";
+import I18nProvider from "./i18n-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,24 +30,18 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-
-          
-<Header>  </Header>
-          {/* Page content */}
-          <main className="min-h-screen">
-            
-            {children}
-          </main>
-
-          {/* Footer */}
-          <Footer />
-
-          {/* Toast notifications */}
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            theme="colored"
-          />
+          <I18nProvider>
+            <Header />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <Footer />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              theme="colored"
+            />
+          </I18nProvider>
         </Providers>
       </body>
     </html>
