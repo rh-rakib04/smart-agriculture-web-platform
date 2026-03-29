@@ -63,35 +63,37 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!tokenResolved) return;
 
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      setInitialized(true);
-      return;
-    }
+   if (!token) {
+  setUser(null);
+  setLoading(false);
+  setInitialized(true);
+  return;
+}
+
+setLoading(false);
+setInitialized(true);
 
     const verify = async () => {
-      try {
-        const res = await fetch("/api/auth/verify", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
+  try {
+    const res = await fetch("/api/auth/verify", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
 
-        if (data.success) {
-          setUser(data.user); // user contains role also
-        } else {
-          localStorage.removeItem("authToken");
-          sessionStorage.removeItem("authToken");
-          setToken(null);
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      } finally {
-        setLoading(false);
-        setInitialized(true);
-      }
-    };
+    if (data.success) {
+      setUser(data.user);
+    } else {
+      // Only clear user if truly invalid — not on network hiccup
+      localStorage.removeItem("authToken");
+      sessionStorage.removeItem("authToken");
+      setToken(null);
+      setUser(null);
+    }
+  } catch {
+    // Network error — don't log user out, just leave user state as-is
+    // setUser(null);  ← removed: SSLCommerz redirect can cause brief network errors
+  }
+};
 
     verify();
   }, [token, tokenResolved]);
