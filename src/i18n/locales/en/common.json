@@ -137,5 +137,77 @@
   "how.cta": "Get Started Free",
   "how.statValue": "3x",
   "how.statTitle": "Faster Trade",
-  "how.statDesc": "vs traditional channels"
+  "how.statDesc": "vs traditional channels",
+  "ai.label": "AI Assistant",
+  "ai.title1": "Your Personal Farm Expert",
+  "ai.title2": "Always On",
+  "ai.subtitle": "Ask anything about farming...",
+  "ai.cta": "Try AI Assistant Free",
+  "ai.placeholder": "Ask anything about your farm...",
+
+  "planner.label": "Smart Farm Planner",
+  "planner.title1": "Your Season,",
+  "planner.title2": "Perfectly Planned",
+  "planner.subtitle": "Answer 3 questions...",
+  "planner.cta": "Generate My Farm Plan",
+
+  "weather.label": "Weather & Forecast",
+  "weather.title1": "Farm Smarter",
+  "weather.title2": "Know the Weather",
+  "weather.subtitle": "Real-time forecasts...",
+  "weather.cta": "Check Weather Now",
+
+  "student.label": "For Students & Researchers",
+  "student.title1": "Bridge the Gap",
+  "student.title2": "Lab & Field",
+  "student.subtitle": "Connect with farmers...",
+  "student.cta": "Join as Student",
+
+  "news.label": "Latest News",
+  "news.title1": "Agriculture News &",
+  "news.title2": "Updates",
+  "news.cta": "View All News",
+  "news.readMore": "Read More",
+
+  "about.label": "About SmartAgri",
+  "about.title1": "Built for the Farmers",
+  "about.title2": "Who Feed Bangladesh",
+  "ai.chat1": "My rice crop leaves are turning yellow. What should I do?",
+  "ai.chat2": "This looks like nitrogen deficiency. Apply urea fertilizer at 20kg/bigha and ensure proper irrigation. I also recommend checking for root rot if yellowing persists after 5 days.",
+  "ai.chat3": "What's the best time to harvest boro rice in Rajshahi?",
+  "ai.chat4": "For Rajshahi division, boro rice is typically ready mid-April to early May. Harvest when 80% of grains turn golden — moisture content should be around 20-25%.",
+
+  "ai.cap1": "Crop Health Diagnosis",
+  "ai.cap2": "Weather-based Advice",
+  "ai.cap3": "Pest & Disease Detection",
+  "ai.cap4": "Market Price Insights",
+  "planner.step1Title": "Choose Crop & Season",
+  "planner.step1Desc": "Select your crop type, planting date, and season from our Bangladesh-specific database.",
+  "planner.step2Title": "Set Your Location",
+  "planner.step2Desc": "Enter your division, district, and upazila for hyper-local recommendations.",
+  "planner.step3Title": "Get Your Full Plan",
+  "planner.step3Desc": "Receive a complete seasonal plan — irrigation schedule, fertilizer doses, pest alerts, and harvest date.",
+  "weather.today": "Today",
+  "weather.tomorrow": "Tomorrow",
+  "weather.day3": "Day 3",
+
+  "weather.sunny": "Sunny",
+  "weather.rain": "Rain",
+  "weather.cloudy": "Cloudy",
+
+  "weather.feature1": "Real-time Temperature & Humidity",
+  "weather.feature2": "Wind Speed & Direction",
+  "weather.feature3": "Rainfall Predictions & Alerts",
+  "weather.feature4": "10-Day Agricultural Forecast",
+  "student.feature1Title": "Research Collaboration",
+  "student.feature1Desc": "Connect with verified farmers for field studies, soil data, and agricultural research projects across Bangladesh.",
+
+  "student.feature2Title": "Farmer Consultation Network",
+  "student.feature2Desc": "Build direct relationships with experienced farmers for mentorship, thesis guidance, and on-ground insights.",
+
+  "student.feature3Title": "Live Market Analytics",
+  "student.feature3Desc": "Access real-time crop prices, demand curves, and seasonal trends — perfect for academic research and reports.",
+
+  "student.feature4Title": "AI Learning Assistant",
+  "student.feature4Desc": "Use the AI assistant to explore agricultural science, get research explanations, and deepen your agronomic knowledge."
 }

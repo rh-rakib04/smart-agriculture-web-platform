@@ -11,34 +11,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { FlaskConical, TrendingUp, Users, Brain, ArrowUpRight, GraduationCap } from "lucide-react";
+import {
+  FlaskConical,
+  TrendingUp,
+  Users,
+  Brain,
+  ArrowUpRight,
+  GraduationCap,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const FEATURES = [
   {
     icon: FlaskConical,
-    title: "Research Collaboration",
-    desc: "Connect with verified farmers for field studies, soil data, and agricultural research projects across Bangladesh.",
+    title: "student.feature1Title",
+    desc: "student.feature1Desc",
     color: "bg-primary/10",
     iconColor: "text-primary",
   },
   {
     icon: Users,
-    title: "Farmer Consultation Network",
-    desc: "Build direct relationships with experienced farmers for mentorship, thesis guidance, and on-ground insights.",
+    title: "student.feature2Title",
+    desc: "student.feature2Desc",
     color: "bg-secondary/10",
     iconColor: "text-secondary",
   },
   {
     icon: TrendingUp,
-    title: "Live Market Analytics",
-    desc: "Access real-time crop prices, demand curves, and seasonal trends — perfect for academic research and reports.",
+    title: "student.feature3Title",
+    desc: "student.feature3Desc",
     color: "bg-highlight/15",
     iconColor: "text-primary",
   },
   {
     icon: Brain,
-    title: "AI Learning Assistant",
-    desc: "Use the AI assistant to explore agricultural science, get research explanations, and deepen your agronomic knowledge.",
+    title: "student.feature4Title",
+    desc: "student.feature4Desc",
     color: "bg-primary/10",
     iconColor: "text-primary",
   },
@@ -47,10 +55,12 @@ const FEATURES = [
 export default function StudentSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-
+  const { t } = useTranslation();
   return (
-    <section ref={ref} className="relative bg-foreground overflow-hidden py-24 lg:py-32">
-
+    <section
+      ref={ref}
+      className="relative bg-foreground overflow-hidden py-24 lg:py-32"
+    >
       {/* Subtle student-bg texture */}
       <div className="absolute inset-0">
         <Image
@@ -70,7 +80,6 @@ export default function StudentSection() {
 
       <div className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-
           {/* LEFT: Image card */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -78,8 +87,10 @@ export default function StudentSection() {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] max-w-md mx-auto lg:mx-0
-              shadow-2xl border border-white/10">
+            <div
+              className="relative rounded-3xl overflow-hidden aspect-[4/5] max-w-md mx-auto lg:mx-0
+              shadow-2xl border border-white/10"
+            >
               <Image
                 src="/images/student-bg.jpg"
                 alt="Agricultural research"
@@ -98,8 +109,12 @@ export default function StudentSection() {
                 className="absolute top-6 left-6 bg-white/10 backdrop-blur-md
                   border border-white/20 rounded-2xl px-4 py-3"
               >
-                <p className="text-white font-bold text-sm">🔬 Active Research</p>
-                <p className="text-white/60 text-xs mt-0.5">240+ students connected</p>
+                <p className="text-white font-bold text-sm">
+                  🔬 Active Research
+                </p>
+                <p className="text-white/60 text-xs mt-0.5">
+                  240+ students connected
+                </p>
               </motion.div>
 
               {/* Bottom label */}
@@ -114,7 +129,8 @@ export default function StudentSection() {
             </div>
 
             {/* Decorative dot grid */}
-            <div className="absolute -bottom-6 -right-6 w-40 h-40 opacity-20 pointer-events-none"
+            <div
+              className="absolute -bottom-6 -right-6 w-40 h-40 opacity-20 pointer-events-none"
               style={{
                 backgroundImage: `radial-gradient(circle, #66BB6A 1px, transparent 1px)`,
                 backgroundSize: "14px 14px",
@@ -133,18 +149,22 @@ export default function StudentSection() {
                 text-secondary text-xs font-bold tracking-widest uppercase mb-6"
             >
               <GraduationCap size={13} />
-              For Students & Researchers
+              {t("student.label")}
             </motion.div>
 
             <motion.h2
               initial={{ opacity: 0, x: 30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                delay: 0.1,
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="text-4xl lg:text-5xl font-extrabold text-white
                 leading-tight tracking-tight mb-5"
             >
-              Bridge the Gap Between{" "}
-              <span className="text-secondary">Lab & Field</span>
+              {t("student.title1")}{" "}
+              <span className="text-secondary"> {t("student.title2")}</span>
             </motion.h2>
 
             <motion.p
@@ -153,9 +173,7 @@ export default function StudentSection() {
               transition={{ delay: 0.2, duration: 0.7 }}
               className="text-white/55 text-lg leading-relaxed mb-10"
             >
-              Agriculture students and researchers can connect directly
-              with farmers, access live market data, and collaborate
-              on real field studies — no bureaucracy, no middlemen.
+              {t("student.subtitle")}
             </motion.p>
 
             <div className="grid sm:grid-cols-2 gap-4 mb-10">
@@ -174,12 +192,18 @@ export default function StudentSection() {
                     className="bg-white/[0.05] hover:bg-white/[0.09] border border-white/8
                       rounded-2xl p-5 group transition-all duration-300"
                   >
-                    <div className={`w-9 h-9 rounded-xl ${f.color} flex items-center justify-center mb-3
-                      group-hover:scale-110 transition-transform duration-300`}>
+                    <div
+                      className={`w-9 h-9 rounded-xl ${f.color} flex items-center justify-center mb-3
+                      group-hover:scale-110 transition-transform duration-300`}
+                    >
                       <Icon size={17} className={f.iconColor} />
                     </div>
-                    <h4 className="text-white font-bold text-sm mb-1">{f.title}</h4>
-                    <p className="text-white/40 text-xs leading-relaxed">{f.desc}</p>
+                    <h4 className="text-white font-bold text-sm mb-1">
+                      {t(f.title)}
+                    </h4>
+                    <p className="text-white/40 text-xs leading-relaxed">
+                      {t(f.desc)}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -197,9 +221,11 @@ export default function StudentSection() {
                   hover:bg-secondary/90 transition-all duration-300
                   shadow-lg shadow-secondary/20"
               >
-                Join as Student
-                <ArrowUpRight size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                {t("student.cta")}
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </Link>
             </motion.div>
           </div>

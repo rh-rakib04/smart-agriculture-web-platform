@@ -17,45 +17,55 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Brain, ArrowUpRight, Mic, Leaf, CloudSun, Bug, TrendingUp } from "lucide-react";
+import {
+  Brain,
+  ArrowUpRight,
+  Mic,
+  Leaf,
+  CloudSun,
+  Bug,
+  TrendingUp,
+} from "lucide-react";
 import { FaRobot } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 // ─── Chat bubble data ─────────────────────────────────────────────────────────
 
 const CHAT = [
   {
     role: "user",
-    text: "My rice crop leaves are turning yellow. What should I do?",
+    text: "ai.chat1",
     delay: 0.6,
   },
   {
     role: "ai",
-    text: "This looks like nitrogen deficiency. Apply urea fertilizer at 20kg/bigha and ensure proper irrigation. I also recommend checking for root rot if yellowing persists after 5 days.",
+    text: "ai.chat2",
     delay: 1.1,
   },
   {
     role: "user",
-    text: "What's the best time to harvest boro rice in Rajshahi?",
+    text: "ai.chat3",
     delay: 1.7,
   },
   {
     role: "ai",
-    text: "For Rajshahi division, boro rice is typically ready mid-April to early May. Harvest when 80% of grains turn golden — moisture content should be around 20-25%.",
+    text: "ai.chat4",
     delay: 2.2,
   },
 ];
 
 const CAPABILITIES = [
-  { icon: Leaf, label: "Crop Health Diagnosis" },
-  { icon: CloudSun, label: "Weather-based Advice" },
-  { icon: Bug, label: "Pest & Disease Detection" },
-  { icon: TrendingUp, label: "Market Price Insights" },
+  { icon: Leaf, label: "ai.cap1" },
+  { icon: CloudSun, label: "ai.cap2" },
+  { icon: Bug, label: "ai.cap3" },
+  { icon: TrendingUp, label: "ai.cap4" },
 ];
 
 // ─── Chat Bubble ─────────────────────────────────────────────────────────────
 
 function ChatBubble({ role, text, delay, inView }) {
   const isAI = role === "ai";
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.95 }}
@@ -64,18 +74,22 @@ function ChatBubble({ role, text, delay, inView }) {
       className={`flex gap-2.5 ${isAI ? "justify-start" : "justify-end"}`}
     >
       {isAI && (
-        <div className="w-7 h-7 rounded-full bg-secondary/30 border border-secondary/40
-          flex items-center justify-center shrink-0 mt-1">
+        <div
+          className="w-7 h-7 rounded-full bg-secondary/30 border border-secondary/40
+          flex items-center justify-center shrink-0 mt-1"
+        >
           <FaRobot size={13} className="text-secondary" />
         </div>
       )}
-      <div className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed
-        ${isAI
-          ? "bg-white/10 text-white/90 rounded-tl-sm border border-white/10"
-          : "bg-highlight/90 text-gray-900 font-medium rounded-tr-sm"
+      <div
+        className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed
+        ${
+          isAI
+            ? "bg-white/10 text-white/90 rounded-tl-sm border border-white/10"
+            : "bg-highlight/90 text-gray-900 font-medium rounded-tr-sm"
         }`}
       >
-        {text}
+      {t(text)}
       </div>
     </motion.div>
   );
@@ -86,10 +100,9 @@ function ChatBubble({ role, text, delay, inView }) {
 export default function AIChatbotHighlight() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-
+  const { t } = useTranslation();
   return (
     <section ref={ref} className="relative overflow-hidden py-24 lg:py-32">
-
       {/* ── Background image ── */}
       <Image
         src="/images/ai-bg.jpg"
@@ -103,15 +116,18 @@ export default function AIChatbotHighlight() {
 
       {/* ── Overlays ── */}
       {/* Left-heavy so content reads over the dark left portion of the image */}
-      <div className="absolute inset-0 bg-gradient-to-r
-        from-black/90 via-black/70 to-black/40" />
-      <div className="absolute inset-0 bg-gradient-to-b
-        from-black/50 via-transparent to-black/50" />
+      <div
+        className="absolute inset-0 bg-gradient-to-r
+        from-black/90 via-black/70 to-black/40"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-b
+        from-black/50 via-transparent to-black/50"
+      />
 
       {/* ── Content ── */}
       <div className="relative z-10 max-w-[1320px] mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
           {/* ── LEFT: Copy ── */}
           <div>
             {/* Label */}
@@ -124,22 +140,24 @@ export default function AIChatbotHighlight() {
                 text-secondary text-xs font-bold tracking-widest uppercase mb-6"
             >
               <Brain size={13} />
-              AI Assistant
+              {t("ai.label")}
             </motion.div>
 
             {/* Heading */}
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                delay: 0.1,
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="text-4xl lg:text-5xl xl:text-6xl font-extrabold
                 text-white leading-tight tracking-tight mb-5"
             >
-              Your Personal{" "}
+              {t("ai.title1")}
               <br />
-              <span className="text-secondary">Farm Expert,</span>
-              <br />
-              Always On
+              <span className="text-secondary">{t("ai.title2")}</span>
             </motion.h2>
 
             {/* Subtext */}
@@ -149,9 +167,7 @@ export default function AIChatbotHighlight() {
               transition={{ delay: 0.2, duration: 0.7 }}
               className="text-white/55 text-lg leading-relaxed mb-10"
             >
-              Ask anything — crop diseases, fertilizer doses, harvest timing,
-              market prices. SmartAgri&apos;s AI speaks Bengali &amp; English and
-              knows Bangladesh&apos;s agricultural calendar inside out.
+              {t("ai.subtitle")}
             </motion.p>
 
             {/* Capability pills */}
@@ -176,7 +192,7 @@ export default function AIChatbotHighlight() {
                       transition-all duration-200 cursor-default"
                   >
                     <Icon size={14} className="text-secondary" />
-                    {cap.label}
+                    {t(cap.label)}
                   </motion.div>
                 );
               })}
@@ -196,7 +212,7 @@ export default function AIChatbotHighlight() {
                   transition-all duration-300 shadow-lg shadow-secondary/25"
               >
                 <FaRobot size={15} />
-                Try AI Assistant Free
+                {t("ai.cta")}
                 <ArrowUpRight
                   size={16}
                   className="transition-transform duration-300
@@ -213,12 +229,15 @@ export default function AIChatbotHighlight() {
             transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Chat window */}
-            <div className="bg-black/40 backdrop-blur-xl border border-white/10
-              rounded-3xl overflow-hidden shadow-2xl">
-
+            <div
+              className="bg-black/40 backdrop-blur-xl border border-white/10
+              rounded-3xl overflow-hidden shadow-2xl"
+            >
               {/* Window chrome */}
-              <div className="flex items-center gap-3 px-5 py-4
-                border-b border-white/8 bg-white/5">
+              <div
+                className="flex items-center gap-3 px-5 py-4
+                border-b border-white/8 bg-white/5"
+              >
                 {/* Traffic lights */}
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-500/60" />
@@ -228,8 +247,10 @@ export default function AIChatbotHighlight() {
                 <div className="flex items-center gap-2 ml-2">
                   {/* Glowing pulse avatar */}
                   <div className="relative">
-                    <div className="w-7 h-7 rounded-full bg-secondary/30 border border-secondary/50
-                      flex items-center justify-center">
+                    <div
+                      className="w-7 h-7 rounded-full bg-secondary/30 border border-secondary/50
+                      flex items-center justify-center"
+                    >
                       <FaRobot size={13} className="text-secondary" />
                     </div>
                     <motion.div
@@ -239,8 +260,12 @@ export default function AIChatbotHighlight() {
                     />
                   </div>
                   <div>
-                    <p className="text-white text-xs font-bold leading-tight">SmartAgri AI</p>
-                    <p className="text-secondary text-[10px] leading-tight">● Online</p>
+                    <p className="text-white text-xs font-bold leading-tight">
+                      SmartAgri AI
+                    </p>
+                    <p className="text-secondary text-[10px] leading-tight">
+                      ● Online
+                    </p>
                   </div>
                 </div>
               </div>
@@ -248,11 +273,7 @@ export default function AIChatbotHighlight() {
               {/* Chat messages */}
               <div className="p-5 space-y-4 min-h-[280px]">
                 {CHAT.map((msg, i) => (
-                  <ChatBubble
-                    key={i}
-                    {...msg}
-                    inView={inView}
-                  />
+                  <ChatBubble key={i} {...msg} inView={inView} />
                 ))}
               </div>
 
@@ -264,13 +285,17 @@ export default function AIChatbotHighlight() {
                 className="px-5 py-4 border-t border-white/8 bg-white/5
                   flex items-center gap-3"
               >
-                <div className="flex-1 bg-white/8 border border-white/10
-                  rounded-full px-4 py-2.5 text-white/30 text-sm">
-                  Ask anything about your farm...
+                <div
+                  className="flex-1 bg-white/8 border border-white/10
+                  rounded-full px-4 py-2.5 text-white/30 text-sm"
+                >
+                 {t("ai.placeholder")}
                 </div>
-                <button className="w-9 h-9 rounded-full bg-secondary/20
+                <button
+                  className="w-9 h-9 rounded-full bg-secondary/20
                   flex items-center justify-center
-                  hover:bg-secondary/40 transition-colors duration-200">
+                  hover:bg-secondary/40 transition-colors duration-200"
+                >
                   <Mic size={15} className="text-secondary" />
                 </button>
               </motion.div>
@@ -278,10 +303,9 @@ export default function AIChatbotHighlight() {
 
             {/* Below chat note */}
             <p className="text-white/25 text-xs text-center mt-4">
-              Supports Bengali &amp; English · Powered by Claude AI
+             {t("ai.footer")}
             </p>
           </motion.div>
-
         </div>
       </div>
     </section>

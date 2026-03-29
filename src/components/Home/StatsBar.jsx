@@ -134,7 +134,7 @@ export default function StatsBar() {
           className="text-center text-white/30 text-xs font-bold
             tracking-[0.25em] uppercase mb-10"
         >
-          t("stats.title")
+        {  t("stats.title")}
         </motion.p>
 
         {/* Glass card container */}

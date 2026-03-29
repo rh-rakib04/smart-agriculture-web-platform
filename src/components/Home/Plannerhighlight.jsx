@@ -10,38 +10,45 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { CalendarDays, ArrowUpRight, MapPin, Sprout, FileText, Check } from "lucide-react";
+import {
+  CalendarDays,
+  ArrowUpRight,
+  MapPin,
+  Sprout,
+  FileText,
+  Check,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const STEPS = [
   {
     icon: Sprout,
-    title: "Choose Crop & Season",
-    desc: "Select your crop type, planting date, and season from our Bangladesh-specific database.",
+    title: "planner.step1Title",
+    desc: "planner.step1Desc",
   },
   {
     icon: MapPin,
-    title: "Set Your Location",
-    desc: "Enter your division, district, and upazila for hyper-local recommendations.",
+    title: "planner.step2Title",
+    desc: "planner.step2Desc",
   },
   {
     icon: FileText,
-    title: "Get Your Full Plan",
-    desc: "Receive a complete seasonal plan — irrigation schedule, fertilizer doses, pest alerts, and harvest date.",
+    title: "planner.step3Title",
+    desc: "planner.step3Desc",
   },
 ];
 
 export default function PlannerHighlight() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { t } = useTranslation();
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-background">
       <div className="max-w-[1320px] mx-auto">
         <div className="grid lg:grid-cols-2 min-h-[640px]">
-
           {/* LEFT: Content */}
           <div className="flex flex-col justify-center px-8 lg:px-14 py-20 lg:py-28 relative">
-
             {/* Decorative ghost text */}
             <div className="absolute bottom-8 left-8 pointer-events-none select-none">
               <span className="text-[100px] font-extrabold text-primary/[0.04] leading-none">
@@ -59,19 +66,22 @@ export default function PlannerHighlight() {
                   text-primary text-xs font-bold tracking-widest uppercase mb-6 w-fit"
               >
                 <CalendarDays size={13} />
-                Smart Farm Planner
+                {t("planner.label")}
               </motion.div>
 
               <motion.h2
                 initial={{ opacity: 0, x: -30 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  delay: 0.1,
+                  duration: 0.8,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 className="text-4xl lg:text-5xl font-extrabold text-foreground
                   leading-tight tracking-tight mb-5"
               >
-                Your Season,{" "}
-                <br />
-                <span className="text-primary">Perfectly Planned</span>
+                {t("planner.label")} <br />
+                <span className="text-primary"> {t("planner.title2")}</span>
               </motion.h2>
 
               <motion.p
@@ -80,8 +90,7 @@ export default function PlannerHighlight() {
                 transition={{ delay: 0.2, duration: 0.7 }}
                 className="text-muted-foreground text-lg leading-relaxed mb-10"
               >
-                Answer 3 simple questions. Get a complete Bangladesh DAE-certified
-                farm plan tailored to your land, location, and crop.
+                {t("planner.subtitle")}
               </motion.p>
 
               {/* Steps */}
@@ -100,15 +109,24 @@ export default function PlannerHighlight() {
                       }}
                       className="flex gap-4 items-start group"
                     >
-                      <div className="w-10 h-10 rounded-xl bg-primary/10
+                      <div
+                        className="w-10 h-10 rounded-xl bg-primary/10
                         flex items-center justify-center shrink-0
                         group-hover:bg-primary group-hover:scale-110
-                        transition-all duration-300">
-                        <Icon size={17} className="text-primary group-hover:text-white transition-colors duration-300" />
+                        transition-all duration-300"
+                      >
+                        <Icon
+                          size={17}
+                          className="text-primary group-hover:text-white transition-colors duration-300"
+                        />
                       </div>
                       <div>
-                        <h4 className="text-foreground font-bold text-base mb-0.5">{step.title}</h4>
-                        <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
+                        <h4 className="text-foreground font-bold text-base mb-0.5">
+                          {t(step.title)}
+                        </h4>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {t(step.desc)}
+                        </p>
                       </div>
                     </motion.div>
                   );
@@ -126,9 +144,12 @@ export default function PlannerHighlight() {
                     bg-primary text-primary-foreground rounded-full font-bold text-sm
                     hover:bg-primary/90 transition-all duration-300 shadow-md shadow-primary/20"
                 >
-                  Generate My Farm Plan
-                  <ArrowUpRight size={16}
-                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  {t("planner.cta")}
+
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
                 </Link>
               </motion.div>
             </div>
@@ -159,8 +180,12 @@ export default function PlannerHighlight() {
               className="absolute bottom-8 right-8 bg-white/90 backdrop-blur-md
                 border border-white/50 rounded-2xl px-5 py-3 shadow-xl"
             >
-              <p className="text-foreground font-bold text-sm">📋 DAE Certified Guidelines</p>
-              <p className="text-muted-foreground text-xs mt-0.5">Bangladesh agriculture standards</p>
+              <p className="text-foreground font-bold text-sm">
+                📋 DAE Certified Guidelines
+              </p>
+              <p className="text-muted-foreground text-xs mt-0.5">
+                Bangladesh agriculture standards
+              </p>
             </motion.div>
           </motion.div>
         </div>
