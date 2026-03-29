@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, XCircle, AlertCircle, ArrowLeft, ShoppingBag, RotateCcw } from "lucide-react";
 import Link from "next/link";
@@ -47,7 +47,7 @@ const CONFIG = {
   },
 };
 
-export default function PaymentStatusPage() {
+function PaymentStatusContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -58,19 +58,17 @@ export default function PaymentStatusPage() {
   const Icon = cfg.icon;
 
   const [countdown, setCountdown] = useState(status === "success" ? 8 : null);
-  // Restore auth token if SSLCommerz redirect carried it
-useEffect(() => {
-  const urlToken = searchParams.get("token");
-  if (urlToken) {
-    localStorage.setItem("authToken", urlToken);
-    // Clean the token from the URL without re-rendering
-    const url = new URL(window.location.href);
-    url.searchParams.delete("token");
-    window.history.replaceState({}, "", url.toString());
-  }
-}, []);
 
-  // Auto-redirect to orders on success
+  useEffect(() => {
+    const urlToken = searchParams.get("token");
+    if (urlToken) {
+      localStorage.setItem("authToken", urlToken);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, []);
+
   useEffect(() => {
     if (status !== "success") return;
     const timer = setInterval(() => {
@@ -97,15 +95,12 @@ useEffect(() => {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md"
       >
-        {/* Card */}
         <div
           className="rounded-2xl overflow-hidden shadow-lg border"
           style={{ borderColor: cfg.border, backgroundColor: "white" }}
         >
-          {/* Top accent bar */}
           <div className="h-1.5" style={{ backgroundColor: cfg.color }} />
 
-          {/* Icon area */}
           <div
             className="flex flex-col items-center pt-12 pb-8 px-8"
             style={{ backgroundColor: cfg.bg }}
@@ -115,10 +110,7 @@ useEffect(() => {
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
               className="w-24 h-24 rounded-full flex items-center justify-center mb-5 border-4"
-              style={{
-                backgroundColor: "white",
-                borderColor: cfg.border,
-              }}
+              style={{ backgroundColor: "white", borderColor: cfg.border }}
             >
               <Icon size={44} style={{ color: cfg.color }} strokeWidth={1.5} />
             </motion.div>
@@ -144,7 +136,6 @@ useEffect(() => {
             </motion.p>
           </div>
 
-          {/* Transaction ID */}
           {tranId && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -171,7 +162,6 @@ useEffect(() => {
             </motion.div>
           )}
 
-          {/* Auto-redirect notice */}
           {status === "success" && countdown !== null && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -187,7 +177,6 @@ useEffect(() => {
             </motion.p>
           )}
 
-          {/* Action buttons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -229,14 +218,29 @@ useEffect(() => {
           </motion.div>
         </div>
 
-        {/* Bottom note */}
-        <p
-          className="text-center text-[11px] mt-4"
-          style={{ color: "#9aab8a" }}
-        >
+        <p className="text-center text-[11px] mt-4" style={{ color: "#9aab8a" }}>
           Powered by SSLCommerz · Secure Payment Gateway
         </p>
       </motion.div>
     </div>
+  );
+}
+
+export default function PaymentStatusPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{ backgroundColor: "#f7f5ef" }}
+        >
+          <p style={{ color: "#6b7a5e", fontFamily: "'Josefin Sans', sans-serif" }}>
+            Loading...
+          </p>
+        </div>
+      }
+    >
+      <PaymentStatusContent />
+    </Suspense>
   );
 }
