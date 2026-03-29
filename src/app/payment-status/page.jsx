@@ -57,7 +57,7 @@ function PaymentStatusContent() {
   const cfg = CONFIG[status] || CONFIG.error;
   const Icon = cfg.icon;
 
-  const [countdown, setCountdown] = useState(status === "success" ? 8 : null);
+  
 
   useEffect(() => {
     const urlToken = searchParams.get("token");
@@ -69,20 +69,7 @@ function PaymentStatusContent() {
     }
   }, []);
 
-  useEffect(() => {
-    if (status !== "success") return;
-    const timer = setInterval(() => {
-      setCountdown((c) => {
-        if (c <= 1) {
-          clearInterval(timer);
-          router.push("/buyer/orders");
-          return 0;
-        }
-        return c - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [status, router]);
+
 
   return (
     <div
@@ -162,20 +149,7 @@ function PaymentStatusContent() {
             </motion.div>
           )}
 
-          {status === "success" && countdown !== null && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-center text-[12px] pb-2"
-              style={{ color: "#6b7a5e" }}
-            >
-              Redirecting to your orders in{" "}
-              <span className="font-bold" style={{ color: cfg.color }}>
-                {countdown}s
-              </span>
-            </motion.p>
-          )}
+
 
           <motion.div
             initial={{ opacity: 0 }}
