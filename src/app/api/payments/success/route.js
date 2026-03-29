@@ -3,16 +3,12 @@ import { getDatabase } from "@/lib/db/mongodb";
 import { COLLECTIONS, getCollection } from "@/lib/db/collections";
 import { ObjectId } from "mongodb";
 
-// SSLCommerz POSTs form data to this URL after successful payment.
-// IMPORTANT: Do NOT trust this alone — always wait for IPN (webhook) to confirm.
-// This route just redirects the user to a friendly status page.
-
 export async function POST(request) {
   try {
     const formData = await request.formData();
     const tranId = formData.get("tran_id");
     const valId = formData.get("val_id");
-    const status = formData.get("status"); // "VALID" or "VALIDATED"
+    const status = formData.get("status");
     const amount = formData.get("amount");
     const cardType = formData.get("card_type");
 
@@ -21,7 +17,6 @@ export async function POST(request) {
     const ordersCollection = getCollection(db, COLLECTIONS.ORDERS);
 
     if (tranId) {
-      // Optimistically mark as paid (IPN will re-confirm or correct this)
       await paymentsCollection.updateOne(
         { tranId },
         {
@@ -34,39 +29,68 @@ export async function POST(request) {
             paidAt: new Date(),
             updatedAt: new Date(),
           },
-        },
+        }
       );
 
-      // Also update the linked order to "approved"
       const payment = await paymentsCollection.findOne({ tranId });
       if (payment?.orderId) {
         try {
           await ordersCollection.updateOne(
             { _id: new ObjectId(payment.orderId) },
-            { $set: { status: "approved", updatedAt: new Date() } },
+            { $set: { status: "approved", updatedAt: new Date() } }
           );
         } catch (_) {}
       }
     }
 
-    const authToken = request.cookies.get("authToken")?.value || "";
+    const redirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId || ""}`;
 
-    return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId}&token=${authToken}`,
+    // Return HTML that breaks out of SSLCommerz iframe and does top-level navigation
+    return new Response(
+      `<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redirecting...</title>
+    <script>
+      try {
+        if (window.top !== window.self) {
+          window.top.location.href = ${JSON.stringify(redirectUrl)};
+        } else {
+          window.location.href = ${JSON.stringify(redirectUrl)};
+        }
+      } catch(e) {
+        window.location.href = ${JSON.stringify(redirectUrl)};
+      }
+    </script>
+  </head>
+  <body><p style="font-family:sans-serif;text-align:center;margin-top:40px">Redirecting to payment status...</p></body>
+</html>`,
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html",
+          "X-Frame-Options": "ALLOWALL",
+          "Content-Security-Policy": "frame-ancestors *",
+        },
+      }
     );
   } catch (error) {
-    console.error(" Payment success handler error:", error);
-    return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=error`,
+    console.error("Payment success handler error:", error);
+    const errorUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=error`;
+    return new Response(
+      `<!DOCTYPE html>
+<html><head><script>
+  try { if(window.top!==window.self){window.top.location.href=${JSON.stringify(errorUrl)}}else{window.location.href=${JSON.stringify(errorUrl)}} } catch(e){window.location.href=${JSON.stringify(errorUrl)}}
+</script></head><body><p>Redirecting...</p></body></html>`,
+      { status: 200, headers: { "Content-Type": "text/html" } }
     );
   }
 }
 
-// SSLCommerz may also GET this URL in some flows
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const tranId = searchParams.get("tran_id") || "";
   return NextResponse.redirect(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/payment-status?status=success&tran_id=${tranId}`
   );
 }
