@@ -48,7 +48,7 @@ async function handler(request) {
       }
 
       // Generate a unique transaction ID
-      const tranId = `SAP-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+      const tranId = `KN-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
       // Save a PENDING payment record BEFORE redirecting
       // So we can match it when SSLCommerz calls back
