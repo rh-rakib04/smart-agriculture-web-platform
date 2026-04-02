@@ -34,7 +34,7 @@ export default function HomePage() {
 
   return (
     <div className="w-full min-h-screen bg-white">
-      
+      <Header></Header>
       <HeroSection />
       <StatsBar></StatsBar>
       <FarmerFeatures />
