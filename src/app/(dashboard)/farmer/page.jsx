@@ -240,30 +240,67 @@ export default function FarmerOverview() {
   const { user } = useAuth();
 
   const fetchAll = async () => {
-    if (!user?.id) return;
-    try {
-      setRefreshing(true);
-      const res = await fetch(`/api/dashboard/stats?farmerId=${user.id}`);
-      const data = await res.json();
-      setStats(
-        data.stats || {
-          totalCrops: 0,
-          totalOrders: 0,
-          totalExpenses: 0,
-          profit: 0,
-        },
-      );
-      setMonthly(data.monthly || []);
-      setOrderDist(data.orderDistribution || []);
-      setActivity(data.activity || []);
-      setRecentOrds(data.recentOrders || []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  if (!user?.id) return;
+    console.log(user.id);
+  try {
+    setRefreshing(true);
+
+    // ✅ 1. Get farmer info
+    const farmerRes = await fetch(`/api/farmers/${user.id}`);
+    const farmerData = await farmerRes.json();
+
+    // ✅ 2. Get crops
+    const cropsRes = await fetch(`/api/crops?farmerId=${String(user.id)}`);
+    const cropsData = await cropsRes.json();
+
+    // ⚡ OPTIONAL (if you have orders API)
+    // const ordersRes = await fetch(`/api/orders?farmerId=${user.id}`);
+    // const ordersData = await ordersRes.json();
+
+    const crops = cropsData.data || [];
+    const orders = []; // ← replace when you have orders API
+
+    // 🧮 Calculate stats
+    const totalCrops = crops.length;
+    const totalOrders = orders.length;
+
+    const totalExpenses = 2000; // dummy
+    const revenue = orders.reduce((sum, o) => sum + (o.price || 0), 0);
+    const profit = revenue - totalExpenses;
+
+    setStats({
+      totalCrops,
+      totalOrders,
+      totalExpenses,
+      profit,
+    });
+
+    // 📊 Monthly (dummy for now)
+    setMonthly([
+      { month: "Jan", orders: 2, revenue: 1000, expenses: 500 },
+      { month: "Feb", orders: 3, revenue: 2000, expenses: 800 },
+    ]);
+
+    // 🍩 Order distribution (dummy)
+    setOrderDist([
+      { name: "Pending", value: 1 },
+      { name: "Approved", value: 2 },
+      { name: "Completed", value: 1 },
+      { name: "Rejected", value: 0 },
+    ]);
+
+    setRecentOrds([]);
+    setActivity([
+      { type: "order", message: "New crop added", time: "Just now" },
+    ]);
+
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setLoading(false);
+    setRefreshing(false);
+  }
+};
 
   useEffect(() => {
     fetchAll();

@@ -67,7 +67,7 @@ const MENU_CONFIG = {
     },
     {
       name: "AI Chatbot",
-      href: "/farmer/ai-chat",
+      href: "/smart-ai-chatbot",
       icon: MessageSquare,
       tip: "AI Chatbot",
     },

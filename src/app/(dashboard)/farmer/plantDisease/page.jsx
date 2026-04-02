@@ -5,18 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, AlertCircle, CheckCircle2, Sprout } from 'lucide-react';
 
 const plants = [
-  { id: 1, name: "Rice", image: "/cropimages/rice.png" },
-  { id: 2, name: "Mango", image: "/cropimages/mango.png" },
-  { id: 3, name: "Banana", image: "/cropimages/banana.png" },
-  { id: 4, name: "Jackfruit", image: "/cropimages/jackfruit.png" },
-  { id: 5, name: "Potato", image: "/cropimages/potato.jpg" },
-  { id: 6, name: "Tomato", image: "/cropimages/tomato.jpg" },
-  { id: 7, name: "Brinjal", image: "/cropimages/brinjal.jpg" },
-  { id: 8, name: "Chili", image: "/cropimages/chili.jpg" },
-  { id: 9, name: "Spinach", image: "/cropimages/spinach.jpg" },
-  { id: 10, name: "Cabbage", image: "/cropimages/cabbage.jpg" },
-  { id: 11, name: "Cauliflower", image: "/cropimages/cauliflower.jpg" },
-  { id: 12, name: "Papaya", image: "/cropimages/papaya.jpg" },
+  { id: 1, name: "Mango", image: "/cropimages/mango.png" },
+  { id: 2, name: "Brinjal", image: "/cropimages/brinjal.jpg" },
+  { id: 3, name: "Chili", image: "/cropimages/chili.jpg" },
+  { id: 4, name: "Spinach", image: "/cropimages/spinach.jpg" },
+  { id: 5, name: "Cabbage", image: "/cropimages/cabbage.jpg" },
+  { id: 6, name: "Cauliflower", image: "/cropimages/cauliflower.jpg" },
+  { id: 7, name: "Papaya", image: "/cropimages/papaya.jpg" },
 ];
 
 export default function PlantDiseasePage() {

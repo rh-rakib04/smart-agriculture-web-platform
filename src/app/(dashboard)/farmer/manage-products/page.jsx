@@ -72,58 +72,87 @@ export default function ManageProducts() {
   const [search, setSearch] = useState("");
   const { user } = useAuth();
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/crops?farmerId=${user?.id}`);
-      const data = await res.json();
-      if (data.success) setProducts(data.data);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchProducts = async () => {
+  if (!user?.id) return; // ✅ prevent early call
 
-  useEffect(() => {
-    if (user?.id) fetchProducts();
-  }, [user?.id]);
+  try {
+    setLoading(true);
 
-  const handleUpdate = async () => {
-    try {
-      setSaving(true);
-      await fetch(`/api/crops/${editingProduct._id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ farmerId: user?.id, ...editingProduct }),
-      });
-      setEditingProduct(null);
-      fetchProducts();
-    } finally {
-      setSaving(false);
-    }
-  };
+    const res = await fetch(`/api/crops?farmerId=${String(user.id)}`); // ✅ FIX
+    const data = await res.json();
 
-  const handleDelete = async () => {
-    try {
-      setSaving(true);
-      await fetch(`/api/crops/${deleteProduct._id}?farmerId=${user?.id}`, {
-        method: "DELETE",
-      });
-      setDeleteProduct(null);
-      fetchProducts();
-    } finally {
-      setSaving(false);
-    }
-  };
+    console.log("FILTERED CROPS:", data);
 
-  const filtered = products.filter(
-    (p) =>
-      !search ||
-      p.title?.toLowerCase().includes(search.toLowerCase()) ||
-      p.category?.toLowerCase().includes(search.toLowerCase()) ||
-      p.location?.toLowerCase().includes(search.toLowerCase()),
+    setProducts(data?.data || []); // ✅ safe access
+  } catch (e) {
+    console.error("Fetch Error:", e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  if (user?.id) fetchProducts();
+}, [user?.id]);
+
+// ✅ UPDATE
+const handleUpdate = async () => {
+  if (!editingProduct?._id) return;
+
+  try {
+    setSaving(true);
+
+    await fetch(`/api/crops/${editingProduct._id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        farmerId: String(user?.id), // ✅ FIX
+        ...editingProduct,
+      }),
+    });
+
+    setEditingProduct(null);
+    fetchProducts();
+  } catch (e) {
+    console.error("Update Error:", e);
+  } finally {
+    setSaving(false);
+  }
+};
+
+// ✅ DELETE
+const handleDelete = async () => {
+  if (!deleteProduct?._id) return;
+
+  try {
+    setSaving(true);
+
+    await fetch(
+      `/api/crops/${deleteProduct._id}?farmerId=${String(user?.id)}`, // ✅ FIX
+      { method: "DELETE" }
+    );
+
+    setDeleteProduct(null);
+    fetchProducts();
+  } catch (e) {
+    console.error("Delete Error:", e);
+  } finally {
+    setSaving(false);
+  }
+};
+
+// ✅ FILTER (safe)
+const filtered = products.filter((p) => {
+  if (!search) return true;
+
+  const s = search.toLowerCase();
+
+  return (
+    p?.title?.toLowerCase().includes(s) ||
+    p?.category?.toLowerCase().includes(s) ||
+    p?.location?.toLowerCase().includes(s)
   );
+});
 
   return (
     <div

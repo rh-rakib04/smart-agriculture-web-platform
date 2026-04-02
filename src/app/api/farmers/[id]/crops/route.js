@@ -12,7 +12,7 @@ async function handler(request, { params }) {
 
     if (request.method === 'GET') {
       const crops = await cropsCollection
-        .find({ farmerId: id })
+        .find({ farmerId: new ObjectId(id) })
         .toArray();
 
       return NextResponse.json({ crops, count: crops.length });
