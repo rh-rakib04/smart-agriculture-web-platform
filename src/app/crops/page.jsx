@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CropFilter from "@/components/shared/CropFilter/CropFilter";
 import CropCard from "@/components/shared/CropCard/cropcard";
 import SproutSpinner from "@/components/ui/SproutSpinner";
+import Header from "@/components/shared/Header";
 
 const PER_PAGE = 9;
 
@@ -150,6 +151,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-[#f7f5ef] font-sans">
+      <Header></Header>
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <div className="relative bg-[#1e3a0f] overflow-hidden">
         <div

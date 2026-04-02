@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AutoTranslate from "./AutoTranslate";
 import { Providers } from "./Providers";
-import Header from "@/components/shared/Header";
+
 import Footer from "@/components/Footer";
 import I18nProvider from "./i18n-provider";
 
@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
           <I18nProvider>
             {" "}
             <AutoTranslate />
-            <Header />
+            
             <main className="min-h-screen">{children}</main>
             <Footer />
             <ToastContainer
