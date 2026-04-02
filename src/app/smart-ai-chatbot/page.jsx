@@ -2,154 +2,112 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Header from "@/components/shared/Header";
+import Image from "next/image";
 
-export default function page() {
-
-  const [message, setMessage] = useState("");
-  const [chats, setChats] = useState([]);
-  const [typing, setTyping] = useState(false);
-
-  // Only for testing (Never use in production)
-  const GEMINI_KEY = "AIzaSyDC596Nq2X5ekDqqzm5cFmz4RHhhzshGP4";
-
-  const sendMessage = async () => {
-    if (!message.trim()) return;
-
-    const userMsg = {
-      text: message,
-      type: "user",
-      time: new Date().toLocaleTimeString()
-    };
-
-    setChats(prev => [...prev, userMsg]);
-    setMessage("");
-
-    try {
-      setTyping(true);
-
-      // ⭐ Gemini API Call
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_KEY}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `
-You are Agriculture Expert AI.
-
-User Question:
-${message}
-
-Give short farming / crop related answer.
-                    `
-                  }
-                ]
-              }
-            ]
-          })
-        }
-      );
-
-      const data = await res.json();
-
-      const aiReply =
-        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "Sorry, I can't respond now.";
-
-      setChats(prev => [
-        ...prev,
-        {
-          text: aiReply,
-          type: "ai",
-          time: new Date().toLocaleTimeString()
-        }
-      ]);
-
-    } catch {
-      setChats(prev => [
-        ...prev,
-        {
-          text: "AI response failed",
-          type: "ai"
-        }
-      ]);
-    }
-
-    setTyping(false);
-  };
-
+// 🌿 Banner (same style)
+function PageBanner() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center p-6">
+    <div className="relative h-56 sm:h-64 w-full">
+      <Image
+        src="/images/planner-bg.jpg"
+        alt="AI Assistant"
+        fill
+        className="object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-black/60" />
 
-      <div className="w-full max-w-4xl text-center mb-6">
-        <h1 className="text-4xl font-bold text-primary">
-          🤖 Smart Agriculture AI Assistant
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+          🌱 KrishiNova AI Assistant
         </h1>
-        <p className="text-muted-foreground">
-          Ask about crops, farming & weather 🌱
+        <p className="text-white/70 text-sm mt-2">
+          Ask anything about crops & farming
         </p>
       </div>
+    </div>
+  );
+}
 
-      {/* Chat Box */}
-      <div className="w-full max-w-4xl bg-card border border-border rounded-2xl shadow-xl flex flex-col h-[500px]">
+export default function ChatbotPage() {
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState([]);
 
-        <div className="flex-1 p-6 overflow-y-auto space-y-4">
+const sendMessage = async () => {
+  if (!message) return;
 
-          {chats.map((chat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`max-w-[75%] p-4 rounded-2xl shadow-sm ${
-                chat.type === "user"
-                  ? "ml-auto bg-primary text-white"
-                  : "mr-auto bg-muted"
-              }`}
+  const newChat = [...chat, { role: "user", text: message }];
+  setChat(newChat);
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
+    });
+
+    const data = await res.json();
+
+    setChat([
+      ...newChat,
+      { role: "bot", text: data.reply || "⚠️ No response" },
+    ]);
+  } catch (error) {
+    setChat([
+      ...newChat,
+      { role: "bot", text: "❌ Error connecting to server" },
+    ]);
+  }
+
+  setMessage("");
+};
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      {/* Banner */}
+      <PageBanner />
+
+      {/* SAME CONTAINER STYLE AS YOUR WEATHER PAGE */}
+      <div className="max-w-5xl mx-auto px-4 -mt-10 pb-16 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-card border border-border rounded-3xl shadow-xl p-6"
+        >
+          {/* Chat Box */}
+          <div className="h-80 overflow-y-auto border rounded-xl p-3 mb-4">
+            {chat.map((msg, i) => (
+              <div key={i} className="mb-2">
+                <span className="font-bold">
+                  {msg.role === "user" ? "You" : "AI"}:
+                </span>{" "}
+                {msg.text}
+              </div>
+            ))}
+          </div>
+
+          {/* Input */}
+          <div className="flex gap-2">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Ask about crops..."
+              className="flex-1 border p-3 rounded-xl"
+            />
+
+            <button
+              onClick={sendMessage}
+              className="bg-green-600 text-white px-5 rounded-xl"
             >
-              <p>{chat.text}</p>
-
-              <span className="text-xs opacity-70 block mt-2">
-                {chat.time}
-              </span>
-            </motion.div>
-          ))}
-
-          {typing && (
-            <div className="text-sm text-muted-foreground animate-pulse">
-              🤖 AI is thinking...
-            </div>
-          )}
-
-        </div>
-
-        {/* Input */}
-        <div className="p-4 border-t border-border flex gap-3">
-
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Ask about farming..."
-            className="flex-1 p-3 rounded-xl border border-border bg-background"
-          />
-
-          <button
-            onClick={sendMessage}
-            className="px-6 bg-primary text-white rounded-xl hover:opacity-90 transition"
-          >
-            Send
-          </button>
-
-        </div>
-
+              Send
+            </button>
+          </div>
+        </motion.div>
       </div>
-
     </div>
   );
 }

@@ -23,21 +23,33 @@ export default function CropsPage() {
   const [allCrops, setAllCrops] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/crops");
-        const data = await res.json();
-        if (data.success) setAllCrops(data.data);
-      } catch (err) {
-        console.error("Error fetching crops:", err);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch("/api/crops");
+      const data = await res.json();
+
+      if (data.success) {
+        console.log("ALL CROPS:", data.data);
+
+        // 🔍 Check farmerId exists
+        data.data.forEach((crop) => {
+          console.log("Crop:", crop.title, "FarmerID:", crop.farmerId);
+        });
+
+        setAllCrops(data.data);
       }
-    };
-    fetchAll();
-  }, []); // empty — runs once only, no reload on filter change
+    } catch (err) {
+      console.error("Error fetching crops:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAll();
+}, []);
 
   // ── Separate search state (debounced) vs sidebar filters ─────────────────
   const [searchInput, setSearchInput] = useState("");

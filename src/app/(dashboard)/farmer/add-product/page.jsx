@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Upload, Sprout, Tag, MapPin, FileText } from "lucide-react";
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/useAuth";
+
 
 const CATEGORIES = [
   { value: "", label: "Select Category" },
@@ -39,7 +41,10 @@ export default function AddProductPage() {
   const [preview, setPreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const user = { id: "farmer123" };
+
+
+const { user } = useAuth()
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,69 +62,69 @@ export default function AddProductPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSubmitting(true);
 
-    const loadingToast = toast.loading("Adding crop...");
+  const loadingToast = toast.loading("Adding crop...");
 
-    try {
-      const productData = {
-        title: formData.name,
-        cropType: formData.name,
-        category: formData.category,
-        location: formData.location,
-        price: Number(formData.price),
-        quantity: Number(formData.quantity),
-        unit: formData.unit,
-        description: formData.description,
-        farmerId: user.id,
-        status: "available",
-        image: formData.image,
-      };
+  try {
+    const productData = {
+      title: formData.name,
+      cropType: formData.name,
+      category: formData.category,
+      location: formData.location,
+      price: Number(formData.price),
+      quantity: Number(formData.quantity),
+      unit: formData.unit,
+      description: formData.description,
+      farmerId: String(user?.id), // ✅ FIXED
+      status: "available",
+      image: formData.image,
+    };
 
-      const res = await fetch("/api/crops", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData),
-      });
+    const res = await fetch("/api/crops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productData),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!data.success) {
-        throw new Error(data.message || "Failed to add crop");
-      }
-
-      toast.update(loadingToast, {
-        render: "Crop added successfully 🌾",
-        type: "success",
-        isLoading: false,
-        autoClose: 2000,
-      });
-
-      setFormData({
-        name: "",
-        category: "",
-        location: "",
-        description: "",
-        price: "",
-        quantity: "",
-        unit: "kg",
-        image: "",
-      });
-      setPreview(null);
-    } catch (error) {
-      toast.update(loadingToast, {
-        render: error.message,
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } finally {
-      setSubmitting(false);
+    if (!data.success) {
+      throw new Error(data.message || "Failed to add crop");
     }
-  };
 
+    toast.update(loadingToast, {
+      render: "Crop added successfully 🌾",
+      type: "success",
+      isLoading: false,
+      autoClose: 2000,
+    });
+
+    setFormData({
+      name: "",
+      category: "",
+      location: "",
+      description: "",
+      price: "",
+      quantity: "",
+      unit: "kg",
+      image: "",
+    });
+
+    setPreview(null);
+  } catch (error) {
+    toast.update(loadingToast, {
+      render: error.message,
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+  } finally {
+    setSubmitting(false);
+  }
+};
   const inputClass =
     "w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-600";
 

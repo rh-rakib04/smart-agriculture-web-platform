@@ -33,7 +33,7 @@ export default function Sidebar({ userRole = "admin" }) {
       { name: "Calculator", href: "/farmer/calculator", icon: Calculator },
       { name: "Weather", href: "/farmer/weather", icon: CloudSun },
       { name: "Plant Disease Detection", href: "/farmer/disease-detection", icon: Leaf },
-      { name: "AI Chatbot", href: "/farmer/ai-chat", icon: MessageSquare },
+      { name: "AI Chatbot", href: "/farmer/smart-ai-chatbot", icon: MessageSquare },
     ],
 
     buyer: [
